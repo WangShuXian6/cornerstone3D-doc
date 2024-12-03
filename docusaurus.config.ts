@@ -71,7 +71,7 @@ const config: Config = {
       title: '我的网站',
       logo: {
         alt: '我的网站 Logo',
-        src: 'img/logo.svg',
+        src: 'img/cornerstone-logo-badge.png',
       },
       items: [
         {
