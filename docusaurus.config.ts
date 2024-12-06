@@ -72,9 +72,9 @@ const config: Config = {
     // 用你的项目社交卡片替换
     image: 'img/docusaurus-social-card.jpg',
     navbar: {
-      title: '我的网站',
+      title: '首页',
       logo: {
-        alt: '我的网站 Logo',
+        alt: '首页 Logo',
         src: 'img/cornerstone-logo-badge.png',
       },
       items: [
@@ -135,7 +135,7 @@ const config: Config = {
           ],
         },
       ],
-      copyright: `版权所有 © ${new Date().getFullYear()} 我的项目公司。由 wangshuxian6 构建。`,
+      copyright: `版权所有 © ${new Date().getFullYear()} wangshuxian6。由 wangshuxian6 构建。`,
     },
     prism: {
       theme: prismThemes.github,

@@ -33,7 +33,7 @@ export default function Home(): JSX.Element {
   return (
     <Layout
       title={`来自 ${siteConfig.title} 的问候`}
-      description="描述将添加到 <head /> 中的 meta 标签">
+      description="wangshuxian6">
       <HomepageHeader />
       <main>
         <HomepageFeatures />
