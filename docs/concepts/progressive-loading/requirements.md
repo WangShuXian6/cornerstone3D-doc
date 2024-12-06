@@ -1,53 +1,48 @@
 ---
-id: requirements
-title: Server Requirements
----
 
-# Server Requirements
+id: requirements  
+title: 服务器要求  
+---  
 
-Fast initial display of images requires a method to retrieve just a portion of an
-image or volume that can be rendered as a complete but lossy image.
-For instance, an image could be rendered using partial data (resolution), or images in a volume could be interpolated to generate an alternative image.
-These images are initially retrieved for rapid display, followed by retrieving a full-resolution image, resulting in a progressively improved display as more data is loaded.
+# 服务器要求  
 
-The DICOM Standards Committee just added support in DICOM for a new encoding
-method called High Throughput JPEG 2000 (HTJ2K).
-This encoding method enables progressive decoding of
-images, meaning that if the first `N bytes` of the image encoding are available, they can be decoded into a lower resolution or lossy image.
-The configuration that enables this feature is called `HTJ2K Progressive Resolution (HTJ2K RPCL)` or `High Throughput JPEG 2000 Resolution Position Component Layer`.
+快速初始显示图像需要一种方法来检索图像或体积的部分内容，这些内容可以呈现为完整但有损的图像。  
+例如，可以使用部分数据（分辨率）呈现图像，或者可以通过插值生成图像体积中的替代图像。  
+这些图像最初被检索以实现快速显示，然后再检索全分辨率图像，随着更多数据的加载，显示逐渐改善。
 
-Finally, some servers can be configured to serve up reduced (partial) resolution
-versions of images on other URL endpoints.
+DICOM标准委员会刚刚在DICOM中添加了对一种新编码方法的支持，称为高吞吐量JPEG 2000（HTJ2K）。  
+这种编码方法支持图像的渐进解码，这意味着如果图像编码的前`N字节`可用，它们可以解码为较低分辨率或有损图像。  
+启用此功能的配置称为`HTJ2K渐进分辨率（HTJ2K RPCL）`或`高吞吐量JPEG 2000分辨率位置组件层`。
 
-The progressive loading will improve the display of stacked images by supporting HTJ2K progressive resolution encoded data.
-Meanwhile, volumetric data will be enhanced in terms of the time it takes to load the first volume
-for all backends, unless they are specifically configured for custom load order.
-However, the support for different types of reduced resolution and streaming responses varies significantly among DICOMweb implementations.
-Therefore, this guide provides additional details on how to configure various configurations.
+最后，一些服务器可以配置为在其他URL端点提供图像的简化（部分）分辨率版本。
 
-## Server Requirements
+渐进加载将通过支持HTJ2K渐进分辨率编码数据来改善堆叠图像的显示。  
+同时，体积数据将在所有后端中提高加载第一个体积所需的时间，除非它们被专门配置为自定义加载顺序。  
+然而，不同类型的简化分辨率和流响应在DICOMweb实现中的支持差异很大。  
+因此，本指南提供了关于如何配置各种配置的更多细节。
 
-As HTJ2K is a new encoding (and still not merged into the DICOM standard, although approved for merging), it is not yet widely supported by DICOMweb servers. The various ways that servers support it might change in the future. However, we envision two main ways that this will be implemented in most servers but both require the server to support the DICOMWeb standard and HTJ2K RPCL encoding.
+## 服务器要求
 
-- **HTJ2K Support**: For HTJ2K encoded images, the server must support the streaming of image data
-  in a way that respects the HTJ2K RPCL configuration, allowing the client to decode partial data into a displayable image.
+由于HTJ2K是一种新编码（并且仍未并入DICOM标准，尽管已批准合并），因此DICOMweb服务器尚未广泛支持它。  
+服务器支持的各种方式可能会在未来发生变化。然而，我们预见到这种方法将以两种主要方式在大多数服务器中实现，但两者都要求服务器支持DICOMWeb标准和HTJ2K RPCL编码。
 
-### Respond with Streaming Data
+- **HTJ2K支持**：对于HTJ2K编码的图像，服务器必须支持以尊重HTJ2K RPCL配置的方式流式传输图像数据，允许客户端将部分数据解码为可显示的图像。
 
-XHR (XMLHttpRequest) streaming is an extension of the XHR browser-level API that
-enables the client to retrieve pieces of data as it arrives, instead of waiting for the entire response.
-XHR streaming works by keeping a persistent connection between the client and server and sending data incrementally as it becomes available.
+### 使用流式数据响应
 
-### Respond with Byte Range Request
+XHR（XMLHttpRequest）流式传输是XHR浏览器级API的扩展，它使客户端能够在数据到达时检索数据片段，而不是等待整个响应。  
+XHR流式传输通过在客户端和服务器之间保持持久连接并在数据可用时逐步发送数据来工作。
 
-An XHR byte range request is a feature of the XMLHttpRequest object in JavaScript
-that allows for retrieving only a specific range of bytes from a server. This feature is typically used for
-downloading large files in chunks or resuming interrupted downloads. By specifying the starting and ending byte positions,
-the server can send only the requested portion of the file, reducing bandwidth usage and improving download efficiency.
+### 使用字节范围请求响应
 
-- **Partial Content Delivery**: The server must support HTTP Range requests, allowing the client to
-  request and receive specific byte ranges of the image data. This is crucial for handling large images or volumes by fetching and rendering portions of the data progressively.
+XHR字节范围请求是JavaScript中XMLHttpRequest对象的一个功能，允许从服务器检索特定字节范围的数据。  
+该功能通常用于分块下载大文件或恢复中断的下载。通过指定起始字节和结束字节位置，服务器可以只发送请求的部分文件，从而减少带宽使用并提高下载效率。
 
-:::info
-The existing JPEG 2000 encoding and the new [HTJ2K in the standard](https://dicom.nema.org/medical/dicom/Supps/LB/sup235_lb_HTJ2K.pdf) also have a format that specifies a partial resolution endpoint. The exact endpoint needs to be specified in the JPIP referenced data URL. The options data could be used to provide the exact URL required in a future revision.
-:::
+- **部分内容传输**：服务器必须支持HTTP Range请求，允许客户端请求并接收图像数据的特定字节范围。  
+这对于处理大图像或体积数据非常重要，通过逐步获取和渲染数据的部分内容来进行处理。
+
+:::info  
+现有的JPEG 2000编码和新标准中的[HTJ2K](https://dicom.nema.org/medical/dicom/Supps/LB/sup235_lb_HTJ2K.pdf)也有一个指定部分分辨率端点的格式。  
+确切的端点需要在JPIP引用的数据URL中指定。  
+选项数据可用于在未来版本中提供所需的确切URL。  
+:::  

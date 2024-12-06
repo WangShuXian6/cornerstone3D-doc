@@ -13,7 +13,7 @@ const config: Config = {
   url: 'https://wangshuxian6.github.io',
   // 设置网站的 /<baseUrl>/ 路径
   // 对于 GitHub Pages 部署，通常是 '/<projectName>/'
-  baseUrl: '/cornerstone3D-doc',
+  baseUrl: '/cornerstone3D-doc/',
 
   // GitHub Pages 部署配置。
   // 如果你没有使用 GitHub Pages，则不需要这些配置。
@@ -26,10 +26,10 @@ const config: Config = {
   // 即使你不使用国际化，也可以通过这个字段设置有用的元数据，
   // 例如 HTML 的 lang 属性。如果你的网站是中文的，
   // 你可能希望将 "en" 替换为 "zh-Hans"。
-  i18n: {
-    defaultLocale: 'en',
-    locales: ['en'],
-  },
+  // i18n: {
+  //   defaultLocale: 'zh-Hans',
+  //   locales: ['zh-Hans','en'],
+  // },
 
   presets: [
     [
