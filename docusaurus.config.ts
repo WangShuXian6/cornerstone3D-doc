@@ -27,8 +27,8 @@ const config: Config = {
   // 例如 HTML 的 lang 属性。如果你的网站是中文的，
   // 你可能希望将 "en" 替换为 "zh-Hans"。
   i18n: {
-    defaultLocale: 'zh-Hans',
-    locales: ['zh-Hans','en'],
+    defaultLocale: 'en',
+    locales: ['en'],
   },
 
   presets: [

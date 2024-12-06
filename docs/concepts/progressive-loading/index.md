@@ -1,11 +1,7 @@
----
-id: index
----
+---  
+id: index  
+---  
 
-# Progressive Loading
+# 渐进式加载
 
-We have added a new progressive loader for both stack and volume images. For
-stack images, the progressive loader can load a smaller or lossy image, while
-for volumes, both smaller/lossy images and fully interleaved versions can be
-loaded to speed up the loading process.
-
+我们为堆叠图像和体积图像添加了新的渐进式加载器。对于堆叠图像，渐进式加载器可以加载较小或有损的图像，而对于体积图像，可以加载较小/有损图像和完全交错版本，以加快加载过程。
