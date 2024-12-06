@@ -20,7 +20,7 @@ const config: Config = {
   organizationName: 'wangshuxian6', // 通常是你的 GitHub 组织/用户名。
   projectName: 'cornerstone3D-doc', // 通常是你的仓库名。
 
-  onBrokenLinks: 'throw',
+  onBrokenLinks: 'warn',//'throw',//页面的链接到本地文件的链接无效时会如何
   onBrokenMarkdownLinks: 'warn',
 
   // 即使你不使用国际化，也可以通过这个字段设置有用的元数据，
@@ -30,6 +30,10 @@ const config: Config = {
   //   defaultLocale: 'zh-Hans',
   //   locales: ['zh-Hans','en'],
   // },
+  i18n: {
+    defaultLocale: 'en',
+    locales: ['en'],
+  },
 
   presets: [
     [
@@ -96,7 +100,7 @@ const config: Config = {
           items: [
             {
               label: '教程',
-              to: '/docs/intro',
+              to: '/docs/',
             },
           ],
         },
