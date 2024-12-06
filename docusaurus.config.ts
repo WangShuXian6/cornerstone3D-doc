@@ -10,7 +10,7 @@ const config: Config = {
   favicon: 'img/favicon.ico',
 
   // 在这里设置你网站的生产 URL
-  url: 'https://your-docusaurus-site.example.com',
+  url: 'https://wangshuxian6.github.io/cornerstone3D-doc',
   // 设置网站的 /<baseUrl>/ 路径
   // 对于 GitHub Pages 部署，通常是 '/<projectName>/'
   baseUrl: '/',
