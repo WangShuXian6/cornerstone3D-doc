@@ -18,7 +18,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 18
-          cache: yarn
+          #cache: yarn
 
       - name: 安装依赖
         run: yarn install
@@ -30,6 +30,14 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: build
+
+      - name: Cache Yarn dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/yarn
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
 
   deploy:
     name: 部署到 GitHub Pages

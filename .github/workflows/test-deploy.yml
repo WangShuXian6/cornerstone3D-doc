@@ -25,3 +25,11 @@ jobs:
         #run: yarn install --frozen-lockfile
       - name: 测试构建网站
         run: yarn build
+
+      - name: Cache Yarn dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/yarn
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
