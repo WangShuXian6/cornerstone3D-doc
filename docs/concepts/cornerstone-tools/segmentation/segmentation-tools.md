@@ -1,52 +1,46 @@
----
-id: segmentation-tools
-title: Segmentation Tools
----
+---  
+id: segmentation-tools  
+title: 分割工具  
+---  
 
-# Segmentation Tools
+# 分割工具
 
-`Cornerstone3DTools` provides a set of tools to modify segmentations. These include
-the `BrushTool`, Scissors (such as `RectangleScissor`, `CircleScissor`, `SphereScissor`),
-and `RectangleRoiThresholdTool`. We will cover each tool in more detail below.
+`Cornerstone3DTools` 提供了一组用于修改分割的工具。这些工具包括 `BrushTool`、剪刀（如 `RectangleScissor`、`CircleScissor`、`SphereScissor`）和 `RectangleRoiThresholdTool`。我们将在下面更详细地介绍每个工具。
 
-:::note Tip
-All Segmentation tools can edit the segmentation in all 3D views (axial, coronal, and sagittal).
-:::
+:::note 提示  
+所有分割工具都可以在所有3D视图（轴向、冠状面和矢状面）中编辑分割。  
+:::  
 
-## Brush Tool
+## 刷子工具
 
-`BrushTool` is the most commonly used tool for segmentation. It allows you to draw
-segmentations by clicking and dragging (as seen below).
+`BrushTool` 是最常用的分割工具。它允许用户通过点击和拖动来绘制分割（如下所示）。
 
-To use this tool, you need to add it to your toolGroup like any other tools. Read more
-on how to activate a tool in [Tools](../tools.md#adding-tools) and [ToolGroup](../toolGroups.md#toolgroup-creation-and-tool-addition) sections.
+要使用此工具，您需要像其他工具一样将其添加到工具组中。请参阅[工具](../tools.md#adding-tools)和[工具组](../toolGroups.md#toolgroup-creation-and-tool-addition)部分，了解如何激活工具。
 
 ![](../../../assets/brush-tool.gif)
 
-## Rectangle Scissor Tool
+## 矩形剪刀工具
 
-`RectangleScissorTool` can be used to create a rectangular segmentation.
+`RectangleScissorTool` 可用于创建矩形分割。
 
 ![](../../../assets/rectangle-scissor.gif)
 
-## Circle Scissor Tool
+## 圆形剪刀工具
 
-`CircleScissorTool` can be used to create a circular segmentation.
+`CircleScissorTool` 可用于创建圆形分割。
 
 ![](../../../assets/circle-scissor.gif)
 
-## Sphere Scissor Tool
+## 球形剪刀工具
 
-`SphereScissorTool` can be used to create a spherical segmentation. It draws a 3D
-sphere around the mouse pointer.
+`SphereScissorTool` 可用于创建球形分割。它在鼠标指针周围绘制一个3D球体。
 
 ![](../../../assets/sphere-scissor.gif)
 
-## Threshold Tool
+## 阈值工具
 
-`RectangleROIThresholdTool` can be used to create a segmentation by thresholding the drawn
-area by the user.
+`RectangleROIThresholdTool` 可用于通过用户绘制区域的阈值来创建分割。
 
-(in images below, a certain threshold is set to create a segmentation)
+（下图中，设置了某个阈值来创建分割）
 
 ![](../../../assets/threshold-segmentation-tool.gif)

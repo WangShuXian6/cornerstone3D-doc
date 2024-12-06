@@ -1,46 +1,44 @@
 ---
-id: state
-title: State
+
+id: state  
+title: 状态  
 ---
 
-# State Management
+# 状态管理
 
-`Cornerstone3DTools` implements a `FrameOfReference` annotations state manager, where annotations use world coordinates for points.
+`Cornerstone3DTools` 实现了一个 `FrameOfReference` 注释状态管理器，其中注释使用世界坐标来表示点。
 
-## Annotation Data
+## 注释数据
 
-When a new annotation is created (`addNewAnnotation` method in the annotation tools), a new annotation data is created
-based on the metadata and the current state of the tool, and it gets added to the global annotation state.
+当创建一个新的注释（`addNewAnnotation` 方法在注释工具中）时，基于元数据和工具的当前状态创建新的注释数据，并将其添加到全局注释状态中。
 
-In the following we show the annotation data for a `ProbeTool` instance. Other tools, basically follow the same pattern.
+以下是 `ProbeTool` 实例的注释数据。其他工具基本上遵循相同的模式。
 
 ```js
-// ProbeTool Annotation Data
+// ProbeTool 注释数据
 const annotation = {
-  invalidated: boolean, // Whether the annotation data has been invalidated by e.g., moving its handles
-  highlighted: boolean, // Whether the annotation is highlighted by mouse over
-  annotationUID: string, // The UID of the annotation
+  invalidated: boolean, // 注释数据是否由于例如移动其控制点而无效
+  highlighted: boolean, // 注释是否被鼠标悬停高亮显示
+  annotationUID: string, // 注释的 UID
   metadata: {
-    viewPlaneNormal: Types.Point3, // The view plane normal of the camera
-    viewUp: Types.Point3, // The view up vector of the camera
-    FrameOfReferenceUID: string, // viewport's FrameOfReferenceUID the annotation has been drawn on
-    referencedImageId?: string, // The image ID the annotation has been drawn on (if applicable)
-    toolName: string, // The tool name
+    viewPlaneNormal: Types.Point3, // 相机的视平面法线
+    viewUp: Types.Point3, // 相机的视上向量
+    FrameOfReferenceUID: string, // 注释所在视口的 FrameOfReferenceUID
+    referencedImageId?: string, // 注释所在的图像 ID（如适用）
+    toolName: string, // 工具名称
   },
   data: {
     handles: {
-      points: [Types.Point3], // The handles points in world coordinates (probe tool = 1 handle = 1 x,y,z point)
+      points: [Types.Point3], // 控制点的世界坐标（probe 工具 = 1 个控制点 = 1 个 x,y,z 点）
     },
-    cachedStats: {}, // Stored Statistics for the annotation
+    cachedStats: {}, // 注释的存储统计信息
   },
 }
 ```
 
-## Annotation State
+## 注释状态
 
-Annotations state keeps track of the annotations for each FrameOfReference. The state
-is composed of a `FrameOfReference`-specific state object, in which each annotation-specific
-state is stored. Below, you can see a high-level overview of the state object.
+注释状态跟踪每个 `FrameOfReference` 的注释。状态由一个特定于 `FrameOfReference` 的状态对象组成，其中存储每个注释特定的状态。下面，您可以看到状态对象的高级概览。
 
 <div style={{textAlign: 'center', width:"80%"}}>
 
@@ -50,31 +48,31 @@ state is stored. Below, you can see a high-level overview of the state object.
 
 ## API
 
-You can get/add annotations using the following API:
+您可以使用以下 API 获取/添加注释：
 
 ```js
-// Adds annotation
+// 添加注释
 cornerstone3DTools.annotation.state.addAnnotation(
   annotation,
   element,
   suppressEvents
 );
 
-// Remove the annotations given the annotation reference.
+// 根据注释引用移除注释
 cornerstone3DTools.annotation.state.removeAnnotation(
   annotationUID,
   suppressEvents
 );
 
-// Returns the full annotations for a given Tool
+// 返回给定工具的所有注释
 cornerstone3DTools.annotation.state.getAnnotations(toolName, element);
 
-// A helper which returns the single annotation entry matching the UID.
+// 一个助手函数，返回匹配 UID 的单个注释条目
 cornerstone3DTools.annotation.state.getAnnotation(annotationUID);
 ```
 
-## Read more
+## 阅读更多
 
-:::note TIP
-Read more about the state API [here](/api/tools/namespace/annotation#state)
+:::note TIP  
+关于状态 API 的更多信息，请 [**点击这里**](/api/tools/namespace/annotation#state)  
 :::

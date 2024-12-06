@@ -1,11 +1,11 @@
----
-id: segment-index
-title: Segment Index
----
+---  
+id: segment-index  
+title: 分割索引  
+---  
 
-# Segment Index
+# 分割索引
 
-When drawing with segmentation tools, you can specify which segment index to use. Below, we have used the SegmentIndex API to change the `segmentIndex` to draw the second segment.
+在使用分割工具绘制时，您可以指定使用哪个分割索引。下图中，我们使用了 `SegmentIndex` API 来更改 `segmentIndex` 以绘制第二个分割。
 
 <div style={{textAlign: 'center', width: '500px'}}>
 
@@ -18,9 +18,9 @@ When drawing with segmentation tools, you can specify which segment index to use
 ```js
 import { segmentation } from '@cornerstonejs/tools';
 
-// get active segment index for the segmentation Id
+// 获取分割ID的活动分割索引
 segmentation.segmentIndex.getActiveSegmentIndex(segmentationId);
 
-// set active segment index for the segmentation Id
+// 设置分割ID的活动分割索引
 segmentation.segmentIndex.setActiveSegmentIndex(segmentationId, segmentIndex);
 ```

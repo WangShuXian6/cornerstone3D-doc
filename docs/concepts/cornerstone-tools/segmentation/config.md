@@ -1,26 +1,26 @@
 ---
-id: config
-title: Config
+
+id: config  
+title: 配置  
 ---
 
+# 配置
 
-# Configuration
+在 2.x 版本中，分割配置通过统一的样式系统进行管理，该系统可以在不同的层级上应用，使用说明符对象进行指定。
 
-In version 2.x, segmentation configurations are managed through a unified style system that can be applied at different levels of specificity using a specifier object.
+## 样式系统
 
-## Style System
+样式可以在多个层级上应用：
+- 所有分割的全局样式
+- 类型特定的样式（例如，所有标签图）
+- 视口特定的样式
+- 分割特定的样式
+- 段特定的样式
 
-Styles can be applied at multiple levels:
-- Global styles for all segmentations
-- Type-specific styles (e.g., all Labelmaps)
-- Viewport-specific styles
-- Segmentation-specific styles
-- Segment-specific styles
-
-The style configuration object structure depends on the representation type:
+样式配置对象的结构取决于表示类型：
 
 ```js
-// Labelmap Style Example
+// 标签图样式示例
 {
   renderFill: true,
   renderOutline: true,
@@ -29,36 +29,36 @@ The style configuration object structure depends on the representation type:
   outlineAlpha: 0.9
 }
 
-// Contour Style Example
+// 轮廓样式示例
 {
   renderFill: true,
   renderOutline: true,
   outlineWidth: 2
 }
 
-// Surface Style Example
+// 表面样式示例
 {
   renderFill: true,
   fillAlpha: 0.7
 }
 ```
 
-## Style API
+## 样式 API
 
-The new style API uses a specifier object to target specific configurations:
+新的样式 API 使用说明符对象来定位特定的配置：
 
 ```js
 import { segmentation } from '@cornerstonejs/tools';
 
-// Get style for a specific context
+// 获取特定上下文的样式
 const style = segmentation.getStyle({
-  viewportId: 'viewport1',            // optional
-  segmentationId: 'segmentation1',    // optional
-  type: Enums.SegmentationRepresentations.Labelmap,  // required
-  segmentIndex: 1                     // optional
+  viewportId: 'viewport1',            // 可选
+  segmentationId: 'segmentation1',    // 可选
+  type: Enums.SegmentationRepresentations.Labelmap,  // 必需
+  segmentIndex: 1                     // 可选
 });
 
-// Set style for a specific context
+// 设置特定上下文的样式
 segmentation.setStyle(
   {
     viewportId: 'viewport1',
@@ -72,10 +72,10 @@ segmentation.setStyle(
   }
 );
 
-// Reset to global style
+// 重置为全局样式
 segmentation.resetToGlobalStyle();
 
-// Check if a context has custom style
+// 检查上下文是否有自定义样式
 const hasCustomStyle = segmentation.hasCustomStyle({
   viewportId: 'viewport1',
   segmentationId: 'segmentation1',
@@ -83,65 +83,65 @@ const hasCustomStyle = segmentation.hasCustomStyle({
 });
 ```
 
-### Inactive Segmentations
+### 非活跃分割
 
-The rendering of inactive segmentations is now controlled per viewport:
+非活跃分割的渲染现在由每个视口控制：
 
 ```js
-// Set whether to render inactive segmentations in a viewport
+// 设置是否渲染视口中的非活跃分割
 segmentation.setRenderInactiveSegmentations('viewport1', true);
 
-// Get whether inactive segmentations are rendered in a viewport
+// 获取视口中是否渲染非活跃分割
 const renderInactive = segmentation.getRenderInactiveSegmentations('viewport1');
 ```
 
-## Color Management
+## 颜色管理
 
-The color API has been updated to be viewport-specific and use more consistent naming:
+颜色 API 已更新为视口特定，并使用更一致的命名：
 
 ```js
 import { segmentation } from '@cornerstonejs/tools';
 
-// Add a new color LUT
+// 添加新的颜色 LUT
 const colorLUTIndex = segmentation.addColorLUT(colorLUT);
 
-// Set color LUT for a segmentation in a viewport
+// 设置视口中特定分割的颜色 LUT
 segmentation.setColorLUT('viewport1', 'segmentation1', colorLUTIndex);
 
-// Get color for a specific segment
+// 获取特定段的颜色
 const color = segmentation.getSegmentIndexColor(
   'viewport1',
   'segmentation1',
   segmentIndex
 );
 
-// Set color for a specific segment
+// 设置特定段的颜色
 segmentation.setSegmentIndexColor(
   'viewport1',
   'segmentation1',
   segmentIndex,
-  [255, 0, 0, 255]  // RGBA color
+  [255, 0, 0, 255]  // RGBA 颜色
 );
 ```
 
-### Style Hierarchy
+### 样式层级
 
-Styles are applied in the following order of precedence (highest to lowest):
-1. Segment-specific style (when segmentIndex is provided)
-2. Viewport-specific style (when viewportId is provided)
-3. Segmentation-specific style (when segmentationId is provided)
-4. Type-specific style (when only type is provided)
-5. Global style
+样式按以下优先级顺序应用（从高到低）：
+1. 段特定样式（当提供 segmentIndex 时）
+2. 视口特定样式（当提供 viewportId 时）
+3. 分割特定样式（当提供 segmentationId 时）
+4. 类型特定样式（仅提供类型时）
+5. 全局样式
 
-Example:
+示例：
 ```js
-// Set global style for all labelmaps
+// 为所有标签图设置全局样式
 segmentation.setStyle(
   { type: Enums.SegmentationRepresentations.Labelmap },
   { renderOutline: true }
 );
 
-// Override style for a specific viewport
+// 覆盖特定视口的样式
 segmentation.setStyle(
   {
     viewportId: 'viewport1',
@@ -150,7 +150,7 @@ segmentation.setStyle(
   { renderOutline: false }
 );
 
-// Set style for a specific segment
+// 为特定段设置样式
 segmentation.setStyle(
   {
     viewportId: 'viewport1',
@@ -162,6 +162,6 @@ segmentation.setStyle(
 );
 ```
 
-:::note Tip
-For detailed information about available style options for each representation type, refer to the API documentation.
+:::note 提示  
+有关每种表示类型的可用样式选项的详细信息，请参阅 API 文档。  
 :::

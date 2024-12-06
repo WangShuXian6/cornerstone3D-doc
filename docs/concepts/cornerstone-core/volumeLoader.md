@@ -1,107 +1,103 @@
 ---
-id: volumeLoader
-title: Volume Loaders
----
 
-# Volume Loaders
+id: volumeLoader  
+title: 卷加载器  
+---  
 
-Similar to the [`Image Loaders`](./imageLoader.md), a volume loader takes a `volumeId` and other information
-that is required to load a volume and returns a `Promise` that resolves into a `Volume`.
-This `Volume` can be a constructed from a set of 2D images (e.g., `imageIds`) or
-can be from one 3D array object (such as `NIFTI` format).
+# 卷加载器  
 
-We have added [`cornerstoneStreamingImageVolumeLoader`](/docs/concepts/streaming-image-volume/streaming) library to support streaming
-of the 2D images (`imageIds`) into a 3D volume and it is the default volume loader for streaming volumes.
+类似于 [`图像加载器`](./imageLoader.md)，卷加载器接受一个 `volumeId` 和加载卷所需的其他信息，并返回一个 `Promise`，该 `Promise` 解析为一个 `Volume`。  
+这个 `Volume` 可以由一组 2D 图像（例如 `imageIds`）构建，也可以来自一个 3D 数组对象（如 `NIFTI` 格式）。  
 
-## Register Volume Loaders
+我们添加了 [`cornerstoneStreamingImageVolumeLoader`](/docs/concepts/streaming-image-volume/streaming) 库来支持将 2D 图像（`imageIds`）流式传输到 3D 卷，它是流式卷的默认卷加载器。  
 
-You can use [`registerVolumeLoader`](/api/core/namespace/volumeLoader#registerVolumeLoader) to define a volume loader which should be called on a particular `scheme`.
-Below you can see a simplified code for our `cornerstoneStreamingImageVolumeLoader` in which:
+## 注册卷加载器  
 
-1. Based on a set of imageIds, we compute volume metadata such as: spacing, origin, direction, etc.
-2. Instantiate a new [`StreamingImageVolume`](/api/streaming-image-volume-loader/class/StreamingImageVolume)
+您可以使用 [`registerVolumeLoader`](/api/core/namespace/volumeLoader#registerVolumeLoader) 来定义一个在特定 `scheme` 上调用的卷加载器。  
+下面是我们 `cornerstoneStreamingImageVolumeLoader` 的简化代码，其中：  
 
-   - `StreamingImageVolume` implements methods for loading (`.load`)
-   - It implements load via using `imageLoadPoolManager`
-   - Each loaded frame (imageId) is put at the correct slice in the 3D volume
+1. 基于一组 `imageIds`，我们计算卷的元数据，如：间距、原点、方向等。  
+2. 实例化一个新的 [`StreamingImageVolume`](/api/streaming-image-volume-loader/class/StreamingImageVolume)  
 
-3. Return a `Volume Load Object` which has a promise that resolves to the `Volume`.
+   - `StreamingImageVolume` 实现了加载方法（`.load`）  
+   - 它通过使用 `imageLoadPoolManager` 来实现加载  
+   - 每个加载的帧（`imageId`）被放置在 3D 卷的正确切片中  
 
-```js
-function cornerstoneStreamingImageVolumeLoader(
-  volumeId: string,
-  options: {
-    imageIds: Array<string>,
-  }
-) {
-  // Compute Volume metadata based on imageIds
-  const volumeMetadata = makeVolumeMetadata(imageIds);
-  const streamingImageVolume = new StreamingImageVolume(
-    // ImageVolume properties
-    {
-      volumeId,
-      metadata: volumeMetadata,
-      dimensions,
-      spacing,
-      origin,
-      direction,
-      scalarData,
-      sizeInBytes,
-    },
-    // Streaming properties
-    {
-      imageIds: sortedImageIds,
-      loadStatus: {
-        loaded: false,
-        loading: false,
-        cachedFrames: [],
-        callbacks: [],
-      },
-    }
-  );
+3. 返回一个 `Volume Load Object`，它具有一个 `Promise`，解析为 `Volume`。  
 
-  return {
-    promise: Promise.resolve(streamingImageVolume),
-    cancel: () => {
-      streamingImageVolume.cancelLoading();
-    },
-  };
-}
+```js  
+function cornerstoneStreamingImageVolumeLoader(  
+  volumeId: string,  
+  options: {  
+    imageIds: Array<string>,  
+  }  
+) {  
+  // 基于 imageIds 计算卷的元数据  
+  const volumeMetadata = makeVolumeMetadata(imageIds);  
+  const streamingImageVolume = new StreamingImageVolume(  
+    // ImageVolume 属性  
+    {  
+      volumeId,  
+      metadata: volumeMetadata,  
+      dimensions,  
+      spacing,  
+      origin,  
+      direction,  
+      scalarData,  
+      sizeInBytes,  
+    },  
+    // 流式属性  
+    {  
+      imageIds: sortedImageIds,  
+      loadStatus: {  
+        loaded: false,  
+        loading: false,  
+        cachedFrames: [],  
+        callbacks: [],  
+      },  
+    }  
+  );  
 
-registerVolumeLoader(
-  'cornerstoneStreamingImageVolume',
-  cornerstoneStreamingImageVolumeLoader
-);
+  return {  
+    promise: Promise.resolve(streamingImageVolume),  
+    cancel: () => {  
+      streamingImageVolume.cancelLoading();  
+    },  
+  };  
+}  
 
-// Used for any volume that its scheme is not provided
-registerUnknownVolumeLoader(cornerstoneStreamingImageVolumeLoader);
-```
+registerVolumeLoader(  
+  'cornerstoneStreamingImageVolume',  
+  cornerstoneStreamingImageVolumeLoader  
+);  
 
-As seen above, since the `cornerstoneStreamingImageVolumeLoader` is registered with the scheme `cornerstoneStreamingImageVolume`,
-we can load a volume with the scheme `cornerstoneStreamingImageVolume` by passing the `volumeId` as shown below:
+// 用于未提供 scheme 的任何卷  
+registerUnknownVolumeLoader(cornerstoneStreamingImageVolumeLoader);  
+```  
 
-```js
-const volumeId = 'cornerstoneStreamingImageVolume:myVolumeId';
+如上所示，由于 `cornerstoneStreamingImageVolumeLoader` 已注册为 `cornerstoneStreamingImageVolume` scheme，  
+我们可以通过传递 `volumeId` 来加载具有 `cornerstoneStreamingImageVolume` scheme 的卷，如下所示：  
 
-const volume = await volumeLoader.createAndCacheVolume(volumeId, {
-  imageIds: imageIds,
-});
-```
+```js  
+const volumeId = 'cornerstoneStreamingImageVolume:myVolumeId';  
 
-## Default unknown volume loader
+const volume = await volumeLoader.createAndCacheVolume(volumeId, {  
+  imageIds: imageIds,  
+});  
+```  
 
-By default if no `volumeLoader` is found for the scheme, the `unknownVolumeLoader` is used. `cornerstoneStreamingImageVolumeLoader`
-is the default unknown volume loader.
+## 默认未知卷加载器  
 
+默认情况下，如果找不到与 scheme 对应的 `volumeLoader`，则使用 `unknownVolumeLoader`。`cornerstoneStreamingImageVolumeLoader` 是默认的未知卷加载器。  
 
-:::info
-Even if you don't provide the scheme, the `cornerstoneStreamingImageVolumeLoader` will be used by default.
+:::info  
+即使您没有提供 scheme，`cornerstoneStreamingImageVolumeLoader` 也会默认使用。  
 
-So the following code will work as well:
+因此，以下代码也会正常工作：  
 
-```js
-const volumeId = 'myVolumeId';
-const volume = await volumeLoader.createAndCacheVolume(volumeId, {
-  imageIds: imageIds,
-});
-```
+```js  
+const volumeId = 'myVolumeId';  
+const volume = await volumeLoader.createAndCacheVolume(volumeId, {  
+  imageIds: imageIds,  
+});  
+```  

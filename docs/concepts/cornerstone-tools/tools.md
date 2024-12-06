@@ -1,44 +1,41 @@
 ---
 id: tools
-title: Tools
+title: 工具
 ---
 
-## Introduction
+## 介绍
 
-A tool is an uninstantiated class that implements at least the `BaseTool` interface.
-Tools can be configured via their constructor. To use a tool, one must:
+工具是一个未实例化的类，至少实现了 `BaseTool` 接口。  
+工具可以通过其构造函数进行配置。要使用工具，必须：
 
-- Add the uninstantiated tool using the library's top level `addTool` function
-- Add that same tool, by name, to a ToolGroup
+- 使用库的顶层 `addTool` 函数添加未实例化的工具
+- 通过名称将该工具添加到一个工具组
 
-Here we will introduce several concepts about tools (annotation and segmentation tools)
-inside `Cornerstone3DTools`.
+在这里，我们将介绍 `Cornerstone3DTools` 中的一些工具（注释和分割工具）概念。
 
-## Tools
+## 工具
 
-### Manipulation Tools
+### 操作工具
 
-`Cornerstone3DTools` provides a set of tools that can be used to manipulate the
-images in the viewports. These include:
+`Cornerstone3DTools` 提供了一组可以用于操作视口中图像的工具。这些工具包括：
 
-- enabling zooming in and out of the image (`ZoomTool`)
-- performing panning and navigation of the image (`PanTool`)
-- scrolling through the image (`StackScrollMouseWheelTool`)
-- manipulating the windowLevel of the image (`WindowLevelTool`)
+- 启用图像的缩放（`ZoomTool`）
+- 执行图像的平移和导航（`PanTool`）
+- 滚动浏览图像（`StackScrollMouseWheelTool`）
+- 操控图像的窗口级别（`WindowLevelTool`）
 
-### Annotation Tools
+### 注释工具
 
-`Cornerstone3DTools` provide a set of annotation tools. You can use these tools
-to create and edit annotations for use cases such as:
+`Cornerstone3DTools` 提供了一组注释工具。您可以使用这些工具来创建和编辑注释，适用于以下用例：
 
-- Measuring distance between two points (Length Tool)
-- Measuring height between two points (Height Tool)
-- Measuring width and length for a structure (Bidirectional Tool)
-- Measuring area and statistics for a rectangular area (RectangleRoi Tool)
-- Measuring volume and statistics for a ellipsoid (EllipseRoi Tool)
-- Getting the underlying value for a voxel (Probe Tool)
+- 测量两点之间的距离（Length Tool）
+- 测量两点之间的高度（Height Tool）
+- 测量结构的宽度和长度（Bidirectional Tool）
+- 测量矩形区域的面积和统计数据（RectangleRoi Tool）
+- 测量椭圆的体积和统计数据（EllipseRoi Tool）
+- 获取体素的底层值（Probe Tool）
 
-Below, you can see a screenshot of the annotation tools that are available in `Cornerstone3DTools`.
+下面，您可以看到 `Cornerstone3DTools` 中可用的注释工具的屏幕截图。
 
 <div style={{textAlign: 'center'}}>
 
@@ -46,9 +43,9 @@ Below, you can see a screenshot of the annotation tools that are available in `C
 
 </div>
 
-### Dynamic tool statistics
+### 动态工具统计
 
-`Cornerstone3DTools` is capable of calculating dynamic statistics based on the modality of the volume being rendered. For instance, for CT volumes a `ProbeTool` will give Hounsfield Units and for PET it will calculate SUV stats.
+`Cornerstone3DTools` 能够根据渲染的体积的成像模式计算动态统计。例如，对于 CT 体积，`ProbeTool` 会给出 Hounsfield 单位，对于 PET 它会计算 SUV 统计数据。
 
 <div style={{textAlign: 'center', width:'85%'}}>
 
@@ -56,27 +53,21 @@ Below, you can see a screenshot of the annotation tools that are available in `C
 
 </div>
 
-### Annotation sharing in Frame of Reference
+### 在参考框架中共享注释
 
-Since, annotations are stored in the patient physical space, if there are
-two viewports that are displaying the same frame of reference, they will share
-the same annotations.
+由于注释存储在患者的物理空间中，如果有两个视口显示相同的参考框架，它们将共享相同的注释。
 
-### Segmentation Tools
+### 分割工具
 
-`Cornerstone3D` also provides segmentation tools. This includes3D segmentation editing tools such as brush, rectangle and circle scissors, and
-3d sphere tools.
+`Cornerstone3D` 还提供了分割工具。这些包括 3D 分割编辑工具，如刷子、矩形和圆形剪刀，以及 3D 球体工具。
 
-We will discuss in length the different types of segmentation tools and how they
-are used in `Cornerstone3DTools` in [`Segmentation`](./segmentation/index.md) section.
+我们将在 [`Segmentation`](./segmentation/index.md) 部分详细讨论不同类型的分割工具及其在 `Cornerstone3DTools` 中的使用。
 
 <details>
 
-<summary>How tools work internally</summary>
+<summary>工具如何在内部工作</summary>
 
-mouse and keyboard fire events, these events are captured and normalized by
-`Cornerstone3DTools`. The normalized events are then fired and handled by
-tools either as `mouseDown`, `mouseDrag` and `mouseUp` events.
+鼠标和键盘触发事件，这些事件被 `Cornerstone3DTools` 捕获并规范化。然后，规范化的事件会作为 `mouseDown`、`mouseDrag` 和 `mouseUp` 事件触发并由工具处理。
 
 </details>
 
@@ -86,14 +77,12 @@ tools either as `mouseDown`, `mouseDrag` and `mouseUp` events.
 
 </div>
 
-## Adding Tools
+## 添加工具
 
-The `Cornerstone3DTools` library comes packaged with several common tools. All implement either
-the `BaseTool` or `AnnotationTool`. In order to be able to use the tools, you must
-first add them to the `Cornerstone3DTools`. You can do this by using the `addTool` function.
+`Cornerstone3DTools` 库附带了几个常用工具。所有工具都实现了 `BaseTool` 或 `AnnotationTool`。为了能够使用这些工具，您必须先将它们添加到 `Cornerstone3DTools`。可以使用 `addTool` 函数来完成此操作。
 
 ```js
-import * as csTools3d from '@cornerstonejs/tools';
+import * as csTools3d from "@cornerstonejs/tools";
 
 const { PanTool, ProbeTool, ZoomTool, LengthTool } = csTools3d;
 
@@ -103,58 +92,53 @@ csTools3d.addTool(LengthTool);
 csTools3d.addTool(ProbeTool);
 ```
 
-:::note warning
-Adding a tool to the library will only let the library know about the tool.
-It will not automatically add the tool to any tool groups, nor will it
-instantiate the tool for usage.
-
+:::note warning  
+将工具添加到库中只会让库知道该工具。  
+它不会自动将工具添加到任何工具组中，也不会实例化该工具以供使用。  
 :::
 
-## Tool Modes
+## 工具模式
 
-Tools (in their toolGroup) can be in one of four modes. Each mode impacts how the tool responds to
-interactions.
+工具（在其工具组中）可以处于四种模式之一。每种模式会影响工具对交互的响应。
 
-> There should never be two active tools with the same binding
+> 不应该有两个具有相同绑定的活动工具
 
-<table>
-  <tr>
-    <td>Tool Mode</td>
-    <td>Description</td>
-  </tr>
-  <tr>
-    <td>Active</td>
-    <td>
-      <ul>
-        <li>Tools with active bindings will respond to interactions</li>
-        <li>If the tool is an annotation tool, click events not over existing annotations
-  will create a new annotation.</li>
-      </ul>
-    </td>
-  </tr>
-  <tr>
-    <td>Passive (default)</td>
-    <td>
-      <ul>
-        <li>If the tool is an annotation tool, if it's handle or line is selected, it
-    can be moved and repositioned.</li>
-      </ul>
-    </td>
-  </tr>
-  <tr>
-    <td>Enabled</td>
-    <td>
-      <ul>
-        <li>The tool will render, but cannot be interacted with.</li>
-      </ul>
-    </td>
-  </tr>
-  <tr>
-    <td>Disabled</td>
-    <td>
-      <ul>
-        <li>The tool will not render. No interaction is possible.</li>
-      </ul>
-    </td>
-  </tr>
+<table>  
+  <tr>  
+    <td>工具模式</td>  
+    <td>描述</td>  
+  </tr>  
+  <tr>  
+    <td>活动</td>  
+    <td>  
+      <ul>  
+        <li>具有活动绑定的工具将响应交互</li>  
+        <li>如果该工具是注释工具，则点击事件如果不在现有注释上，将创建一个新的注释。</li>  
+      </ul>  
+    </td>  
+  </tr>  
+  <tr>  
+    <td>被动（默认）</td>  
+    <td>  
+      <ul>  
+        <li>如果该工具是注释工具，并且其句柄或线条被选中，则可以移动和重新定位。</li>  
+      </ul>  
+    </td>  
+  </tr>  
+  <tr>  
+    <td>启用</td>  
+    <td>  
+      <ul>  
+        <li>该工具将渲染，但不能进行交互。</li>  
+      </ul>  
+    </td>  
+  </tr>  
+  <tr>  
+    <td>禁用</td>  
+    <td>  
+      <ul>  
+        <li>该工具将不渲染。无法进行交互。</li>  
+      </ul>  
+    </td>  
+  </tr>  
 </table>

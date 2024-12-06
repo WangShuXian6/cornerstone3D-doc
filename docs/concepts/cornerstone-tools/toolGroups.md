@@ -1,113 +1,106 @@
----
-id: toolGroups
-title: ToolGroups
----
+---  
+id: toolGroups  
+title: 工具组  
+---  
 
-## Introduction
+## 介绍  
 
-As discussed in the [`Tools`](./tools.md) section, in order to use a Tool you should
-fist add the tool via `CornerstoneTools3D.addTool()` AND then add and set them active on viewports via `Tool Groups`.
+如在 [`Tools`](./tools.md) 部分讨论的那样，要使用工具，您应该首先通过 `CornerstoneTools3D.addTool()` 添加工具，然后通过 `Tool Groups` 将工具添加并设置为视口的活动工具。  
 
-Tool Groups are a new concept in the `Cornerstone` libraries. The goal of `ToolGroup` is to define
-a simple way to define tool behavior in a per viewport/per tool fashion. In addition, via a common `ToolGroup`
-viewports can share the same configuration, modes and tools.
+工具组是 `Cornerstone` 库中的一个新概念。`ToolGroup` 的目标是定义一种简单的方式，以每个视口/每个工具的方式定义工具行为。此外，通过一个共同的 `ToolGroup`，视口可以共享相同的配置、模式和工具。  
 
-Consider the following set of viewports, and the desired behavior for scrolling and panning.
+考虑以下视口集以及滚动和平移的预期行为。  
 
 <div style={{textAlign: 'center'}}>
 
 ![](../../assets/toolGroup-intro.png)
 
-</div>
+</div>  
 
-For `ct-axial` and `ct-sagittal` viewports, we want to enable scrolling by mouse wheel and panning by mouse middle button drag.
-However, for the `pt-coronal` which is a Maximum Intensity Projection (MIP) viewport, scrolling through slices
-has no meaning, and desired behavior is to rotate the MIP volume by mouse wheel and disable panning.
+对于 `ct-axial` 和 `ct-sagittal` 视口，我们希望启用鼠标滚轮滚动和鼠标中键拖动平移。然而，对于 `pt-coronal` 视口，它是一个最大强度投影（MIP）视口，滚动切片没有意义，预期行为是通过鼠标滚轮旋转 MIP 卷，并禁用平移。  
 
 <div style={{textAlign: 'center'}}>
 
 ![](../../assets/toolGroup-Annotated.png)
 
-</div>
+</div>  
 
-:::note Important
-There is a one-to-one relationship between viewports and tool groups. In other words, no viewport can be part of more than one tool group.
-:::
+:::note 重要  
+视口与工具组之间存在一一对应的关系。换句话说，任何视口不能属于多个工具组。  
+:::  
 
-## ToolGroup Creation and Tool Addition
+## 工具组创建与工具添加  
 
-`ToolGroups` are managed by a `ToolGroupManager`. Tool Group Managers are used to create, search for, and
-destroy Tool Groups.
+`ToolGroups` 由 `ToolGroupManager` 管理。工具组管理器用于创建、搜索和销毁工具组。  
 
-> Currently ToolGroups are not optional, and in order to use a tool you should create a toolGroup and add it to the toolGroup.
+> 目前，工具组是必需的，为了使用工具，您必须创建工具组并将其添加到工具组中。  
 
-ToolGroupManager can be utilized to create a tool group using `createToolGroup`.
+可以使用 `createToolGroup` 方法通过 `ToolGroupManager` 创建工具组。  
 
-```js
-import { ToolGroupManager } from '@cornerstonejs/tools';
+```js  
+import { ToolGroupManager } from '@cornerstonejs/tools';  
 
-const toolGroupId = 'ctToolGroup';
-const ctToolGroup = ToolGroupManager.createToolGroup(toolGroupId);
+const toolGroupId = 'ctToolGroup';  
+const ctToolGroup = ToolGroupManager.createToolGroup(toolGroupId);  
 
-// Add tools to ToolGroup
-// Manipulation tools
-ctToolGroup.addTool(PanTool.toolName);
-ctToolGroup.addTool(ZoomTool.toolName);
-ctToolGroup.addTool(ProbeTool.toolName);
-```
+// 向工具组添加工具  
+// 操作工具  
+ctToolGroup.addTool(PanTool.toolName);  
+ctToolGroup.addTool(ZoomTool.toolName);  
+ctToolGroup.addTool(ProbeTool.toolName);  
+```  
 
-### Adding Viewports to ToolGroups
+### 向工具组添加视口  
 
-Viewports should be added to the `ToolGroup` using `addViewport`.
+应使用 `addViewport` 将视口添加到 `ToolGroup` 中。  
 
-```js
-// Apply tool group to viewport or all viewports rendering a scene
-ctToolGroup.addViewport(viewportId, renderingEngineId);
-```
+```js  
+// 将工具组应用于视口或所有渲染场景的视口  
+ctToolGroup.addViewport(viewportId, renderingEngineId);  
+```  
 
-<details>
-<summary>
-Why we need to pass `renderingEngineId`?
-</summary>
+<details>  
+<summary>  
+为什么需要传递 `renderingEngineId`？  
+</summary>  
 
-The reason is `viewportId`s are unique to a rendering engine. You can have multiple rendering engines that
-include different viewports with the same `viewportId`.
+原因是 `viewportId` 对于每个渲染引擎是唯一的。您可以有多个渲染引擎，其中包含具有相同 `viewportId` 的不同视口。  
 
-</details>
+</details>  
 
-### Activating a Tool
+### 激活工具  
 
-You can use `setToolActive` for each toolGroup to activate a tool providing a corresponding mouse bindings key.
+可以使用 `setToolActive` 为每个工具组激活工具，并提供相应的鼠标绑定键。  
 
-```js
-// Set the ToolGroup's ToolMode for each tool
-// Possible modes include: 'Active', 'Passive', 'Enabled', 'Disabled'
-ctToolGroup.setToolActive(LengthTool.toolName, {
-  bindings: [{ mouseButton: MouseBindings.Primary }],
-});
-ctToolGroup.setToolActive(PanTool.toolName, {
-  bindings: [{ mouseButton: MouseBindings.Auxiliary }],
-});
-ctToolGroup.setToolActive(ZoomTool.toolName, {
-  bindings: [{ mouseButton: MouseBindings.Secondary }],
-});
-ctToolGroup.setToolActive(StackScrollMouseWheelTool.toolName);
-```
+```js  
+// 为每个工具设置 ToolGroup 的工具模式  
+// 可用模式包括：'Active'，'Passive'，'Enabled'，'Disabled'  
+ctToolGroup.setToolActive(LengthTool.toolName, {  
+  bindings: [{ mouseButton: MouseBindings.Primary }],  
+});  
+ctToolGroup.setToolActive(PanTool.toolName, {  
+  bindings: [{ mouseButton: MouseBindings.Auxiliary }],  
+});  
+ctToolGroup.setToolActive(ZoomTool.toolName, {  
+  bindings: [{ mouseButton: MouseBindings.Secondary }],  
+});  
+ctToolGroup.setToolActive(StackScrollMouseWheelTool.toolName);  
+```  
 
-Other Tool modes can also be set using `setToolEnabled`, `setToolPassive`, and `setToolDisabled`.
+其他工具模式也可以通过 `setToolEnabled`、`setToolPassive` 和 `setToolDisabled` 设置。  
 
-## ToolGroup Manager
+## 工具组管理器  
 
-Other methods for managing ToolGroups are available via `ToolGroupManager`.
+可以通过 `ToolGroupManager` 使用其他方法来管理工具组。  
 
-### `getToolGroupForViewport`
+### `getToolGroupForViewport`  
 
-returns the ToolGroup for a given viewport, read more [here](/api/tools/namespace/ToolGroupManager#getToolGroupForViewport)
+返回给定视口的工具组，详情请阅读 [这里](/api/tools/namespace/ToolGroupManager#getToolGroupForViewport)  
 
-### `getToolGroup`
+### `getToolGroup`  
 
-returns the ToolGroup for a given toolGroupId
+返回给定 `toolGroupId` 的工具组  
 
-### `destroyToolGroup`
+### `destroyToolGroup`  
 
-destroys a ToolGroup
+销毁一个工具组

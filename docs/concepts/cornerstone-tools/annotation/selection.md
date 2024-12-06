@@ -1,35 +1,36 @@
 ---
-id: selection
-title: Selection
+
+id: selection  
+title: 选择  
 ---
 
-# Selection
+# 选择
 
-Annotations can be selected and deselected. This is achieved by holding down the `Shift` key (by default) and clicking on annotations.
+注释可以被选择或取消选择。通过按住 `Shift` 键（默认情况下）并点击注释来实现。
 
 ## API
 
-There are various APIs for selecting and deselecting annotations along with get/set methods
+有多种 API 用于选择和取消选择注释，以及获取/设置方法。
 
 ```js
 import { annotation } from '@cornerstonejs/tools';
 
-// selection of an annotation
+// 选择注释
 annotation.selection.setAnnotationSelected(
   annotationUID,
   (selected = true),
   (preserveSelected = false)
 );
 
-// get all the selected annotations
+// 获取所有选中的注释
 annotation.selection.getAnnotationsSelected();
 
-// get all selected annotations from a specific tool
+// 获取特定工具选中的所有注释
 annotation.selection.getAnnotationsSelectedByToolName(toolName);
 ```
 
-## Read more
+## 阅读更多
 
-:::note TIP
-Read more about the selection API [**here**](/api/tools/namespace/annotation#selection)
+:::note TIP  
+关于选择 API 的更多信息，请 [**点击这里**](/api/tools/namespace/annotation#selection)  
 :::

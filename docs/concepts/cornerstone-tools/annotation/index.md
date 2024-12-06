@@ -1,33 +1,32 @@
 ---
-id: index
-title: Annotations
+
+id: index  
+title: 注释  
 ---
 
-# Annotations
+# 注释
 
-In `Cornerstone3DTools`, Annotation Tools keep their state in a `state` object. This object is a plain JavaScript object that is
-used to store the state of the annotation instance. Information such as the statistics of the annotation, its data
-and camera position are stored in this object.
+在 `Cornerstone3DTools` 中，注释工具将其状态保存在一个 `state` 对象中。这个对象是一个普通的 JavaScript 对象，用于存储注释实例的状态。诸如注释的统计信息、数据和相机位置等信息都存储在该对象中。
 
-There are various methods for adding/removing, selection, locking and unlocking of annotations. They can be accessed via the `annotations` name space in the `Cornerstone3DTools` by calling:
+有多种方法可以添加/删除、选择、锁定和解锁注释。可以通过调用以下代码，通过 `Cornerstone3DTools` 中的 `annotations` 命名空间访问这些方法：
 
 ```js
 import { annotation } from '@cornerstonejs/tools';
 
-// All methods to deal with annotation state can be accessed via
+// 所有处理注释状态的方法可以通过
 annotation.state.XYZ;
 
-// All methods for annotation selection can be accessed via
+// 所有处理注释选择的方法可以通过
 annotation.selection.XYZ;
 
-// All methods for annotation locking can be accessed via
+// 所有处理注释锁定的方法可以通过
 annotation.locking.XYZ;
 
-// All methods for annotation styling can be accessed via
+// 所有处理注释样式的方法可以通过
 annotation.config.XYZ;
 
-// The AnnotationGroup class allows for grouping of annotations
+// AnnotationGroup 类允许将注释进行分组
 annotation.AnnotationGroup;
 ```
 
-Let's start by looking deeper into each of these methods.
+让我们深入了解每个方法。

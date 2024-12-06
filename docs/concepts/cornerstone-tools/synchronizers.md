@@ -1,110 +1,106 @@
----
-id: synchronizers
-title: Synchronizers
----
+---  
+id: synchronizers  
+title: 同步器  
+---  
 
-# Synchronizers
+# 同步器  
 
-Synchronizers can be used to link particular actions across viewports (e.g. sync pan/zoom interaction), but they can also be used to tie any callback to a particular event. Synchronizers require:
+同步器可以用来链接视口之间的特定操作（例如同步平移/缩放交互），但它们也可以用来将任何回调绑定到特定事件。同步器需要：  
 
-- An [`Event`](/api/core/namespace/Enums#Events) to listen for
-- A function to call when that event is raised on a source viewport
-- An array of `source` viewports
-- An array of `target` viewports
+- 一个 [`Event`](/api/core/namespace/Enums#Events) 来监听  
+- 当该事件在源视口上触发时要调用的函数  
+- 一个 `source` 视口的数组  
+- 一个 `target` 视口的数组  
 
-The provided function receives the event, source viewports, and target viewports, and is often used to check “some value” on the source viewport. The function then updates the target viewports, often using public API exposed by the core library, to match that state/value.
+提供的函数接收事件、源视口和目标视口，并通常用于检查源视口上的“某个值”。然后，函数更新目标视口，通常使用核心库公开的 API，使其匹配该状态/值。  
 
-## Usage
+## 使用方法  
 
-The `SynchronizerManager` exposes similar API to that of the `ToolGroupManager`. A
-created Synchronizer has methods like `addTarget`, `addSource`, `add` (which adds
-the viewport as a "source" and a "target"), and equivalent `remove*` methods.
+`SynchronizerManager` 提供的 API 类似于 `ToolGroupManager`。创建的同步器具有 `addTarget`、`addSource`、`add`（将视口作为“源”和“目标”添加）以及等效的 `remove*` 方法。  
 
-Synchronizers will self-remove sources/targets if the viewport becomes disabled.
-Synchronizers also expose a `disabled` flag that can be used to temporarily prevent
-synchronization.
+如果视口被禁用，同步器将自动移除源/目标。同步器还公开了一个 `disabled` 标志，可用于暂时禁止同步。  
 
-```js
-import { Enums } from '@cornerstonejs/core';
-import { SynchronizerManager } from '@cornerstonejs/tools';
+```js  
+import { Enums } from '@cornerstonejs/core';  
+import { SynchronizerManager } from '@cornerstonejs/tools';  
 
-const cameraPositionSynchronizer = SynchronizerManager.createSynchronizer(
-  'synchronizerName',
-  Enums.Events.CAMERA_MODIFIED,
-  (
-    synchronizerInstance,
-    sourceViewport,
-    targetViewport,
-    cameraModifiedEvent
-  ) => {
-    // Synchronization logic should go here
-  }
-);
+const cameraPositionSynchronizer = SynchronizerManager.createSynchronizer(  
+  'synchronizerName',  
+  Enums.Events.CAMERA_MODIFIED,  
+  (  
+    synchronizerInstance,  
+    sourceViewport,  
+    targetViewport,  
+    cameraModifiedEvent  
+  ) => {  
+    // 同步逻辑应放在这里  
+  }  
+);  
 
-// Add viewports to synchronize
-const firstViewport = { renderingEngineId, viewportId };
-const secondViewport = {
-  /* */
-};
+// 添加需要同步的视口  
+const firstViewport = { renderingEngineId, viewportId };  
+const secondViewport = {  
+  /* */  
+};  
 
-sync.addSource(firstViewport);
-sync.addTarget(secondViewport);
-```
+sync.addSource(firstViewport);  
+sync.addTarget(secondViewport);  
+```  
 
-### Built-in Synchronizers
+### 内置同步器  
 
-We have currently implemented two synchronizers that can be used right away,
+目前我们已经实现了两个可以立即使用的同步器，  
 
-#### Position Synchronizer
+#### 位置同步器  
 
-It synchronize the camera properties including the zoom, pan and scrolling between the viewports.
+它同步视口之间的相机属性，包括缩放、平移和滚动。  
 
-```js
-const ctAxial = {
-  viewportId: VIEWPORT_IDS.CT.AXIAL,
-  type: ViewportType.ORTHOGRAPHIC,
-  element,
-  defaultOptions: {
-    orientation: Enums.OrientationAxis.AXIAL,
-  },
-};
+```js  
+const ctAxial = {  
+  viewportId: VIEWPORT_IDS.CT.AXIAL,  
+  type: ViewportType.ORTHOGRAPHIC,  
+  element,  
+  defaultOptions: {  
+    orientation: Enums.OrientationAxis.AXIAL,  
+  },  
+};  
 
-const ptAxial = {
-  viewportId: VIEWPORT_IDS.PT.AXIAL,
-  type: ViewportType.ORTHOGRAPHIC,
-  element,
-  defaultOptions: {
-    orientation: Enums.OrientationAxis.AXIAL,
-    background: [1, 1, 1],
-  },
-};
+const ptAxial = {  
+  viewportId: VIEWPORT_IDS.PT.AXIAL,  
+  type: ViewportType.ORTHOGRAPHIC,  
+  element,  
+  defaultOptions: {  
+    orientation: Enums.OrientationAxis.AXIAL,  
+    background: [1, 1, 1],  
+  },  
+};  
 
-const axialSync = createCameraPositionSynchronizer('axialSync')[
-  (ctAxial, ptAxial)
-].forEach((vp) => {
-  const { renderingEngineId, viewportId } = vp;
-  axialSync.add({ renderingEngineId, viewportId });
-});
-```
+const axialSync = createCameraPositionSynchronizer('axialSync')[  
+  (ctAxial, ptAxial)  
+].forEach((vp) => {  
+  const { renderingEngineId, viewportId } = vp;  
+  axialSync.add({ renderingEngineId, viewportId });  
+});  
+```  
 
-Internally, upon camera modified event on the source viewport, `cameraSyncCallback` runs to synchronize all the target viewports.
+内部，源视口上的相机修改事件触发时，`cameraSyncCallback` 会运行以同步所有目标视口。  
 
-#### VOI Synchronizer
+#### VOI同步器  
 
-It synchronizes the VOI between the viewports. For instance, if in the 3x3 layout of PET/CT, the CT image contrast gets manipulated, we want the fusion viewports to reflect the change as well.
+它同步视口之间的VOI。例如，在PET/CT的3x3布局中，如果CT图像对比度发生变化，我们希望融合视口也能反映该变化。  
 
-```js
-const ctWLSync = createVOISynchronizer('ctWLSync');
+```js  
+const ctWLSync = createVOISynchronizer('ctWLSync');  
 
-ctViewports.forEach((viewport) => {
-  const { renderingEngineId, viewportId } = viewport;
-  ctWLSync.addSource({ renderingEngineId, viewportId });
-});
+ctViewports.forEach((viewport) => {  
+  const { renderingEngineId, viewportId } = viewport;  
+  ctWLSync.addSource({ renderingEngineId, viewportId });  
+});  
 
-fusionViewports.forEach((viewport) => {
-  const { renderingEngineId, viewportId } = viewport;
-  ctWLSync.addTarget({ renderingEngineId, viewportId });
-});
-```
+fusionViewports.forEach((viewport) => {  
+  const { renderingEngineId, viewportId } = viewport;  
+  ctWLSync.addTarget({ renderingEngineId, viewportId });  
+});  
+```  
 
-Internally, `voiSyncCallback` runs after the `VOI_MODIFIED` event.
+内部，`voiSyncCallback` 在 `VOI_MODIFIED` 事件后运行。

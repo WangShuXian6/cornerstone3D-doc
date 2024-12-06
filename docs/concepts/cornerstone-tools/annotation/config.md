@@ -1,239 +1,234 @@
----
-id: config
-title: Config
----
+---  
+id: config  
+title: 配置  
+---  
 
-In this section we will explain various ways you can change the tool styles. This
-includes various properties such as `color` when `selected`, `highlighted`, or `locked`;
-textbox color, line dash style and thickness and more.
+在本节中，我们将解释更改工具样式的各种方式。这包括各种属性，如 `color`（当 `selected`、`highlighted` 或 `locked` 时）；文本框颜色、线条样式、粗细等。  
 
-## Style Hierarchy
+## 样式层级  
 
-We will start by looking at the style hierarchy. The style hierarchy is as follow.
+我们将从样式层级开始看起。样式层级如下所示。  
 
-- Annotation-level settings (with UID) **set/getAnnotationToolStyle**
-  - Viewport-level tool settings **set/getViewportToolStyle**
-    - Per-tool this layer: Length on this viewport
-    - Global this layer: All tools in this viewport
-      - toolGroup settings (for any tool specified in this toolGroup in all viewports of the toolGroup) **set/getToolGroupToolStyle**
-        - Per-tool layer: Angle on this toolGroup in all viewports
-        - Global this layer: All tools in this toolGroup in all viewports
-          - Default level: **set/getDefaultToolStyle**
-            - Per-tool layer (Length) settings
-            - Global (app-level) settings (we provide a default).
+- 注释级别设置（具有 UID）**set/getAnnotationToolStyle**  
+  - 视口级别工具设置 **set/getViewportToolStyle**  
+    - 每个工具这一层：该视口上的长度  
+    - 全局这一层：该视口中的所有工具  
+      - 工具组设置（适用于所有视口中该工具组内的任何工具）**set/getToolGroupToolStyle**  
+        - 每个工具这一层：该工具组内所有视口上的角度  
+        - 全局这一层：该工具组内所有视口中的所有工具  
+          - 默认级别：**set/getDefaultToolStyle**  
+            - 每个工具这一层（长度）设置  
+            - 全局（应用级别）设置（我们提供了默认设置）。  
 
-In annotation rendering loop, upon getting a style for a certain property (`color`, `lineDash`, `lineThickness`)
-we check whether the style is set at the annotation level (highest priority).
-If not, we check whether any viewport-level setting is set (for the viewport annotation is drawing on); however,
-in the viewportLevel, we first check whether the tool-level setting is set. If not, we check in the "global" (all tools in the viewport) level.
-If not found, we move to the next level for toolGroup level. If not found, we move to the next level for global level which is last
-level to check.
+在注释渲染循环中，获取某个属性（`color`、`lineDash`、`lineThickness`）的样式时，我们首先检查该样式是否在注释级别设置（优先级最高）。  
+如果没有，我们检查视口级别是否设置了样式（注释绘制的视口）；然而，在视口级别，我们首先检查工具级别设置是否已设置。如果没有，我们检查“全局”（视口中所有工具）级别。  
+如果没有找到，我们移动到下一级工具组级别。如果仍未找到，我们移至最后一级，即全局级别。  
 
-![configs](../../../assets/configs.png)
+![configs](../../../assets/configs.png)  
 
-## Default Setting
+## 默认设置  
 
-`Cornerstone3DTools` initializes a default settings for toolsStyles class that can be found in `packages/tools/src/stateManagement/annotation/config/ToolStyle.ts`
+`Cornerstone3DTools` 为工具样式类初始化了默认设置，可以在 `packages/tools/src/stateManagement/annotation/config/ToolStyle.ts` 中找到。  
 
-```js
-{
-  color: 'rgb(255, 255, 0)',
-  colorHighlighted: 'rgb(0, 255, 0)',
-  colorSelected: 'rgb(0, 220, 0)',
-  colorLocked: 'rgb(255, 255, 0)',
-  lineWidth: '1',
-  lineDash: '',
-  textBoxVisibility: true,
-  textBoxFontFamily: 'Helvetica Neue, Helvetica, Arial, sans-serif',
-  textBoxFontSize: '14px',
-  textBoxColor: 'rgb(255, 255, 0)',
-  textBoxColorHighlighted: 'rgb(0, 255, 0)',
-  textBoxColorSelected: 'rgb(0, 255, 0)',
-  textBoxColorLocked: 'rgb(255, 255, 0)',
-  textBoxBackground: '',
-  textBoxLinkLineWidth: '1',
-  textBoxLinkLineDash: '2,3',
-};
-```
+```js  
+{  
+  color: 'rgb(255, 255, 0)',  
+  colorHighlighted: 'rgb(0, 255, 0)',  
+  colorSelected: 'rgb(0, 220, 0)',  
+  colorLocked: 'rgb(255, 255, 0)',  
+  lineWidth: '1',  
+  lineDash: '',  
+  textBoxVisibility: true,  
+  textBoxFontFamily: 'Helvetica Neue, Helvetica, Arial, sans-serif',  
+  textBoxFontSize: '14px',  
+  textBoxColor: 'rgb(255, 255, 0)',  
+  textBoxColorHighlighted: 'rgb(0, 255, 0)',  
+  textBoxColorSelected: 'rgb(0, 255, 0)',  
+  textBoxColorLocked: 'rgb(255, 255, 0)',  
+  textBoxBackground: '',  
+  textBoxLinkLineWidth: '1',  
+  textBoxLinkLineDash: '2,3',  
+};  
+```  
 
-However, you can adjust each of the above parameters along with other styles that we will discuss next.
+但是，你可以调整上述每个参数以及接下来我们将讨论的其他样式。  
 
-## Set styles
+## 设置样式  
 
-Each level of the style hierarchy has a set of styles that can be set. The styles are as follow.
+样式层级的每一层都有一组可以设置的样式。样式如下所示。  
 
-### Annotation-level settings
+### 注释级别设置  
 
-```js
-import { annotations } from '@cornerstonejs/tools';
+```js  
+import { annotations } from '@cornerstonejs/tools';  
 
-// Annotation Level
-const styles = {
-  colorHighlighted: 'rgb(255, 255, 0)',
-};
+// 注释级别  
+const styles = {  
+  colorHighlighted: 'rgb(255, 255, 0)',  
+};  
 
-annotation.config.style.setAnnotationToolStyle(annotationUID, style);
-```
+annotation.config.style.setAnnotationToolStyle(annotationUID, style);  
+```  
 
-### Viewport-level tool settings
+### 视口级别工具设置  
 
-```js
-// Viewport Level
-const styles = {
-  LengthTool: {
-    colorHighlighted: 'rgb(255, 255, 0)',
-  },
-  global: {
-    lineWidth: '2',
-  },
-};
+```js  
+// 视口级别  
+const styles = {  
+  LengthTool: {  
+    colorHighlighted: 'rgb(255, 255, 0)',  
+  },  
+  global: {  
+    lineWidth: '2',  
+  },  
+};  
 
-annotation.config.style.setViewportToolStyle(viewportId, styles);
-```
+annotation.config.style.setViewportToolStyle(viewportId, styles);  
+```  
 
-### ToolGroup-level tool settings
+### 工具组级别工具设置  
 
-```js
-const styles = {
-  LengthTool: {
-    colorHighlighted: 'rgb(255, 255, 0)',
-  },
-  global: {
-    lineWidth: '2',
-  },
-};
+```js  
+const styles = {  
+  LengthTool: {  
+    colorHighlighted: 'rgb(255, 255, 0)',  
+  },  
+  global: {  
+    lineWidth: '2',  
+  },  
+};  
 
-annotation.config.style.setToolGroupToolStyles(toolGroupId, styles);
-```
+annotation.config.style.setToolGroupToolStyles(toolGroupId, styles);  
+```  
 
-### Global(Default)-level tool settings
+### 全局（默认）级别工具设置  
 
-```js
-const styles = annotation.config.style.getDefaultToolStyle();
+```js  
+const styles = annotation.config.style.getDefaultToolStyle();  
 
-const newStyles = {
-  ProbeTool: {
-    colorHighlighted: 'rgb(255, 255, 0)',
-  },
-  global: {
-    lineDash: '2,3',
-  },
-};
+const newStyles = {  
+  ProbeTool: {  
+    colorHighlighted: 'rgb(255, 255, 0)',  
+  },  
+  global: {  
+    lineDash: '2,3',  
+  },  
+};  
 
-annotation.config.style.setDefaultToolStyle(deepMerge(styles, newStyles));
-```
+annotation.config.style.setDefaultToolStyle(deepMerge(styles, newStyles));  
+```  
 
-### Configurable Styles
+### 可配置样式  
 
-Currently we have the following styles that can be configured.
+目前，我们可以配置以下样式：  
 
-```js
-color;
-colorActive;
-colorHighlighted;
-colorHighlightedActive;
-colorHighlightedPassive;
-colorLocked;
-colorLockedActive;
-colorLockedPassive;
-colorPassive;
-colorSelected;
-colorSelectedActive;
-colorSelectedPassive;
-lineDash;
-lineDashActive;
-lineDashHighlighted;
-lineDashHighlightedActive;
-lineDashHighlightedPassive;
-lineDashLocked;
-lineDashLockedActive;
-lineDashLockedPassive;
-lineDashPassive;
-lineDashSelected;
-lineDashSelectedActive;
-lineDashSelectedPassive;
-lineWidth;
-lineWidthActive;
-lineWidthHighlighted;
-lineWidthHighlightedActive;
-lineWidthHighlightedPassive;
-lineWidthLocked;
-lineWidthLockedActive;
-lineWidthLockedPassive;
-lineWidthPassive;
-lineWidthSelected;
-lineWidthSelectedActive;
-lineWidthSelectedPassive;
-textBoxBackground;
-textBoxBackgroundActive;
-textBoxBackgroundHighlighted;
-textBoxBackgroundHighlightedActive;
-textBoxBackgroundHighlightedPassive;
-textBoxBackgroundLocked;
-textBoxBackgroundLockedActive;
-textBoxBackgroundLockedPassive;
-textBoxBackgroundPassive;
-textBoxBackgroundSelected;
-textBoxBackgroundSelectedActive;
-textBoxBackgroundSelectedPassive;
-textBoxColor;
-textBoxColorActive;
-textBoxColorHighlighted;
-textBoxColorHighlightedActive;
-textBoxColorHighlightedPassive;
-textBoxColorLocked;
-textBoxColorLockedActive;
-textBoxColorLockedPassive;
-textBoxColorPassive;
-textBoxColorSelected;
-textBoxColorSelectedActive;
-textBoxColorSelectedPassive;
-textBoxFontFamily;
-textBoxFontFamilyActive;
-textBoxFontFamilyHighlighted;
-textBoxFontFamilyHighlightedActive;
-textBoxFontFamilyHighlightedPassive;
-textBoxFontFamilyLocked;
-textBoxFontFamilyLockedActive;
-textBoxFontFamilyLockedPassive;
-textBoxFontFamilyPassive;
-textBoxFontFamilySelected;
-textBoxFontFamilySelectedActive;
-textBoxFontFamilySelectedPassive;
-textBoxFontSize;
-textBoxFontSizeActive;
-textBoxFontSizeHighlighted;
-textBoxFontSizeHighlightedActive;
-textBoxFontSizeHighlightedPassive;
-textBoxFontSizeLocked;
-textBoxFontSizeLockedActive;
-textBoxFontSizeLockedPassive;
-textBoxFontSizePassive;
-textBoxFontSizeSelected;
-textBoxFontSizeSelectedActive;
-textBoxFontSizeSelectedPassive;
-textBoxLinkLineDash;
-textBoxLinkLineDashActive;
-textBoxLinkLineDashHighlighted;
-textBoxLinkLineDashHighlightedActive;
-textBoxLinkLineDashHighlightedPassive;
-textBoxLinkLineDashLocked;
-textBoxLinkLineDashLockedActive;
-textBoxLinkLineDashLockedPassive;
-textBoxLinkLineDashPassive;
-textBoxLinkLineDashSelected;
-textBoxLinkLineDashSelectedActive;
-textBoxLinkLineDashSelectedPassive;
-textBoxLinkLineWidth;
-textBoxLinkLineWidthActive;
-textBoxLinkLineWidthHighlighted;
-textBoxLinkLineWidthHighlightedActive;
-textBoxLinkLineWidthHighlightedPassive;
-textBoxLinkLineWidthLocked;
-textBoxLinkLineWidthLockedActive;
-textBoxLinkLineWidthLockedPassive;
-textBoxLinkLineWidthPassive;
-textBoxLinkLineWidthSelected;
-textBoxLinkLineWidthSelectedActive;
-textBoxLinkLineWidthSelectedPassive;
+```js  
+color;  
+colorActive;  
+colorHighlighted;  
+colorHighlightedActive;  
+colorHighlightedPassive;  
+colorLocked;  
+colorLockedActive;  
+colorLockedPassive;  
+colorPassive;  
+colorSelected;  
+colorSelectedActive;  
+colorSelectedPassive;  
+lineDash;  
+lineDashActive;  
+lineDashHighlighted;  
+lineDashHighlightedActive;  
+lineDashHighlightedPassive;  
+lineDashLocked;  
+lineDashLockedActive;  
+lineDashLockedPassive;  
+lineDashPassive;  
+lineDashSelected;  
+lineDashSelectedActive;  
+lineDashSelectedPassive;  
+lineWidth;  
+lineWidthActive;  
+lineWidthHighlighted;  
+lineWidthHighlightedActive;  
+lineWidthHighlightedPassive;  
+lineWidthLocked;  
+lineWidthLockedActive;  
+lineWidthLockedPassive;  
+lineWidthPassive;  
+lineWidthSelected;  
+lineWidthSelectedActive;  
+lineWidthSelectedPassive;  
+textBoxBackground;  
+textBoxBackgroundActive;  
+textBoxBackgroundHighlighted;  
+textBoxBackgroundHighlightedActive;  
+textBoxBackgroundHighlightedPassive;  
+textBoxBackgroundLocked;  
+textBoxBackgroundLockedActive;  
+textBoxBackgroundLockedPassive;  
+textBoxBackgroundPassive;  
+textBoxBackgroundSelected;  
+textBoxBackgroundSelectedActive;  
+textBoxBackgroundSelectedPassive;  
+textBoxColor;  
+textBoxColorActive;  
+textBoxColorHighlighted;  
+textBoxColorHighlightedActive;  
+textBoxColorHighlightedPassive;  
+textBoxColorLocked;  
+textBoxColorLockedActive;  
+textBoxColorLockedPassive;  
+textBoxColorPassive;  
+textBoxColorSelected;  
+textBoxColorSelectedActive;  
+textBoxColorSelectedPassive;  
+textBoxFontFamily;  
+textBoxFontFamilyActive;  
+textBoxFontFamilyHighlighted;  
+textBoxFontFamilyHighlightedActive;  
+textBoxFontFamilyHighlightedPassive;  
+textBoxFontFamilyLocked;  
+textBoxFontFamilyLockedActive;  
+textBoxFontFamilyLockedPassive;  
+textBoxFontFamilyPassive;  
+textBoxFontFamilySelected;  
+textBoxFontFamilySelectedActive;  
+textBoxFontFamilySelectedPassive;  
+textBoxFontSize;  
+textBoxFontSizeActive;  
+textBoxFontSizeHighlighted;  
+textBoxFontSizeHighlightedActive;  
+textBoxFontSizeHighlightedPassive;  
+textBoxFontSizeLocked;  
+textBoxFontSizeLockedActive;  
+textBoxFontSizeLockedPassive;  
+textBoxFontSizePassive;  
+textBoxFontSizeSelected;  
+textBoxFontSizeSelectedActive;  
+textBoxFontSizeSelectedPassive;  
+textBoxLinkLineDash;  
+textBoxLinkLineDashActive;  
+textBoxLinkLineDashHighlighted;  
+textBoxLinkLineDashHighlightedActive;  
+textBoxLinkLineDashHighlightedPassive;  
+textBoxLinkLineDashLocked;  
+textBoxLinkLineDashLockedActive;  
+textBoxLinkLineDashLockedPassive;  
+textBoxLinkLineDashPassive;  
+textBoxLinkLineDashSelected;  
+textBoxLinkLineDashSelectedActive;  
+textBoxLinkLineDashSelectedPassive;  
+textBoxLinkLineWidth;  
+textBoxLinkLineWidthActive;  
+textBoxLinkLineWidthHighlighted;  
+textBoxLinkLineWidthHighlightedActive;  
+textBoxLinkLineWidthHighlightedPassive;  
+textBoxLinkLineWidthLocked;  
+textBoxLinkLineWidthLockedActive;  
+textBoxLinkLineWidthLockedPassive;  
+textBoxLinkLineWidthPassive;  
+textBoxLinkLineWidthSelected;  
+textBoxLinkLineWidthSelectedActive;  
+textBoxLinkLineWidthSelectedPassive;  
 ```

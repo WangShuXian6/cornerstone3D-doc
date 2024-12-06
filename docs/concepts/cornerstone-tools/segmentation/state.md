@@ -1,21 +1,21 @@
----
-id: state
-title: State
----
+---  
+id: state  
+title: 状态  
+---  
 
-# State
+# 状态
 
-`SegmentationState` stores all the information regarding the current state of `Segmentation`s and `SegmentationRepresentation`s in the library. In version 2.x, we've decoupled `Segmentation`s from their representations and made the system viewport-specific rather than toolGroup-specific. From a `Segmentation`, various representations can be created (currently supporting Labelmap, Contour, and Surface).
+`SegmentationState` 存储有关 `Segmentation` 和 `SegmentationRepresentation` 当前状态的所有信息。在2.x版本中，我们将 `Segmentation` 与其表示分离，并使系统专注于视口而非工具组。通过 `Segmentation`，可以创建多种表示（目前支持标签图、轮廓和表面）。
 
-## ColorLUT
+## 色彩查找表（ColorLUT）
 
-`SegmentationState` stores an array of `colorLUT`s used to render segmentation representations. `Cornerstone3DTools` initially adds 255 colors (`[[0,0,0,0], [221, 84, 84, 255], [77, 228, 121, 255], ...]`) as the first index of this array. By default, all segmentation representations use the first colorLUT. However, using the color API in the config, you can add more colors to the global colorLUT and/or change the colorLUT for specific segmentation representations in specific viewports.
+`SegmentationState` 存储一个 `colorLUT` 数组，用于渲染分割表示。`Cornerstone3DTools` 初始添加了255种颜色（`[[0,0,0,0], [221, 84, 84, 255], [77, 228, 121, 255], ...]`）作为该数组的第一个索引。默认情况下，所有分割表示使用第一个 `colorLUT`。然而，通过在配置中使用色彩API，您可以将更多颜色添加到全局 `colorLUT`，并/或在特定视口中更改特定分割表示的 `colorLUT`。
 
-## Segmentations
+## 分割
 
-`SegmentationState` stores all segmentations in an array. Each Segmentation Object stores the required information for creating `SegmentationRepresentation`s.
+`SegmentationState` 将所有分割存储在一个数组中。每个 `Segmentation` 对象存储用于创建 `SegmentationRepresentation` 的所需信息。
 
-Each segmentation object has the following properties:
+每个分割对象具有以下属性：
 
 ```js
 {
@@ -51,14 +51,14 @@ Each segmentation object has the following properties:
 }
 ```
 
-- `segmentationId`: A required field provided by the consumer. This is the unique identifier for the segmentation.
-- `label`: The label of the segmentation.
-- `segments`: An object containing information about each segment, including its label, active state, locked state, and cached statistics.
-- `representationData`: **THE MOST IMPORTANT PART**, this is where the data for creation of each type of `SegmentationRepresentation` is stored. For instance, in `Labelmap` representation, the required information is a cached `volumeId`.
+- `segmentationId`: 消费者提供的必填字段。它是分割的唯一标识符。
+- `label`: 分割的标签。
+- `segments`: 包含每个分割的相关信息的对象，包括其标签、活动状态、锁定状态和缓存的统计信息。
+- `representationData`: **最重要的部分**，这是存储每种类型的 `SegmentationRepresentation` 创建数据的地方。例如，在 `Labelmap` 表示中，所需的信息是缓存的 `volumeId`。
 
-### Adding Segmentations to the State
+### 将分割添加到状态中
 
-Since `Segmentation` and `SegmentationRepresentation` are separated, first we need to add the `segmentation` to the state using the top-level API:
+由于 `Segmentation` 和 `SegmentationRepresentation` 被分离，因此首先我们需要使用顶层API将 `Segmentation` 添加到状态中：
 
 ```js
 import { segmentation, Enums } from '@cornerstonejs/tools';
@@ -76,15 +76,15 @@ segmentation.addSegmentations([
 ]);
 ```
 
-:::note Important
-Adding a `Segmentation` to the state WILL NOT render the segmentation. You need to add `SegmentationRepresentation`s to specific viewports where you want to render them.
+:::note 重要  
+将 `Segmentation` 添加到状态中 **不会** 渲染分割。您需要将 `SegmentationRepresentation` 添加到您希望渲染它们的特定视口中。  
 :::
 
-## Viewports
+## 视口
 
-### Adding a SegmentationRepresentation to a Viewport
+### 将 `SegmentationRepresentation` 添加到视口
 
-To render a segmentation, you need to add its representation to specific viewports. This can be done using the `addSegmentationRepresentation` method:
+要渲染分割，您需要将其表示添加到特定的视口中。可以使用 `addSegmentationRepresentation` 方法来实现：
 
 ```js
 import { segmentation, Enums } from '@cornerstonejs/tools';
@@ -97,13 +97,12 @@ await segmentation.addSegmentationRepresentations(viewportId, [
 ]);
 ```
 
+### 特定表示方法
 
-### Representation-Specific Methods
-
-Cornerstone3D v2 provides dedicated methods for adding different types of segmentation representations:
+Cornerstone3D v2 提供了专用的方法来添加不同类型的分割表示：
 
 ```js
-// Add labelmap representations
+// 添加标签图表示
 await segmentation.addLabelmapRepresentationToViewport(viewportId, [
   {
     segmentationId,
@@ -111,7 +110,7 @@ await segmentation.addLabelmapRepresentationToViewport(viewportId, [
   }
 ]);
 
-// Add contour representations
+// 添加轮廓表示
 await segmentation.addContourRepresentationToViewport(viewportId, [
   {
     segmentationId,
@@ -119,17 +118,18 @@ await segmentation.addContourRepresentationToViewport(viewportId, [
   }
 ]);
 
-// Add surface representations
+// 添加表面表示
 await segmentation.addSurfaceRepresentationToViewport(viewportId, [
   {
     segmentationId,
     config: {}
+  }
 ]);
 ```
 
-### Multiple Viewport Operations
+### 多视口操作
 
-You can also add representations to multiple viewports simultaneously using the viewport map methods:
+您还可以使用视口映射方法同时将表示添加到多个视口：
 
 ```js
 const viewportInputMap = {

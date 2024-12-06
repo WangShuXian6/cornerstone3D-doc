@@ -1,255 +1,142 @@
 ---
 id: viewportReferencePresentation
-title: Viewport Image Selection Reference and Presentation
+title: 视口图像选择参考与展示
 ---
+# 视口图像选择参考与展示
 
-# Viewport Image Selection Reference and Presentation
+视口的参考和展示信息指定了视口正在显示的图像，以及图像的展示方式。通过几种方式可以指定这些信息，以便将视图从一个视口转移到另一个视口，或者记住视图以便以后恢复。可以获取当前图像的参考，或堆栈中的特定图像，这些图像按照滚动位置的编号/排序方式进行编号/排序。
 
-The reference and presentation information for a viewport specify what image a viewport
-is displaying, and the presentation of the image. These are specified in several ways
-so that a view can be transfered from one viewport to another, or can be remembered in order
-to restore a view later. Getting a reference can be done either for the current image,
-or a specific image in the stack, ordered/numbered in the same way that the scrolling positions
-are numbered/ordered.
+一些特定的使用场景包括：
 
-Some specific use cases for this are:
+- 为工具引用特定的图像
+  - 使用 `ViewReference` 来指定要应用的图像
+  - 使用 `isReferenceCompatible` 来判断工具是否应该显示
+  - 使用 `isReferenceCompatible` 来确定一组视口中哪一个最适合导航到图像
+  - 使用 `setViewReference(viewRef)` 来导航到指定的图像
+- 恢复早期视图或从堆栈转换为体积视图，反之亦然
+  - 使用 `ViewReference` 和 `ViewPresentation` 来存储图像信息
+- 对图像集应用插值
+  - 使用 `getViewReference` 获取特定图像位置的引用，获取中间图像或与附近注释相关的图像进行插值
+- 调整大小并同步显示展示
+  - 使用 `getViewPresentation` 获取旧的展示信息，然后使用 `setViewPresentation(viewPres)` 恢复
 
-- Referencing a specific image for a tool
-  - Uses `ViewReference` to specify an image to apply to
-  - Uses `isReferenceCompatible` to determine if the tool should be displayed or not
-  - Uses `isReferenceCompatible` to determine which of a set of viewports is best suited to navigating to an image
-  - Uses `setViewReference(viewRef)` to navigate to the specified image
-- Restoring an earlier view or converting from stack to volume or vice-versa
-  - Uses `ViewReference` and `ViewPresentation` to store the image information
-- Applying interpolation to image sets
-  - Uses `getViewReference` with a specific image position to get references to
-    images in between or related to nearby annotations to interpolate
-- Resizing and sync display presentation
-  - Uses `getViewPresentation` to get old presentation information and then
-    restores with `setViewPresentation(viewPres)`
+## 视图参考
 
-## View Reference
+视图参考指定了视图包含的图像，通常通过引用图像的 ID 来标识，以及与参考框架/焦点相关的信息。具体来说，这允许在不同排序方式、堆栈图像 ID 或体积图像之间正确关联包含相同图像或相同参考框架的视口。
 
-A view reference specifies what image a view contains, typically identified as the referenced
-image id, as well as the frame of reference/focal point related information. Specifically, this
-allows correct correlation between viewports containing the same images or same frame of reference
-but in different orderings, stack image Ids or volumes.
+视图参考的一个非常重要的用例是作为注释的元数据基础，其中注释元数据指定它应用于哪个图像。在这种情况下，视图参考被用来确定一个图像是否适用于给定的视图，以及确定一个视口是否可以导航到显示给定的注释，无论是否需要导航和/或方向变化。然后，为了导航到给定的参考，调用 `viewport.setViewReference` 来应用给定的导航。这适用于正射投影视口和堆栈视口。
 
-A very important use case for the view reference is as a base for the metadata for annotations
-where the annotation metadata specifies which image it applies to. The view reference in that
-case is used both to determine if an image is applicable to a given view, as well as to
-determine if a viewport could navigate to display the given annotation, either with or without
-navigation and/or orientation changes. Then, to navigate to the given reference,
-the `viewport.setViewReference` is called to apply the given navigation. This can apply to
-both orthographic and stack viewports.
-
-The `ViewReference` contains a number of fields that determine the view, the
-important ones being `referencedImageId` for stack views, and `volumeId` combined
-with `cameraFocalPoint, viewPlaneNormal, FrameOfReferenceUID` for volumes.
-Where possible, both the stack and volume viewports populate both sets of information
-in order to allow the view to apply to either image type.
+`ViewReference` 包含若干字段来确定视图，其中重要的是堆栈视图的 `referencedImageId`，以及体积视图中的 `volumeId` 和 `cameraFocalPoint, viewPlaneNormal, FrameOfReferenceUID`。如果可能，堆栈和体积视口都会填充这两组信息，以便使视图适用于任意一种图像类型。
 
 ### referencedImageId
 
-The referenced image id allows specifying non-frame of reference based stack type images. This is
-a single image typically, and can be used by stack viewports to navigate to a specific image.
-The value is provided by orthographic viewports when getting a reference to an acquisition
-orientation single image, so that those view references are compatible to stack viewports.
+`referencedImageId` 允许指定非参考框架的堆栈类型图像。通常这是一个单独的图像，可以由堆栈视口用来导航到特定图像。当获取一个单一的获取方向图像的参考时，正射投影视口会提供此值，以便使这些视图引用与堆栈视口兼容。
 
-#### `referencedImageId` and `sliceIndex`
+#### `referencedImageId` 和 `sliceIndex`
 
-The stack viewport uses the sliceIndex and referencedImageId combined to try to quickly
-guess the `imageIdIndex` value for a given referencedImageId. If the referencedImageId is
-identical to the one at the given sliceIndex then it can directly use the sliceIndex, otherwise it
-needs to find the `imageIdIndex`. `sliceIndex` is never required.
+堆栈视口使用 `sliceIndex` 和 `referencedImageId` 组合来快速猜测给定 `referencedImageId` 的 `imageIdIndex` 值。如果给定的 `referencedImageId` 与 `sliceIndex` 处的图像相同，则可以直接使用 `sliceIndex`，否则需要找到 `imageIdIndex`。`sliceIndex` 不是必需的。
 
-For video viewports, the referenced image id will be the video image id, while the slice
-index can be either a single frame or it can be an array range
+对于视频视口，`referencedImageId` 将是视频图像 ID，而 `sliceIndex` 可以是单帧，也可以是一个帧范围数组。
 
-### Frame of reference, focal point and normal
+### 参考框架、焦点和法线
 
-The frame of reference and focal point/normal values can be used by orthographic viewports to
-specify other views than the acquisition plane views. The values are provided when available from
-the stack viewports and can be consumed by the volume viewport.
+参考框架和焦点/法线值可以由正射投影视口用来指定除获取平面视图以外的其他视图。这些值在堆栈视口中可用时提供，并且可以被体积视口使用。
 
-Currently all three are required for applying to a volume viewport,
-although in the future it may become possible to specify views in other ways
-than providing a normal.
+目前，应用于体积视口时需要这三者，尽管将来可能会有其他方式指定视图，而不需要提供法线。
 
-### `volumeId`, `sliceIndex` and `viewPlaneNormal`
+### `volumeId`、`sliceIndex` 和 `viewPlaneNormal`
 
-When a orthographic viewport creates a view reference, it includes the volume
-id, slice index and view plane normal. This allows for quick identification of
-whether a viewport is showing a given reference, as well as navigating quickly to
-the given view. This is primarily used in `isReferenceCompatible` which can
-be called many times on orthographic views in order to determine annotation tool
-views.
+当正射投影视口创建视图参考时，它会包含 `volumeId`、`sliceIndex` 和 `viewPlaneNormal`。这可以快速识别视口是否显示给定的参考，并快速导航到给定的视图。主要用于 `isReferenceCompatible`，该函数可以在正射投影视图中多次调用，以确定注释工具视图。
 
-Note that a stack viewport will not provide the `volumeId`, so this optimization
-cannot be used for those references.
+注意，堆栈视口不会提供 `volumeId`，因此此优化不能用于这些参考。
 
-These values are not required for navigation, but for annotation display detection
-they are required to detect the view applicability.
+这些值在导航时不是必需的，但在注释显示检测时需要这些值，以检测视图的适用性。
 
-### Stack Viewport References
+### 堆栈视口引用
 
-The stack viewport creates references containing:
+堆栈视口创建的引用包含：
 
-- referencedImageId and sliceIndex
-- Frame of reference, focal point and normal when available
+- `referencedImageId` 和 `sliceIndex`
+- 参考框架、焦点和法线（如果有）
 
-It can do this for both the currently displayed image, and images referenced by
-slice index, where the slice index is the index into the imageIds.
+它可以为当前显示的图像以及通过切片索引引用的图像创建这些引用，其中切片索引是图像 ID 的索引。
 
-_warning_ do not assume that the slice index for volumes in any way correlates to
-slice indices for stacks, or that two stacks displaying the SAME image use corresponding
-slice indices, or that the frame number has ANY correlation to slice index or vice-versa.
+_警告_：不要假设体积的切片索引与堆栈的切片索引有任何关联，或者两个堆栈显示相同图像时使用相应的切片索引，或者帧号与切片索引之间有任何关联。
 
-The stack viewport can only navigate to a view reference containing a referencedImageId,
-it will (cannot in fact because of missing information) navigate or discover the appropriate
-images based on volume/camera etc.
+堆栈视口只能导航到包含 `referencedImageId` 的视图参考，它将无法（由于缺少信息）基于体积/相机等发现适当的图像。
 
-The isReferenceCompatible for stack viewports will additionally use the slice
-index for a quick check of whether the image is found at the given location,
-but does not rely on the slice index for that, it is just faster that way.
+堆栈视口的 `isReferenceCompatible` 还将使用切片索引进行快速检查，检查图像是否在给定位置找到，但并不依赖于切片索引，只是这样更快。
 
-### Volume Viewport References
+### 体积视口引用
 
-Volume viewports create references with:
+体积视口创建的引用包含：
 
-- referencedImageId appropriate for an acquisition view
-- Frame of reference, focal point and normal
+- 适合获取视图的 `referencedImageId`
+- 参考框架、焦点和法线
 
-Additionally, orthographic viewports add:
+此外，正射投影视口还会添加：
 
-- volumeId and slice index for the view in focus.
+- 焦点视图的 `volumeId` 和 `sliceIndex`。
 
-The orthographic viewport will first use any volume id, slice index and normal to
-determine whether the reference applies or to navigate to it.
-Both volume viewports will then apply the frame of reference/focal/normal.
+正射投影视口首先使用任何体积 ID、切片索引和法线来确定参考是否适用或导航到它。然后，两个体积视口都会应用参考框架/焦点/法线。
 
-Specific additional behaviour for detecting 1d and 2d points maybe added in the
-future (to allow lines and points to appear on view other than original).
+将来可能会添加特定的附加行为，用于检测 1D 和 2D 点（以便允许线条和点出现在原始视图之外）。
 
-## View Presentation
+## 视图展示
 
-The view presentation specifies the pan, zoom and VOI information for a viewport.
-The pan and zoom are specified as percentage values relative to the viewport size
-and the original display area (which is included if specified). This allows
-applying the same view presentation to a variety of viewport sizes that may
-or may not display the same image instance.
+视图展示指定了视口的平移、缩放和 VOI 信息。平移和缩放以相对于视口大小和原始显示区域的百分比值指定（如果已指定）。这允许将相同的视图展示应用于多种视口大小，这些视口可能会显示相同的图像实例，也可能不会。
 
-The VOI is relative to the base LUT specified in the image data. That is, it
-excludes modality and presentation LUT transforms. Currently only window width/center
-is specified, although full lookup tables may be allowed later.
+VOI 是相对于图像数据中指定的基本 LUT 的。这意味着，它不包括模态和展示 LUT 转换。目前只指定了窗宽/窗位，尽管将来可能允许完整的查找表。
 
-Some typical uses cases for view presentation are:
+视图展示的一些典型用例包括：
 
-- Remembering how an image is presented to allow displaying the same presentation later,
-  e.g., when a viewport is used to display another stack and then is returned to
-  the original stack.
-- Syncing similar but not identical viewports, for example, syncing some or all presentation
-  attributes between different CT views.
-- Resizing of viewports, used to remember the relative positions so that the
-  image remains in the same "relative" position.
+- 记住图像的展示方式，以便稍后可以显示相同的展示，例如，当视口用于显示另一个堆栈并且随后返回到原始堆栈时。
+- 同步相似但不完全相同的视口，例如，在不同的 CT 视图之间同步一些或全部展示属性。
+- 调整视口大小，用于记住相对位置，以便图像保持在相同的“相对”位置。
 
-## `setViewReference` and `setViewPresentation`
+## `setViewReference` 和 `setViewPresentation`
 
-The `viewport.setViewReference` and `viewport.setViewPresentation` navigate
-to the specified reference and apply the given presentation. If both are being
-applied, then the view reference must be applied first. A render is required
-afterwards to complete the view change since multiple parts of the view may be affected.
+`viewport.setViewReference` 和 `viewport.setViewPresentation` 导航到指定的参考并应用给定的展示。如果两者都要应用，则必须首先应用视图参考。完成视图更改后，需要进行渲染，因为视图的多个部分可能会受到影响。
 
-Some example code is shown below for various uses. This assumes that
-`viewports` is an array of viewports of various types, and that `viewport` is
-a specific one to apply a change to. The reference and presentation are
-in `viewRef` and `viewPres` respectively.
+以下是一些不同用例的示例代码。假设 `viewports` 是一个包含不同类型视口的数组，`viewport` 是要应用更改的特定视口。参考和展示分别位于 `viewRef` 和 `viewPres` 中。
 
-### Navigate to a given annotation
+### 导航到给定的注释
 
 ```javascript
 const { metadata } = annotation;
 if (viewport.isReferenceCompatible({ withNavigation: true })) {
   viewport.setViewReference(metadata);
 } else {
-  // throw error indicating view isn't compatible or other behaviour
-  // such as changing to a volume or display a different set of images ids etc
+  // 抛出错误，指示视图不兼容或其他行为
+  // 比如切换到体积视图或显示不同的图像 ID 等
 }
 ```
 
-### Finding the best viewport for displaying an annotation
+### 查找最适合显示注释的视口
 
 ```javascript
 function findViewportForAnnotation(annotation, viewports) {
   const { metadata } = annotation;
 
-  // If there is a viewport already displaying this, then just return it.
+  // 如果已有视口正在显示该图像，则直接返回它
   const alreadyDisplayingViewport = viewports.find((viewport) =>
     viewport.isReferenceCompatible(metadata)
   );
   if (alreadyDisplayingViewport) return alreadyDisplayingViewport;
 
-  // If there is a viewport that just needs navigation, then return it
-  const navigateViewport = viewports.find((viewport) =>
-    viewport.isReferenceCompatible(metadata, { withNavigation: true })
-  );
-  if (navigateViewport) return navigateViewport;
+  // 如果有一个视口只需要导航，则返回它
+ 
 
-  // If there is a viewport showing the volume that could have orientation changed, use it
-  const orientationViewport = viewports.find((viewport) =>
-    viewport.isReferenceCompatible(metadata, { withOrientation: true })
+ const referenceCompatibleViewport = viewports.find((viewport) =>
+    viewport.isReferenceCompatible(metadata)
   );
-  if (orientationViewport) return orientationViewport;
 
-  // If there is a stack viewport that could be converted to volume to show this, then do so
-  const stackToVolumeViewport = viewports.find((viewport) =>
-    viewport.isReferenceCompatible(metadata, {
-      withOrientation: true,
-      asVolume: true,
-    })
-  );
-  if (stackToVolumeViewport) {
-    // convert stack to volume viewport here
-    return stackToVolumeViewport;
+  if (referenceCompatibleViewport) {
+    referenceCompatibleViewport.setViewReference(metadata);
+    return referenceCompatibleViewport;
   }
 
-  // Might also look for viewport showing same frame of reference, but different volume
-
-  // Find the set of image ids or volumeId from the metadata and apply that
-  // to the viewport at position 0 and display it.
+  // 如果没有合适的视口，则执行其他逻辑，如创建新视口等
+  return null;
 }
-```
-
-### Resize the viewport(s)
-
-```javascript
-const resizeObserver = new ResizeObserver(() => {
-  if (resizeTimeout) {
-    return;
-  }
-  resizeTimeout = setTimeout(resize, 100);
-});
-
-function resize() {
-  resizeTimeout = null;
-  const renderingEngine = getRenderingEngine(renderingEngineId);
-
-  if (renderingEngine) {
-    // Store the presentation from before for after
-    const presentations = viewports.map((viewport) =>
-      viewport.getViewPresentation()
-    );
-
-    // Apply the resize
-    renderingEngine.resize(true, false);
-
-    // Restore the presentations as this will reset the relative positions
-    // rather than resetting to null.
-    viewports.forEach((viewport, idx) => {
-      viewport.setViewPresentation(presentations[idx]);
-    });
-  }
-}
-
-resizeObserver.observe(viewportGrid);
 ```

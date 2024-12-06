@@ -1,80 +1,79 @@
 ---
-id: locking
-title: Segment Locking
+
+id: locking  
+title: 分割锁定  
 ---
 
-# Segment Locking
+# 分割锁定  
 
+![](../../../assets/segment-locking.png)  
 
-![](../../../assets/segment-locking.png)
+您可以锁定分割中的特定片段，以防止它们被任何工具修改。  
 
+例如，考虑下图中覆盖的标签图：  
+- 左图：显示 `segment index 1`  
+- 中图：显示 `segment index 2` 被绘制在 `segment index 1` 上的结果  
+- 右图：显示当 `segment index 1` 被锁定时，`segment index 2` 被绘制在 `segment index 1` 上的结果  
 
-You can lock specific segments in a segmentation to prevent them from being modified by any tools.
+如锁定场景（右图）所示，当 `segment index 1` 被锁定时，它无法通过新的绘图进行修改。  
 
-For example, consider the following image with an overlaid labelmap:
-- Left image: shows `segment index 1`
-- Middle image: shows the result when `segment index 2` is drawn on top of `segment index 1`
-- Right image: shows the result when `segment index 1` is locked and `segment index 2` is drawn on top of `segment index 1`
+![segment-locking-example]  
 
-As shown in the locked scenario (right image), when segment index 1 is locked, it cannot be modified by new drawings.
+## API  
 
-![segment-locking-example]
+锁定 API 在版本 2.x 中进行了更新，提供了更清晰的方法名称和功能：  
 
-## API
+```js  
+import { segmentation } from '@cornerstonejs/tools';  
 
-The locking API has been updated in version 2.x to provide clearer method names and functionality:
+// 锁定/解锁分割中的片段索引  
+segmentation.locking.setSegmentIndexLocked(  
+  segmentationId,  
+  segmentIndex,  
+  locked  
+);  
 
-```js
-import { segmentation } from '@cornerstonejs/tools';
+// 获取分割中所有已锁定的片段索引  
+const lockedIndices = segmentation.locking.getLockedSegmentIndices(segmentationId);  
 
-// Lock/unlock a segment index in a segmentation
-segmentation.locking.setSegmentIndexLocked(
-  segmentationId,
-  segmentIndex,
-  locked
-);
+// 检查片段索引是否已锁定  
+const isLocked = segmentation.locking.isSegmentIndexLocked(  
+  segmentationId,  
+  segmentIndex  
+);  
+```  
 
-// Get all locked segment indices for a segmentation
-const lockedIndices = segmentation.locking.getLockedSegmentIndices(segmentationId);
+### 示例用法  
 
-// Check if a segment index is locked
-const isLocked = segmentation.locking.isSegmentIndexLocked(
-  segmentationId,
-  segmentIndex
-);
-```
+```js  
+// 锁定分割中的片段 1  
+segmentation.locking.setSegmentIndexLocked('segmentation1', 1, true);  
 
-### Example Usage
+// 检查片段 1 是否已锁定  
+const isLocked = segmentation.locking.isSegmentIndexLocked('segmentation1', 1);  
+console.log(`Segment 1 is ${isLocked ? 'locked' : 'unlocked'}`);  
 
-```js
-// Lock segment 1 in a segmentation
-segmentation.locking.setSegmentIndexLocked('segmentation1', 1, true);
+// 获取所有已锁定的片段  
+const lockedIndices = segmentation.locking.getLockedSegmentIndices('segmentation1');  
+console.log('Locked segment indices:', lockedIndices);  
 
-// Check if segment 1 is locked
-const isLocked = segmentation.locking.isSegmentIndexLocked('segmentation1', 1);
-console.log(`Segment 1 is ${isLocked ? 'locked' : 'unlocked'}`);
+// 解锁分割中的片段 1  
+segmentation.locking.setSegmentIndexLocked('segmentation1', 1, false);  
+```  
 
-// Get all locked segments
-const lockedIndices = segmentation.locking.getLockedSegmentIndices('segmentation1');
-console.log('Locked segment indices:', lockedIndices);
+### 版本 2.x 中的关键变化  
 
-// Unlock segment 1
-segmentation.locking.setSegmentIndexLocked('segmentation1', 1, false);
-```
+1. 将 `getLockedSegments` 重命名为 `getLockedSegmentIndices` 以提高清晰度  
+2. 锁定状态现在存储在片段数据结构中：  
+```js  
+{  
+  segments: {  
+    [segmentIndex]: {  
+      locked: boolean,  
+      // 其他片段属性...  
+    }  
+  }  
+}  
+```  
 
-### Key Changes in Version 2.x
-
-1. Renamed `getLockedSegments` to `getLockedSegmentIndices` for clarity
-2. The locked state is now stored in the segment data structure:
-```js
-{
-  segments: {
-    [segmentIndex]: {
-      locked: boolean,
-      // other segment properties...
-    }
-  }
-}
-```
-
-Note that the locking state applies to the segmentation as a whole, not to specific representations or viewports. If a segment is locked, it will be locked across all viewports and representations.
+请注意，锁定状态适用于整个分割，而不是特定的表示或视口。如果一个片段被锁定，它将在所有视口和表示中保持锁定状态。  

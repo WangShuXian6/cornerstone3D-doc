@@ -1,58 +1,59 @@
 ---
+
 id: voxelManager
-title: Voxel Manager
+title: 体素管理器
 ---
 
-# VoxelManager Documentation
+# 体素管理器文档
 
-The VoxelManager is a key component of the Cornerstone library’s new architecture for handling voxel data and volume management. This updated design streamlines data flow and enhances performance, providing a single source of truth for image caching and data access, with a focus on reducing memory usage and improving performance in handling large image datasets.
+体素管理器是 Cornerstone 库新架构中用于处理体素数据和卷管理的关键组件。这个更新的设计简化了数据流并增强了性能，提供了图像缓存和数据访问的单一真实来源，重点是减少内存使用并提高处理大型图像数据集的性能。
 
-## Overview
+## 概述
 
-With the integration of VoxelManager, voxel data handling shifts from relying on large scalar arrays to using individual images and targeted voxel data access methods. VoxelManager serves as an adapter for tools and functions that interact with voxel data, providing efficient methods for accessing, modifying, and streaming voxel information.
+通过集成体素管理器，体素数据处理从依赖大型标量数组转变为使用单独的图像和针对性的体素数据访问方法。体素管理器作为与体素数据交互的工具和函数的适配器，提供了高效的访问、修改和流式传输体素信息的方法。
 
-### Key Features
+### 关键特性
 
-- **Single Source of Truth**: Only the image cache is used, eliminating the need for separate volume caches and reducing synchronization issues.
-- **Efficient Volume Streaming**: Loads image by image, caching only what’s necessary and streaming data directly to the GPU.
-- **Optimized Caching**: Data is stored in its native format and converted only as needed, minimizing memory and processing overhead.
-- **Simplified Web Worker Implementation**: Removed `SharedArrayBuffer` dependencies, simplifying security and worker requirements.
+- **单一真实来源**：仅使用图像缓存，消除了对单独卷缓存的需求，减少了同步问题。
+- **高效的卷流式传输**：逐张加载图像，仅缓存必要的内容，并将数据直接流式传输到 GPU。
+- **优化的缓存**：数据以其原生格式存储，仅在需要时转换，最小化内存和处理开销。
+- **简化的 Web Worker 实现**：移除了 `SharedArrayBuffer` 依赖，简化了安全性和 Worker 需求。
 
-## VoxelManager API
+## 体素管理器 API
 
-The VoxelManager API replaces direct scalar data access with methods that provide precise control over voxel data without generating large data arrays. Here are the primary methods and usage patterns:
+体素管理器 API 用提供精确控制体素数据的方法替换了直接的标量数据访问，而无需生成大型数据数组。以下是主要方法和使用模式：
 
-### Accessing Voxel Data
+### 访问体素数据
 
-- **`getScalarData()`**: Returns the scalar data array for individual images (applicable only to `IImage`).
-- **`getScalarDataLength()`**: Provides the total voxel count, replacing `scalarData.length`.
-- **`getAtIndex(index)`**: Retrieves the voxel value at a specific linear index.
-- **`setAtIndex(index, value)`**: Sets the voxel value at a specific linear index.
-- **`getAtIJK(i, j, k)`**: Gets the voxel value at IJK coordinates.
-- **`setAtIJK(i, j, k, value)`**: Sets the voxel value at IJK coordinates.
-- **`getArrayOfModifiedSlices()`**: Lists modified slice indices.
+- **`getScalarData()`**：返回单个图像的标量数据数组（仅适用于 `IImage`）。
+- **`getScalarDataLength()`**：提供总的体素数量，替代 `scalarData.length`。
+- **`getAtIndex(index)`**：检索特定线性索引处的体素值。
+- **`setAtIndex(index, value)`**：设置特定线性索引处的体素值。
+- **`getAtIJK(i, j, k)`**：获取 IJK 坐标处的体素值。
+- **`setAtIJK(i, j, k, value)`**：设置 IJK 坐标处的体素值。
+- **`getArrayOfModifiedSlices()`**：列出已修改的切片索引。
 
-### Data Manipulation
+### 数据操作
 
-- **`forEach(callback, options)`**: Iterates over voxels with a callback for processing or modifying data.
-- **`toIndex(ijk)`**: Converts IJK coordinates to a linear index.
-- **`toIJK(index)`**: Converts a linear index back to IJK coordinates.
+- **`forEach(callback, options)`**：通过回调函数迭代体素以处理或修改数据。
+- **`toIndex(ijk)`**：将 IJK 坐标转换为线性索引。
+- **`toIJK(index)`**：将线性索引转换回 IJK 坐标。
 
-### Volume Information
+### 卷信息
 
-- **`getConstructor()`**: Returns the scalar data type constructor.
-- **`getBoundsIJK()`**: Fetches the volume bounds in IJK coordinates.
+- **`getConstructor()`**：返回标量数据类型的构造函数。
+- **`getBoundsIJK()`**：获取 IJK 坐标系中的卷边界。
 
-### Specialized Methods
+### 专用方法
 
-- **`setTimePoint(timePoint)`**: For 4D datasets, sets the current time point.
-- **`getAtIndexAndTimePoint(index, timePoint)`**: Retrieves the voxel value at a specified index and time point.
+- **`setTimePoint(timePoint)`**：对于 4D 数据集，设置当前时间点。
+- **`getAtIndexAndTimePoint(index, timePoint)`**：检索指定索引和时间点处的体素值。
 
-### Example: Migrating Data Access and Manipulation
+### 示例：迁移数据访问和操作
 
-Instead of accessing `scalarData` directly, use VoxelManager for data manipulation. Here’s a migration example:
+不直接访问 `scalarData`，而是使用体素管理器进行数据操作。以下是迁移示例：
 
-#### Before
+#### 之前
 
 ```javascript
 function processVolume(volume) {
@@ -65,7 +66,7 @@ function processVolume(volume) {
 }
 ```
 
-#### After
+#### 之后
 
 ```javascript
 function processVolume(volume) {
@@ -80,11 +81,11 @@ function processVolume(volume) {
 }
 ```
 
-## Handling Image Volume Construction
+## 处理图像卷构建
 
-When creating volumes, `scalarData` is no longer required. Instead, use `VoxelManager` internally:
+在创建卷时，不再需要 `scalarData`。相反，内部使用 `VoxelManager`：
 
-#### Before
+#### 之前
 
 ```typescript
 const streamingImageVolume = new StreamingImageVolume({
@@ -100,7 +101,7 @@ const streamingImageVolume = new StreamingImageVolume({
 });
 ```
 
-#### After
+#### 之后
 
 ```typescript
 const streamingImageVolume = new StreamingImageVolume({
@@ -116,12 +117,12 @@ const streamingImageVolume = new StreamingImageVolume({
 });
 ```
 
-## Best Practices
+## 最佳实践
 
-- **Data Access Optimization**: Use `getAtIndex` and `setAtIndex` for bulk operations due to their efficiency. Use `forEach` for large-volume iteration.
-- **Memory Management**: Avoid `getCompleteScalarDataArray()` as it rebuilds large data arrays and can degrade performance.
-- **Handling RGB Data**: `getAtIndex` and `getAtIJK` return `[r, g, b]` arrays for RGB volumes.
+- **数据访问优化**：由于效率高，使用 `getAtIndex` 和 `setAtIndex` 进行批量操作。对于大体积迭代，使用 `forEach`。
+- **内存管理**：避免使用 `getCompleteScalarDataArray()`，因为它会重建大型数据数组并可能降低性能。
+- **处理 RGB 数据**：`getAtIndex` 和 `getAtIJK` 返回 RGB 卷的 `[r, g, b]` 数组。
 
-## Conclusion
+## 结论
 
-The VoxelManager is central to Cornerstone’s new volume management strategy, offering a flexible, efficient API for voxel data access and manipulation. This migration to VoxelManager allows for more efficient memory usage, faster performance, and improved compatibility with large datasets, ensuring a smoother workflow for developers working with complex medical imaging data.
+体素管理器是 Cornerstone 新的卷管理策略的核心，提供了一个灵活、高效的体素数据访问和操作 API。这种迁移到体素管理器允许更高效的内存使用、更快的性能和与大型数据集的更好兼容性，确保开发人员在处理复杂医疗成像数据时拥有更流畅的工作流程。

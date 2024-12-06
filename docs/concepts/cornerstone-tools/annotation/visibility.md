@@ -1,36 +1,36 @@
 ---
-id: visibility
-title: Visibility
+
+id: visibility  
+title: 可见性  
 ---
 
-# Visibility
+# 可见性
 
-Annotations can have their visibility changed. You can use
-the visibility API to show/hide annotations.
+注释可以更改其可见性。您可以使用可见性 API 来显示/隐藏注释。
 
 ## API
 
-There are various APIs for showing and hiding annotations along with get/set methods
+有多种 API 可用于显示和隐藏注释以及获取/设置方法
 
 ```js
 import { annotation } from '@cornerstonejs/tools';
 
-// changing an annotation visibility to be visible (implicit visible param).
+// 将注释的可见性更改为可见（隐式可见参数）。
 annotation.visibility.setAnnotationVisibility(annotationUID);
 
-// changing an annotation visibility to NOT be visible.
+// 将注释的可见性更改为不可见。
 annotation.visibility.setAnnotationVisibility(annotationUID, false);
 
-// show all annotation(hidden)
+// 显示所有注释（隐藏）。
 annotation.visibility.showAllAnnotations();
 
-// get if an annotation is visible or not.
-// Possible results are: undefined if there is no annotation for given UID, true if visible and false if not.
+// 获取注释是否可见。
+// 可能的结果是：如果给定 UID 没有注释，则为 undefined；如果可见，则为 true；如果不可见，则为 false。
 annotation.visibility.isAnnotationVisible(annotationUID);
 ```
 
-## Read more
+## 阅读更多
 
-:::note TIP
-Read more about the visibility API [here](/api/tools/namespace/annotation#visibility)
+:::note TIP  
+关于可见性 API 的更多信息，请 [**点击这里**](/api/tools/namespace/annotation#visibility)  
 :::

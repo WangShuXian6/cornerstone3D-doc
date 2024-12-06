@@ -1,44 +1,37 @@
 ---
-id: index
-title: Segmentations
+
+id: index  
+title: 分割  
 ---
 
-# Segmentations
+# 分割
 
-In `Cornerstone3DTools`, we have decoupled the concept of a `Segmentation` from
-a `Segmentation Representation`. This means that from one `Segmentation` we can
-create multiple `Segmentation Representation`s. For instance, a `Segmentation Representation`
-of a 3D Labelmap, can be created from a `Segmentation` data, and a `Segmentation Representation`
-of a Contour (not supported yet) can be created from the same `Segmentation` data. This
-way we have decouple the presentational aspect of a `Segmentation` from the underlying data.
+在 `Cornerstone3DTools` 中，我们已将 `Segmentation` 的概念与 `Segmentation Representation` 解耦。这意味着从一个 `Segmentation` 中，我们可以创建多个 `Segmentation Representation`。例如，可以从一个 `Segmentation` 数据创建一个 3D 标签图的 `Segmentation Representation`，并且可以从相同的 `Segmentation` 数据创建一个轮廓的 `Segmentation Representation`（尚未支持）。通过这种方式，我们将 `Segmentation` 的展示层面与其底层数据解耦。
 
 ![](../../../assets/segmentation-representation.png)
 
-:::note TIP
-Similar relationship structure has been adapted in popular medical imaging softwares
-such as [3D Slicer](https://www.slicer.org/) with the addition of [polymorph segmentation](https://github.com/PerkLab/PolySeg).
+:::note TIP  
+类似的关系结构已被应用于流行的医学影像软件，如 [3D Slicer](https://www.slicer.org/)，并添加了 [多态分割](https://github.com/PerkLab/PolySeg)。  
 :::
-
-
 
 ## API
 
-`Segmentation` related functions and classes are available in the `segmentation` module.
+与 `Segmentation` 相关的函数和类可以在 `segmentation` 模块中找到。
 
 ```js
 import { segmentation } from '@cornerstonejs/tools';
 
-// segmentation state holding all segmentations and their toolGroup specific representations
+// 存储所有分割及其工具组特定表示的分割状态
 segmentations.state.XYZ;
 
-// active segmentation methods (set/get)
+// 活跃分割方法（设置/获取）
 segmentations.activeSegmentation.XYZ;
 
-// locking for a segment index (set/get)
+// 锁定分割索引（设置/获取）
 segmentations.locking.XYZ;
 
-// segment index manipulations (set/get)
+// 分割索引操作（设置/获取）
 segmentations.segmentIndex.XYZ;
 ```
 
-Let's start by looking deeper into each of these methods.
+让我们深入了解这些方法。
