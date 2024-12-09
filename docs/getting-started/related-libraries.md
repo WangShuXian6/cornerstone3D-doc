@@ -1,5 +1,6 @@
 ---
 id: related-libraries
+sidebar_position: 3
 ---
 
 # 相关库
@@ -10,7 +11,7 @@ id: related-libraries
 
 在解释这些库之前，我们首先讨论一下 `Cornerstone3D` 的历史。在 `Cornerstone3D` 之前，我们自2014年以来开发并维护了 [`cornerstone-core`](https://github.com/cornerstonejs/cornerstone) 和 [`cornerstone-tools`](https://github.com/cornerstonejs/cornerstoneTools)。由于 `Cornerstone3D` 相对于 `cornerstone-core` 和 `Cornerstone3DTools` 相对于 `cornerstone-tools` 的改进意义更大，从长远来看，我们将把重点转向 `Cornerstone3D`，并提供如何从传统的 `cornerstone` 升级到新的 `Cornerstone3D` 的充分文档。同时，我们将继续维护传统的 `cornerstone` 包，并处理潜在的关键错误。
 
-除了 `cornerstone-core` 和 `cornerstone-tools` 包，我们还维护了 [`react-vtkjs-viewport`](https://github.com/OHIF/react-vtkjs-viewport)，这是我们使用 [vtk-js](https://github.com/kitware/vtk-js) 在 React 中实现 3D 渲染的第一代。`react-vtkjs-viewport` 目前在当前的主要 OHIF Viewer 中用于 MPR 视图。促使 `Cornerstone3D` 开发的主要动机之一是希望能够通过 React 将渲染与 UI 解耦，类似于 `cornerstone-core`。此外，`react-vtkjs-viewport` 的内存管理是一个重大挑战，尤其是在处理具有 10 个视口的 PET/CT 融合等更复杂的场景时。类似于传统的 cornerstone，我们将把努力从 `react-vtkjs-viewport` 转向使用新的 `Cornerstone3D` 和 `Cornerstone3DTools` 包。
+除了 `cornerstone-core` 和 `cornerstone-tools` 包，我们还维护了 [`react-vtkjs-viewport`](https://github.com/OHIF/react-vtkjs-viewport)，这是我们使用 [vtk-js](https://github.com/kitware/vtk-js) 在 React 中实现 3D 渲染的第一代。`react-vtkjs-viewport` 目前在当前的主要 OHIF Viewer 中用于 MPR 视图。促使 `Cornerstone3D` 开发的主要动机之一是希望能够通过 React 将渲染与 UI 解耦，类似于 `cornerstone-core`。此外，`react-vtkjs-viewport` 的内存管理是一个重大挑战，尤其是在处理具有 10 个视口的 PET/CT 融合等更复杂的场景时。类似于传统的 cornerstone，我们将把精力从 `react-vtkjs-viewport` 转向使用新的 `Cornerstone3D` 和 `Cornerstone3DTools` 包。
 
 ## 库
 

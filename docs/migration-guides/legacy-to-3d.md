@@ -1,7 +1,7 @@
 ---
 
 id: legacy-to-3d
-
+sidebar_position: 4
 ---
 
 import Tabs from '@theme/Tabs';

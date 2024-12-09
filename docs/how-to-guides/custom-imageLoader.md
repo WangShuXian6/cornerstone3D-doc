@@ -1,5 +1,6 @@
 ---
 id: custom-image-loader
+sidebar_position: 1
 ---
     
 # 自定义图像加载器

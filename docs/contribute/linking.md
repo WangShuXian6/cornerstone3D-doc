@@ -1,5 +1,6 @@
 ---
 id: linking
+sidebar_position: 7
 ---
 
 # 将 Cornerstone 库与 OHIF 进行开发链接

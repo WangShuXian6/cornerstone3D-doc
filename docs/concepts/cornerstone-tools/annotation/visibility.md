@@ -2,6 +2,7 @@
 
 id: visibility  
 title: 可见性  
+sidebar_position: 8
 ---
 
 # 可见性

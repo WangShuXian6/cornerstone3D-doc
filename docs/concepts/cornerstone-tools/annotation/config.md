@@ -1,6 +1,7 @@
 ---  
 id: config  
 title: 配置  
+sidebar_position: 6
 ---  
 
 在本节中，我们将解释更改工具样式的各种方式。这包括各种属性，如 `color`（当 `selected`、`highlighted` 或 `locked` 时）；文本框颜色、线条样式、粗细等。  

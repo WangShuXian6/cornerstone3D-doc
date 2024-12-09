@@ -1,7 +1,8 @@
 ---
 
 id: webWorker  
-title: Web Workers  
+title: Web Workers 
+sidebar_position: 13 
 ---
 
 Web Workers 提供了一种在后台线程中运行脚本的方法，允许 web 应用在不干扰用户界面的情况下执行任务。它们特别适用于执行计算密集型任务或需要大量处理时间的任务。

@@ -1,6 +1,7 @@
 ---  
 id: images  
 title: Image Object  
+sidebar_position: 3
 ---  
 
 # Image Object  

@@ -1,3 +1,8 @@
+---  
+id: basic-annotation-tool 
+sidebar_position: 6
+---  
+
 # 注释工具
 
 在本教程中，您将学习如何使用注释工具进行标注。
@@ -7,7 +12,7 @@
 为了渲染一个体积数据，我们需要：
 
 - 初始化cornerstone和相关库。
-- HTMLDivElements 用于渲染体积的不同方向（例如，Axial视图和Sagittal视图）。
+- HTMLDivElements: 用于渲染体积的不同方向（例如，Axial视图和Sagittal视图）。
 - 图像路径（`imageId`）。
 
 ## 实现

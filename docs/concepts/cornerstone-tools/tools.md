@@ -1,6 +1,7 @@
 ---
 id: tools
 title: 工具
+sidebar_position: 2
 ---
 
 ## 介绍

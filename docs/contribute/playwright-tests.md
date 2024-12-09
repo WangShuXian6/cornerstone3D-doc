@@ -1,5 +1,6 @@
 ---
 id: playwright-tests
+sidebar_position: 5
 ---
 
 # 编写 PlayWright 测试

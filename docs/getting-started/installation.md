@@ -1,5 +1,6 @@
 ---
 id: installation
+sidebar_position: 4
 ---
 
 # 安装

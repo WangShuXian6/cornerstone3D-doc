@@ -2,6 +2,7 @@
 
 id: segmentation-contour  
 title: 轮廓表示  
+sidebar_position: 8
 ---
 
 # 轮廓分割表示

@@ -2,6 +2,7 @@
 
 id: active-segmentation  
 title: 活跃分割  
+sidebar_position: 3
 ---
 
 # 活跃分割

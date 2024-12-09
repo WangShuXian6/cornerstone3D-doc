@@ -1,5 +1,6 @@
 ---
 id: karma-tests
+sidebar_position: 6
 ---
 
 # 编写 Karma 测试

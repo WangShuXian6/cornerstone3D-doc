@@ -1,5 +1,6 @@
 ---
 id: custom-metadata-provider
+sidebar_position: 2
 ---
     
 # 自定义元数据提供器

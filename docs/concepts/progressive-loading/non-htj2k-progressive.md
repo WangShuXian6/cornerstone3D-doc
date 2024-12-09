@@ -1,6 +1,7 @@
 ---  
 id: non-htj2k-progressive  
 title: 非HTJ2K渐进式加载  
+sidebar_position: 6
 ---  
 
 # 非HTJ2K渐进式编码数据的渐进式加载

@@ -1,6 +1,7 @@
 ---
 id: usage
 title: 使用
+sidebar_position: 4
 ---
 
 现在我们已经了解了检索配置，让我们看看如何在 Cornerstone3D 中使用它。

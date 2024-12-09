@@ -2,6 +2,7 @@
 
 id: voxelManager
 title: 体素管理器
+sidebar_position: 6
 ---
 
 # 体素管理器文档

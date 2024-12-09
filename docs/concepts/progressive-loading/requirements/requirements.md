@@ -2,6 +2,7 @@
 
 id: requirements  
 title: 服务器要求  
+sidebar_position: 1
 ---  
 
 # 服务器要求  

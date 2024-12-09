@@ -2,6 +2,7 @@
 
 id: config  
 title: 配置  
+sidebar_position: 5
 ---
 
 # 配置

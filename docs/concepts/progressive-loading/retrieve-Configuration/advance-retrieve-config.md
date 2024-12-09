@@ -2,6 +2,7 @@
 
 id: advance-retrieve-config  
 title: 高级选项  
+sidebar_position: 2
 ---  
 
 `retrieve stages` 和 `retrieve options` 有更多的高级选项，可以用来定制渐进加载的行为。  

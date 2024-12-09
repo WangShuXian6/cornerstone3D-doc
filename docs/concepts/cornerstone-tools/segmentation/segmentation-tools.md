@@ -1,6 +1,7 @@
 ---  
 id: segmentation-tools  
 title: 分割工具  
+sidebar_position: 7
 ---  
 
 # 分割工具

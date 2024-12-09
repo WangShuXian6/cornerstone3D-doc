@@ -1,6 +1,7 @@
 ---  
 id: annotationManager  
 title: 注释管理器  
+sidebar_position: 3
 ---  
 
 注释管理器是一个单例类，用于管理 Cornerstone Tools 中的注释。我们使用注释管理器来存储注释、检索注释、以及保存和恢复注释。  

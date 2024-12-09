@@ -1,5 +1,6 @@
 ---
 id: documentation
+sidebar_position: 4
 ---
 
 # 编写文档

@@ -1,5 +1,6 @@
 ---
 id: custom-volume-loading
+sidebar_position: 3
 ---
     
 # 自定义体积加载顺序

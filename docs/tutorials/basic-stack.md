@@ -1,3 +1,9 @@
+---
+
+id: basic-stack
+sidebar_position: 2
+---
+
 # 渲染图像堆栈
 
 在本教程中，您将学习如何渲染一组图像。

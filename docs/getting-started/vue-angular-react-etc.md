@@ -1,6 +1,7 @@
 ---
 id: vue-angular-react-etc
 title: 'React, Vue, Angular 等'
+sidebar_position: 5
 ---
 
 以下是如何在 React、Vue、Angular 等框架中使用 cornerstone3D 的一些示例。

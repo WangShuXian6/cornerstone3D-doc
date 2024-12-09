@@ -2,6 +2,7 @@
 
 id: examples
 title: 示例
+sidebar_position: 8
 ---
 
 import Link from '@docusaurus/Link';

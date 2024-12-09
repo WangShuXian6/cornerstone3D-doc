@@ -2,6 +2,7 @@
 
 id: locking  
 title: 分割锁定  
+sidebar_position: 4
 ---
 
 # 分割锁定  

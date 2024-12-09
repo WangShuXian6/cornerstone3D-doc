@@ -2,6 +2,7 @@
 
 id: index  
 title: 分割  
+sidebar_position: 1
 ---
 
 # 分割

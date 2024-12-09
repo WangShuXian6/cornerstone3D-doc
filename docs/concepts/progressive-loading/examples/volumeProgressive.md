@@ -1,6 +1,7 @@
 ---
 id: volumeProgressive
 title: 渐进加载体积
+sidebar_position: 2
 ---
 
 ## 体积视口交错解码

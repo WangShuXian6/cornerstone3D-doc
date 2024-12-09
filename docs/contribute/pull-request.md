@@ -1,5 +1,6 @@
 ---
 id: pull-request
+sidebar_position: 2
 ---
 
 # 如何贡献

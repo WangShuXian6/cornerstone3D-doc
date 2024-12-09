@@ -1,6 +1,7 @@
 ---  
 id: metadataProvider  
 title: 元数据提供者  
+sidebar_position: 4
 ---  
 
 # 元数据提供者  

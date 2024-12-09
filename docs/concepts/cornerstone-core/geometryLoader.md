@@ -1,6 +1,7 @@
 ---  
 id: geometryLoader  
 title: 几何加载器  
+sidebar_position: 8
 ---  
 
 # 几何加载器  

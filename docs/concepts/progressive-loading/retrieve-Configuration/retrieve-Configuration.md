@@ -1,7 +1,7 @@
 ---  
 id: retrieve-configuration  
 title: 获取配置  
-toc_max_heading_level: 5  
+sidebar_position: 1
 ---  
 
 # 获取配置
@@ -33,7 +33,7 @@ interface IRetrieveConfiguration {
 
 总之，获取阶段是一个配置，指定哪些图像以哪些设置加载。为了简化本文的讨论并避免跑题，我们将仅讨论`retrieveType`，它只是对获取选项的引用。我们将在后面讨论更高级的选项，例如为策略选择图像、优先级排序和队列加载。
 
-![](../../assets/retrieve-stages.png)
+![](../../../assets/retrieve-stages.png)
 
 <!-- <img src="../../assets/retrieve-stages.png"  style={{width:"300px"}}/> -->
 
@@ -116,7 +116,7 @@ Cornerstone 会检查是否指定了`default`获取选项，如果为真，它�
 
 对于简单的流式加载场景（`streaming: true`），你应该期望以下行为：
 
-![](../../assets/streaming-decode.png)
+![](../../../assets/streaming-decode.png)
 
 #### 用例
 
@@ -153,7 +153,7 @@ Cornerstone 会检查是否指定了`default`获取选项，如果为真，它�
 }
 ```
 
-![](../../assets/range-0.png)
+![](../../../assets/range-0.png)
 
 另一个示例：
 
@@ -166,7 +166,7 @@ Cornerstone 会检查是否指定了`default`获取选项，如果为真，它�
 // chunkSize是默认的64kb
 ```
 
-![](../../assets/range-0-decode-3.png)
+![](../../../assets/range-0-decode-3.png)
 
 :::tip
 你可以通过使用`rangeIndex: -1`来获取剩余的数据。另外，`rangeIndex = 0`将始终是第一个块。

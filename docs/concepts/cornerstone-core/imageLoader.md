@@ -1,6 +1,7 @@
 ---  
 id: imageLoader  
-title: Image Loaders  
+title: Image Loaders 
+sidebar_position: 2 
 ---  
 
 # Image Loaders  

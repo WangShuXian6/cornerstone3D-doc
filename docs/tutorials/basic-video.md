@@ -1,3 +1,9 @@
+---
+
+id: basic-video
+sidebar_position: 4
+---
+
 # 渲染视频
 
 在本教程中，您将学习如何渲染视频。

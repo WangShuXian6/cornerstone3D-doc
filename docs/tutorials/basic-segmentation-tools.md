@@ -1,3 +1,8 @@
+---  
+id: basic-segmentation-tools
+sidebar_position: 7
+---  
+
 # 分割工具
 
 在本教程中，您将学习如何使用分割工具来绘制和编辑分割区域。

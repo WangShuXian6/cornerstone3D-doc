@@ -1,5 +1,6 @@
 ---  
 id: basic-manipulation-tool  
+sidebar_position: 5
 ---  
 
 # 操作工具

@@ -1,5 +1,6 @@
 ---
 id: scope
+sidebar_position: 2
 ---
 
 # 项目范围

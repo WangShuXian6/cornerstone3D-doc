@@ -1,6 +1,7 @@
 ---  
 id: synchronizers  
 title: 同步器  
+sidebar_position: 4
 ---  
 
 # 同步器  

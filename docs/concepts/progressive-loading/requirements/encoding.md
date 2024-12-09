@@ -1,6 +1,7 @@
 ---  
 id: encoding  
 title: 编码  
+sidebar_position: 2
 ---
 
 ## 部分分辨率的类型

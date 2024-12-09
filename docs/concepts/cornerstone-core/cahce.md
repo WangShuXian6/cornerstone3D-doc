@@ -1,6 +1,7 @@
 ---  
 id: cache  
 title: 缓存  
+sidebar_position: 9
 ---  
 
 # 缓存  

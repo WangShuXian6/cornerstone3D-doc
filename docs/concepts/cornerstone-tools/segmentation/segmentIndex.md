@@ -1,6 +1,7 @@
 ---  
 id: segment-index  
 title: 分割索引  
+sidebar_position: 6
 ---  
 
 # 分割索引

@@ -1,5 +1,6 @@
 ---
 title: 自定义工具
+sidebar_position: 4
 ---
 
 # 自定义工具

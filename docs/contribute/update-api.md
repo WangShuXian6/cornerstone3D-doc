@@ -1,5 +1,6 @@
 ---
 id: update-api
+sidebar_position: 3
 ---
 
 # API 更新
