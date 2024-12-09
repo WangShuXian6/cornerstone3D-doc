@@ -1,39 +1,35 @@
 ---
 id: custom-metadata-provider
 ---
-
-# Custom Metadata Provider
-
-In this how-to guide we will show you how to create a custom metadata provider. You should be familiar with
-the following core concepts:
-
-- [Image Loaders](../concepts/cornerstone-core/imageLoader.md)
-- [Image Objects](../concepts/cornerstone-core/images.md)
-- [Metadata Providers](../concepts/cornerstone-core/metadataProvider.md)
-
-## Introduction
-
-Cornerstone **DOES NOT** deal with fetching of the metadata. It uses the registered
-metadata providers (in the order of priority) to call each providers passing the `imageId` and
-`type` of the metadata to be fetched. Usually, the metadata provider has a method to add parsed metadata to its cache.
-
-One question you might ask is:
-
-:::note How
-
-How can I build a custom metadata provider?
-
+    
+# 自定义元数据提供器
+    
+在本操作指南中，我们将向您展示如何创建一个自定义元数据提供器。您应该熟悉以下核心概念：
+    
+- [图像加载器](../concepts/cornerstone-core/imageLoader.md)
+- [图像对象](../concepts/cornerstone-core/images.md)
+- [元数据提供器](../concepts/cornerstone-core/metadataProvider.md)
+    
+## 介绍
+    
+Cornerstone **不处理**元数据的获取。它使用已注册的元数据提供器（按优先级顺序）来调用每个提供器，传递要获取的 `imageId` 和元数据的 `type`。通常，元数据提供器有一个方法将解析的元数据添加到其缓存中。
+    
+您可能会问一个问题：
+    
+:::note 如何
+    
+我如何构建一个自定义元数据提供器？
+    
 :::
-
-## Implementation
-
-Through the following steps, we implement a custom metadata provider that stores the metadata
-for scaling factors of PT images.
-
-### Step 1: Create an add method
-
-We need to store the metadata in a cache, and we need a method to add the metadata.
-
+    
+## 实现
+    
+通过以下步骤，我们实现一个自定义元数据提供器，该提供器存储 PT 图像的缩放因子元数据。
+    
+### 步骤 1：创建添加方法
+    
+我们需要在缓存中存储元数据，并且需要一个方法来添加元数据。
+    
 ```js
 const scalingPerImageId = {};
 
@@ -42,24 +38,23 @@ function add(imageId, scalingMetaData) {
   scalingPerImageId[imageURI] = scalingMetaData;
 }
 ```
-
+    
 <details>
-
+    
 <summary>imageId vs imageURI</summary>
-
-With the addition of `Volumes` in `Cornerstone3D`, and the caching optimizations
-that happen internally between `Volumes` and `Images` ([`imageLoader`](../concepts/streaming-image-volume/streaming.md#imageloader))
-we should store the imageURI (instead of the `imageId`) inside the provider's cache, since
-the imageURI is unique for each image but can be retrieved with different loading schemes.
-
+    
+随着 `Cornerstone3D` 中 `Volumes` 的添加，以及 `Volumes` 和 `Images` 之间内部进行的缓存优化
+([`imageLoader`](../concepts/streaming-image-volume/streaming.md#imageloader))
+，我们应该在提供器的缓存中存储 imageURI（而不是 `imageId`），因为
+imageURI 对每个图像都是唯一的，但可以通过不同的加载方案进行检索。
+    
 </details>
-
-### Step 2: Create a provider
-
-Next, a provider function is needed, to get the metadata for a specific imageId given
-the type of metadata. In this case, the provider only cares about the `scalingModule` type,
-and it will return the metadata for the `imageId` if it exists in the cache.
-
+    
+### 步骤 2：创建提供器
+    
+接下来，需要一个提供器函数，根据元数据的类型获取特定 `imageId` 的元数据。在这种情况下，提供器只关心 `scalingModule` 类型，
+如果在缓存中存在 `imageId` 的元数据，它将返回该元数据。
+    
 ```js
 function get(type, imageId) {
   if (type === 'scalingModule') {
@@ -68,11 +63,11 @@ function get(type, imageId) {
   }
 }
 ```
-
-### Step 3: Register the provider
-
-Finally, we need to register the provider with cornerstone.
-
+    
+### 步骤 3：注册提供器
+    
+最后，我们需要将提供器注册到 Cornerstone。
+    
 ```js title="/src/myCustomProvider.js"
 const scalingPerImageId = {};
 
@@ -90,7 +85,7 @@ function get(type, imageId) {
 
 export { add, get };
 ```
-
+    
 ```js title="src/registerProvider.js"
 import myCustomProvider from './myCustomProvider';
 
@@ -100,16 +95,15 @@ cornerstone.metaData.addProvider(
   priority
 );
 ```
-
-## Usage Example
-
-Now that the provider is registered, we can use it to fetch the metadata for an image.
-But first, let's assume during the image loading we fetch the metadata for the imageId
-and store it in the cache of the provider. Later, we can use the provider to fetch the
-metadata for the imageId and use it (e.g., to properly show SUV values for tools).
-
+    
+## 使用示例
+    
+现在提供器已注册，我们可以使用它来获取图像的元数据。但首先，假设在图像加载过程中我们获取了 `imageId` 的元数据
+并将其存储在提供器的缓存中。之后，我们可以使用提供器来获取 `imageId` 的元数据并使用它（例如，正确显示 SUV 值
+用于工具）。
+    
 ```js
-// Retrieve this metaData
+// 获取此 metaData
 const imagePlaneModule = cornerstone.metaData.get(
   'scalingModule',
   'scheme://imageId'

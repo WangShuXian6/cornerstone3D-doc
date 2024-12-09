@@ -1,29 +1,29 @@
 ---
 id: developer-experience
-title: 'Developer Experience'
+title: '开发者体验'
 ---
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
 
-# Developer Experience
+# 开发者体验
 
-### Dependency Cycles
+### 依赖循环
 
-We have removed all dependency cycles in the library, ensuring it is now free of any such issues. To maintain this, we have added rules in our linters that will catch any dependency cycles in pull requests during continuous integration. Additionally, you can run `yarn run format-check` to ensure that the formatting is correct and to check for dependencies as well.
+我们已移除了库中的所有依赖循环，确保其现在不再存在任何此类问题。为了维护这一点，我们在我们的 linter 中添加了规则，这些规则将在持续集成期间在 pull request 中捕捉到任何依赖循环。此外，您可以运行 `yarn run format-check` 以确保格式正确并检查依赖关系。
 
-### Published APIs
+### 已发布的 API
 
-We have now published the APIs for the DICOM Image Loader and Nifti Volume Loader. So in creating your PRs don't forget to run `yarn run build:update-api` and include the generated files in your PR.
+我们现在已经发布了 DICOM 图像加载器和 Nifti 体积加载器的 API。因此，在创建您的 PR 时，请勿忘记运行 `yarn run build:update-api` 并将生成的文件包含在您的 PR 中。
 
-### Karma tests
+### Karma 测试
 
-There has been a lot of work to clean up tests let's dive in
+已经进行了大量工作来清理测试，让我们深入了解一下。
 
-#### Setup and Cleanup
+#### 设置和清理
 
-Before, we had scattered logic:
+以前，我们有分散的逻辑：
 
 ```js
 beforeEach(function () {
@@ -62,7 +62,7 @@ afterEach(function () {
 });
 ```
 
-Now it's centralized:
+现在已经集中化：
 
 ```js
 beforeEach(function () {
@@ -95,15 +95,15 @@ afterEach(function () {
 ```
 
 <details>
-<summary>Why?</summary>
+<summary>为什么？</summary>
 
-It was causing many issues with timeout and race conditions.
+这导致了许多超时和竞争条件问题。
 
 </details>
 
-#### Viewport Creation
+#### 视口创建
 
-We've centralized the previously repeated logic for viewport creation into one place.
+我们已将之前重复的视口创建逻辑集中到一个地方。
 
 ```js
 const element = testUtils.createViewports(renderingEngine, {
@@ -114,15 +114,15 @@ const element = testUtils.createViewports(renderingEngine, {
 });
 ```
 
-#### Image Id
+#### 图像 ID
 
-Previously, for the fake image loader, you should have used:
+以前，对于假图像加载器，您应该使用：
 
 ```js
 const imageId1 = 'fakeImageLoader:imageURI_64_64_10_5_1_1_0';
 ```
 
-This string encoded various parameters. Now, it has been restructured into an object for better clarity:
+这个字符串编码了各种参数。现在，它已被重构为一个对象，以提高清晰度：
 
 ```js
 const imageInfo1 = {
@@ -140,7 +140,7 @@ const imageInfo1 = {
 const imageId1 = testUtils.encodeImageIdInfo(imageInfo1);
 ```
 
-same exists for volumeId
+体积 ID 也是类似的：
 
 ```js
 const volumeId = testUtils.encodeVolumeIdInfo({

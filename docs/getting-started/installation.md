@@ -2,12 +2,13 @@
 id: installation
 ---
 
-# Installation
+# 安装
 
 ## NPM
 
-You can install `Cornerstone3D`, `Cornerstone3DTools`, and `StreamingImageVolumeLoader` using [npm](https://www.npmjs.com/).
-You can install the latest version of the packages by running:
+您可以使用 [npm](https://www.npmjs.com/) 安装 `Cornerstone3D`、`Cornerstone3DTools` 和 `StreamingImageVolumeLoader`。
+
+您可以通过运行以下命令安装这些包的最新版本：
 
 ```bash
 npm install @cornerstonejs/core
@@ -18,7 +19,7 @@ npm install @cornerstonejs/nifti-volume-loader
 
 ## YARN
 
-If you are using [Yarn](https://yarnpkg.com/), you can install the packages by running:
+如果您正在使用 [Yarn](https://yarnpkg.com/)，您可以通过运行以下命令安装这些包：
 
 ```bash
 yarn add @cornerstonejs/core
@@ -29,7 +30,7 @@ yarn add @cornerstonejs/nifti-volume-loader
 
 ## PNPM
 
-If you are using [PNPM](https://pnpm.io), you can install packages by running:
+如果您正在使用 [PNPM](https://pnpm.io)，您可以通过运行以下命令安装包：
 
 ```bash
 pnpm install @cornerstonejs/core

@@ -2,8 +2,6 @@
 id: index
 ---
 
+# 流式图像体积
 
-# Streaming ImageVolume
-
-We have added a new volume loader which implements a progressive loading of volumes to the GPU. You can read
-more in this section.
+我们添加了一个新的体积加载器，它实现了将体积数据渐进式加载到 GPU。您可以在本节中阅读更多内容。

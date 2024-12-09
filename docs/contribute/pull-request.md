@@ -2,27 +2,25 @@
 id: pull-request
 ---
 
-# How to Contribute
+# 如何贡献
 
-## Reporting Bugs
+## 报告错误
 
-If you find a bug, we strongly encourage you to report it to the project maintainers. You can do this by creating a new issue on the project's issue tracker, or by sending a pull request with a fix for the bug.
-It is always helpful to provide as much information as possible when reporting bugs, and it would help a lot
-if you could provide an example that demonstrates the bug.
+如果您发现了一个错误，我们强烈鼓励您将其报告给项目维护者。您可以通过在项目的问题跟踪器上创建一个新问题，或通过提交一个修复错误的 pull request 来做到这一点。在报告错误时，提供尽可能多的信息总是有帮助的，如果您能提供一个演示错误的示例，将会有很大帮助。
 
-## I would like to contribute code - how do I do this?
+## 我想贡献代码 - 我该怎么做？
 
-Fork the repository, make your change and submit a pull request. Before submitting the pull request:
+分叉（Fork）仓库，进行更改并提交一个 pull request。在提交 pull request 之前：
 
-- make sure that your changes are well tested and that you have updated the project's documentation.
-- make sure your tests (`yarn run test`) and build (`yarn run build`) are properly working locally on your machine and make sure they all pass
+- 确保您的更改经过充分测试，并且您已更新项目的文档。
+- 确保您的测试 (`yarn run test`) 和构建 (`yarn run build`) 在您的机器上本地正常运行，并确保所有测试都通过。
 
-## Any guidance on submitting changes?
+## 有关提交更改的任何指导？
 
-While we do appreciate code contributions, triaging and integrating contributed code changes can be very time consuming. Please consider the following tips when working on your pull requests:
+虽然我们感谢代码贡献，但对贡献的代码更改进行分类和整合可能非常耗时。在处理您的 pull request 时，请考虑以下提示：
 
-- Functionality is appropriate for the repository. Consider posting on the forum if you are not sure.
-- Code quality is acceptable. We don't have coding standards defined, but make sure it passes ESLint and looks like the rest of the code in the repository.
-- Quality of design is acceptable. This is a bit subjective so you should consider posting on the forum for specific guidance.
-- The scope of the pull request is not too large. Please consider separate pull requests for each feature as big pull requests are very time consuming to understand.
-- We will provide feedback on your pull requests as soon as possible. Following the tips above will help ensure your changes are reviewed.
+- 功能适用于该仓库。如果不确定，请考虑在论坛上发帖。
+- 代码质量可接受。我们没有定义编码标准，但请确保代码通过 ESLint，并且看起来与仓库中的其他代码一致。
+- 设计质量可接受。这有点主观，因此您应该考虑在论坛上发布以获得具体指导。
+- pull request 的范围不宜过大。请考虑为每个功能提交单独的 pull request，因为大型 pull request 很耗时，难以理解。
+- 我们将尽快对您的 pull request 提供反馈。遵循上述提示将有助于确保您的更改被审核。

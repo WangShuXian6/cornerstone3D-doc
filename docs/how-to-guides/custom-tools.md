@@ -1,12 +1,10 @@
 ---
-title: Custom Tools
+title: 自定义工具
 ---
 
-# Custom Tools
+# 自定义工具
 
-A Cornerstone Tool is any class that implements or extends the interface defined
-by the `BaseTool` or `AnnotationTool` abstract classes. Creating a custom tool
-is as simple as:
+Cornerstone 工具是任何实现或扩展由 `BaseTool` 或 `AnnotationTool` 抽象类定义的接口的类。创建一个自定义工具就像以下简单的步骤：
 
 ```js
 import csTools3d, { AnnotationTool, BaseTool } from '@Tools`
@@ -20,39 +18,32 @@ csTools3d.addTool(MyCustomTool, { /* Tool Options */ })
 
 ## BaseTool
 
-A base tool has a name, configuration, options, strategies, bindings, and more. Base
-tools are often used to respond to user input and effect some change on the viewport
-(like its camera). Example `BaseTool`s include:
+基础工具具有名称、配置、选项、策略、绑定等。基础工具通常用于响应用户输入并对视口产生某些变化（例如其摄像机）。示例 `BaseTool` 包括：
 
-- Pan
-- PetThreshold
-- StackScroll
-- StackScrollMouseWheel
-- WindowLevel
-- Zoom
+- 平移
+- PET 阈值
+- 堆栈滚动
+- 鼠标滚轮堆栈滚动
+- 窗口级别
+- 缩放
 
 ## AnnotationTool
 
-An annotation tool often has "Annotations" that are tied to frame of reference. It has
-additional methods that allow tools to indicate they should handle/capture an interaction.
-This is most often used for "interactions near a handle" or "interactions near a
-rendered tool line".
+注释工具通常具有与参考帧绑定的“注释”。它具有额外的方法，允许工具指示它们应处理/捕获交互。这通常用于“靠近句柄的交互”或“靠近渲染的工具线的交互”。
 
-Annotation tools that are in the `Active` mode have an `addNewAnnotation` method
-that's called when a mouse event is not captured. This allows the active tool to
-create Annotations for the interaction. Example `AnnotationTool`s include:
+处于 `Active` 模式的注释工具具有 `addNewAnnotation` 方法，当鼠标事件未被捕获时调用。这允许活动工具为交互创建注释。示例 `AnnotationTool` 包括：
 
-- Bidirectional
-- EllipticalROI
-- CircleROI
-- Length
-- Probe
-- RectangleROI
-- PlanarFreehandROI
+- 双向
+- 椭圆 ROI
+- 圆形 ROI
+- 长度
+- 探针
+- 矩形 ROI
+- 平面自由手 ROI
 
-## Next steps
+## 下一步
 
-For next steps, you can:
+下一步，您可以：
 
-- [Check out the Usage documentation](#)
-- [Explore our example application's source code](#)
+- [查看使用文档](#)
+- [探索我们的示例应用程序的源代码](#)

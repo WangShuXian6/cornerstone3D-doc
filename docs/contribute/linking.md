@@ -2,122 +2,114 @@
 id: linking
 ---
 
-# Linking Cornerstone Libraries with OHIF for Development
+# 将 Cornerstone 库与 OHIF 进行开发链接
 
-Often time you will want to link to a package to Cornerstone3D, this might be
-to develop a feature, to debug a bug or for other reasons.
+通常，您可能希望将一个包链接到 Cornerstone3D，这可能是为了开发一个功能、调试一个错误或其他原因。
 
-Also, sometimes you may want to link the external packages to include libraries into
-your build that are not direct dependencies but are dynamically loaded. See the externals/README.md
-file for details.
+此外，有时您可能希望链接外部包，以将库包含到您的构建中，这些库不是直接的依赖项，而是动态加载的。详情请参阅 externals/README.md 文件。
 
 ## Yarn Link
 
-There are various ways to link to a package. The most common way is to use
-[`yarn link`](https://classic.yarnpkg.com/en/docs/cli/link).
+链接包的方法有多种。最常用的方法是使用 [`yarn link`](https://classic.yarnpkg.com/en/docs/cli/link)。
 
-This guide explains how to link local Cornerstone libraries for development with OHIF.
+本指南解释了如何将本地 Cornerstone 库与 OHIF 进行开发链接。
 
-## Prerequisites
+## 前提条件
 
-- Local clone of OHIF Viewer
-- Local clone of desired Cornerstone libraries (@cornerstonejs/core, @cornerstonejs/tools, etc.)
-- Yarn package manager
+- 本地克隆的 OHIF Viewer
+- 本地克隆所需的 Cornerstone 库（@cornerstonejs/core、@cornerstonejs/tools 等）
+- Yarn 包管理器
 
-## Steps to Link Libraries
+## 链接库的步骤
 
-1. **Prepare the Cornerstone Library**
+1. **准备 Cornerstone 库**
 
-   Navigate to the Cornerstone library directory you want to link (e.g., @cornerstonejs/core):
+   导航到您要链接的 Cornerstone 库目录（例如，@cornerstonejs/core）：
 
    ```bash
    cd packages/core
    ```
 
-   Unlink any existing links first:
+   首先取消任何现有的链接：
 
    ```bash
    yarn unlink
    ```
 
-   Create the link:
+   创建链接：
 
    ```bash
    yarn link
    ```
 
-   Build the package to ensure latest changes:
+   构建包以确保最新的更改：
 
    ```bash
    yarn dev
    ```
 
-2. **Link in OHIF**
+2. **在 OHIF 中链接**
 
-   In your OHIF project directory:
+   在您的 OHIF 项目目录中：
 
    ```bash
    yarn link @cornerstonejs/core
    ```
 
-   Start OHIF:
+   启动 OHIF：
 
    ```bash
    yarn dev
    ```
 
-## Working with Multiple Libraries
+## 使用多个库
 
-You can link multiple Cornerstone libraries simultaneously. For example, to link both core and tools:
+您可以同时链接多个 Cornerstone 库。例如，要同时链接 core 和 tools：
 
 ```bash
-# In cornerstone/packages/core
+# 在 cornerstone/packages/core 中
 yarn unlink
 yarn link
 yarn dev
 
-# In cornerstone/packages/tools
+# 在 cornerstone/packages/tools 中
 yarn unlink
 yarn link
 yarn dev
 
-# In OHIF
+# 在 OHIF 中
 yarn link @cornerstonejs/core
 yarn link @cornerstonejs/tools
 ```
 
-## Verifying the Link
+## 验证链接
 
-1. Make a visible change in the linked library (e.g., modify a line width in tools)
-2. Rebuild the library using `yarn dev`
-3. The changes should reflect in OHIF automatically
+1. 在链接的库中做一个可见的更改（例如，修改 tools 中的线宽）
+2. 使用 `yarn dev` 重新构建库
+3. 更改应自动反映在 OHIF 中
 
-## Important Notes
+## 重要提示
 
-- Always run `yarn dev` in the Cornerstone library after making changes
-- Due to ESM migration in Cornerstone 3D 2.0, linking process is simpler than before
-- Remove links when finished using `yarn unlink` in both projects
+- 每次更改后，始终在 Cornerstone 库中运行 `yarn dev`
+- 由于 Cornerstone 3D 2.0 中的 ESM 迁移，链接过程比以前更简单
+- 完成后，在两个项目中使用 `yarn unlink` 移除链接
 
-## Troubleshooting
+## 故障排除
 
-If changes aren't reflecting:
+如果更改未反映：
 
-1. Ensure the library is rebuilt (`yarn dev`)
-2. Check the console for any linking errors
-3. Verify the correct library version is linked using the browser console
+1. 确保库已重新构建（`yarn dev`）
+2. 检查控制台是否有任何链接错误
+3. 使用浏览器控制台验证是否链接了正确的库版本
 
-## Video Tutorials
+## 视频教程
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/IOXQ1od6DZA?si=3QP4rppQgedJn7y8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-## Tips
+## 提示
 
-1. `yarn link` is actually a symlink between packages. If your linking is not working,
-   check out the `node_modules` in the `Cornerstone3D` directory to see if the symlink
-   has been created (the updated source code - not the dist - is available in the `node_modules`).
+1. `yarn link` 实际上是在包之间创建了一个符号链接。如果您的链接不起作用，请检查 `Cornerstone3D` 目录中的 `node_modules`，以查看是否已创建符号链接（更新后的源代码——而不是 dist——可在 `node_modules` 中找到）。
 
-2. If your `debugger` is not hitting, you might want to change the `mode` setting
-   in the webpack to be `development` instead of `production`. This ensures, minification
-   is not applied to the source code.
+2. 如果您的 `debugger` 没有命中，您可能需要将 webpack 中的 `mode` 设置从 `production` 更改为 `development`。这确保源代码不会被压缩。
 
-3. Use a more verbose source map for debugging. You can read more [here](https://webpack.js.org/configuration/devtool/)
+3. 使用更详细的源映射进行调试。您可以在 [这里](https://webpack.js.org/configuration/devtool/) 阅读更多内容。

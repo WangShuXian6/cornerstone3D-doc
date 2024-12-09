@@ -2,15 +2,10 @@
 id: update-api
 ---
 
-# API Updating
+# API 更新
 
-We have adopted the [api-extractor](https://api-extractor.com/) tool to extract the public API from the codebase.
-Having a consistent API is the key to making our library easy to use and build upon; therefore,
-for each Pull Request (PR) we extract the API for the PR and compare it to the API of the base branch.
+我们采用了 [api-extractor](https://api-extractor.com/) 工具从代码库中提取公共 API。拥有一致的 API 是使我们的库易于使用和构建的关键；因此，对于每个 Pull Request (PR)，我们提取 PR 的 API 并将其与基分支的 API 进行比较。
 
-If you have unintentionally changed the public API of the library, one of our checks in Github would
-catch it and notify you by an Error.
+如果您无意中更改了库的公共 API，我们在 Github 中的检查将会捕捉到并通过错误通知您。
 
-If the change to the API is intentional, you need to run `yarn run build:update-api` to update the API.
-This will create set of new API summary files (located at `common/reviews/api/*`) and you need to add and commit them
-with your changes, in order for the Error to be fixed.
+如果对 API 的更改是有意的，您需要运行 `yarn run build:update-api` 来更新 API。这将创建一组新的 API 摘要文件（位于 `common/reviews/api/*`），您需要将它们与您的更改一起添加并提交，以修复错误。

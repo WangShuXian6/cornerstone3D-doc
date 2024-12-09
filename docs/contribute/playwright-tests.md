@@ -2,15 +2,15 @@
 id: playwright-tests
 ---
 
-# Writing PlayWright Tests
+# 编写 PlayWright 测试
 
-Our Playwright tests are written using the Playwright test framework. We use these tests to test our examples and ensure that they are working as expected which in turn ensures that our packages are working as expected.
+我们的 Playwright 测试使用 Playwright 测试框架编写。我们使用这些测试来测试我们的示例并确保它们按预期工作，这反过来又确保我们的包按预期工作。
 
-In this guide, we will show you how to write Playwright tests for our examples, create new examples and test against them.
+在本指南中，我们将向您展示如何为我们的示例编写 Playwright 测试，创建新示例并针对它们进行测试。
 
-## Testing against existing examples
+## 针对现有示例进行测试
 
-If you would like to use an existing example, you can find the list of examples in the `utils/ExampleRunner/example-info.json` file. You can use the `exampleName` property to reference the example you would like to use. for example, if you would like to use the `annotationToolModes` example, you can use the following code snippet:
+如果您想使用现有示例，可以在 `utils/ExampleRunner/example-info.json` 文件中找到示例列表。您可以使用 `exampleName` 属性来引用您想要使用的示例。例如，如果您想使用 `annotationToolModes` 示例，可以使用以下代码片段：
 
 ```ts
 import { test } from '@playwright/test';
@@ -27,9 +27,9 @@ test.describe('Annotation Tool Modes', async () => {
 });
 ```
 
-## Testing against new examples
+## 针对新示例进行测试
 
-Our playwright tests run against our examples, if you would like to add a new example, you can add it to the `examples` folder in the root of of the respective package, for example, `packages/tools/examples/{your_example_name}/index.ts`, and then add then register it in `utils/ExampleRunner/example-info.json` file under it's correct category, for example if its tool related, it can go into the existing `tools-basic` category. If you don't find a category that fits your example, you can create a new category and add it to the `categories` object in the `example-info.json` file.
+我们的 Playwright 测试针对我们的示例运行，如果您想添加一个新示例，可以将其添加到相应包的根目录下的 `examples` 文件夹中，例如 `packages/tools/examples/{your_example_name}/index.ts`，然后在 `utils/ExampleRunner/example-info.json` 文件中在其正确的类别下注册它。例如，如果它与工具相关，可以放入现有的 `tools-basic` 类别。如果您找不到适合您示例的类别，可以创建一个新类别并将其添加到 `example-info.json` 文件中的 `categories` 对象中。
 
 ```json
 {
@@ -49,7 +49,7 @@ Our playwright tests run against our examples, if you would like to add a new ex
 }
 ```
 
-Once this is done, you can write a test against the example by using the `visitExample` function in the `tests/utils/visitExample.ts` file. For example, if you would like to write a test against the `your_example_name` example, you can use the following code snippet:
+完成后，您可以通过在 `tests/utils/visitExample.ts` 文件中使用 `visitExample` 函数针对该示例编写测试。例如，如果您想针对 `your_example_name` 示例编写测试，可以使用以下代码片段：
 
 ```ts
 import { test } from '@playwright/test';
@@ -66,11 +66,11 @@ test.describe('Your Example Name', async () => {
 });
 ```
 
-This will also make your example appear in our docs page, so that users can see how to use the example, so you are adding double value by adding a new example.
+这还会使您的示例出现在我们的文档页面中，用户可以看到如何使用该示例，因此通过添加新示例，您增加了双重价值。
 
-## Screenshots
+## 截图
 
-A good way to check your tests is working as expected is to capture screenshots at different stages of the test. You can use our `checkForScreenshot` function located in `tests/utils/checkForScreenshot.ts` to capture screenshots. You should also plan your screenshots in advance, screenshots need to be defined in the `tests/utils/screenshotPaths.ts` file. For example, if you would to capture a screenshot after a measurement is added, you can define a screenshot path like this:
+检查您的测试是否按预期工作的一个好方法是在测试的不同阶段捕捉截图。您可以使用位于 `tests/utils/checkForScreenshot.ts` 的 `checkForScreenshot` 函数来捕捉截图。您还应该提前规划您的截图，截图需要在 `tests/utils/screenshotPaths.ts` 文件中定义。例如，如果您想在添加测量后捕捉截图，可以这样定义截图路径：
 
 ```ts
 const screenShotPaths = {
@@ -81,7 +81,7 @@ const screenShotPaths = {
 };
 ```
 
-It's okay if the screenshot doesn't exist yet, this will be dealt with in the next step. Once you have defined your screenshot path, you can use the `checkForScreenshot` function in your test to capture the screenshot. For example, if you would like to capture a screenshot of the `cornerstone-canvas` element after a measurement is added, you can use the following code snippet:
+如果截图尚不存在，这也是可以的，下一步会处理。定义截图路径后，您可以在测试中使用 `checkForScreenshot` 函数来捕捉截图。例如，如果您想在添加测量后捕捉 `cornerstone-canvas` 元素的截图，可以使用以下代码片段：
 
 ```ts
 import { test } from '@playwright/test';
@@ -108,11 +108,11 @@ test.describe('Your Example Name', async () => {
 });
 ```
 
-The test will automatically fail the first time you run it, it will however generate the screenshot for you, you will notice 3 new entries in the `tests/screenshots` folder, under `chromium/your-example.spec.js/measurementAdded.png`, `firefox/your-example.spec.js/measurementAdded.png` and `webkit/your-example.spec.js/measurementAdded.png` folders. You can now run the test again and it will use those screenshots to compare against the current state of the example. Please verify that the ground truth screenshots are correct before committing them or testing against them.
+测试第一次运行时将自动失败，但它会为您生成截图，您将在 `tests/screenshots` 文件夹下的 `chromium/your-example.spec.js/measurementAdded.png`、`firefox/your-example.spec.js/measurementAdded.png` 和 `webkit/your-example.spec.js/measurementAdded.png` 文件夹中看到 3 个新条目。您现在可以再次运行测试，它将使用这些截图与示例的当前状态进行比较。请在提交或测试之前验证地面真相截图是否正确。
 
-## Simulating mouse drags
+## 模拟鼠标拖动
 
-If you would like to simulate a mouse drag, you can use the `simulateDrag` function located in `tests/utils/simulateDrag.ts`. You can use this function to simulate a mouse drag on an element. For example, if you would like to simulate a mouse drag on the `cornerstone-canvas` element, you can use the following code snippet:
+如果您想模拟鼠标拖动，可以使用位于 `tests/utils/simulateDrag.ts` 的 `simulateDrag` 函数。您可以使用此函数在元素上模拟鼠标拖动。例如，如果您想在 `cornerstone-canvas` 元素上模拟鼠标拖动，可以使用以下代码片段：
 
 ```ts
 import {
@@ -142,35 +142,35 @@ test.describe('Basic Stack Manipulation', async () => {
 });
 ```
 
-Our simulate drag utility can simulate a drag on any element, and avoid going out of bounds. It will calculuate the bounding box of the element and ensure that the drag stays within the bounds of the element. This should be good enough for most tools, and better than providing custom x, and y coordinates which can be error prone and make the code difficult to maintain.
+我们的模拟拖动工具可以在任何元素上模拟拖动，并避免超出边界。它将计算元素的边界框，并确保拖动保持在元素的边界内。这对于大多数工具来说已经足够好了，比提供自定义的 x 和 y 坐标更好，因为自定义坐标可能容易出错并使代码难以维护。
 
-## Running the tests
+## 运行测试
 
-After you have wrote your tests, you can run them by using the following command:
+编写测试后，您可以使用以下命令运行它们：
 
 ```bash
 yarn test:e2e:ci
 ```
 
-If you want to use headed mode, you can use the following command:
+如果您想使用有头模式，可以使用以下命令：
 
 ```bash
 yarn test:e2e:headed
 ```
 
-You will see the test results in your terminal, if you want an indepth report, you can use the following command:
+您将在终端中看到测试结果，如果您想要深入的报告，可以使用以下命令：
 
 ```bash
 yarn playwright show-report tests/playwright-report
 ```
 
-## Serving the examples manually for development
+## 手动为开发服务示例
 
-By default, when you run the tests, it will call the `yarn build-and-serve-static-examples` command to serve the examples first, then run the tests, if you would like to serve the examples manually, you can use the same command. The examples will be available at `http://localhost:3000`. This could speed up your development process since playwright will skip the build and serve step and use the existing server on port 3000.
+默认情况下，当您运行测试时，它将首先调用 `yarn build-and-serve-static-examples` 命令来提供示例，然后运行测试。如果您想手动提供示例，可以使用相同的命令。示例将可在 `http://localhost:3000` 访问。这可以加快您的开发过程，因为 Playwright 将跳过构建和提供步骤，并使用端口 3000 上现有的服务器。
 
-## Playwright VSCode Extension and Recording Tests
+## Playwright VSCode 扩展和录制测试
 
-If you are using VSCode, you can use the Playwright extension to help you write your tests. The extension provides a test runner and many great features such as picking a locator using your mouse, recording a new test, and more. You can install the extension by searching for `Playwright` in the extensions tab in VSCode or by visiting the [Playwright extension page](https://marketplace.visualstudio.com/items?itemName=ms-playwright.playwright).
+如果您使用的是 VSCode，可以使用 Playwright 扩展来帮助您编写测试。该扩展提供了测试运行器和许多出色的功能，如使用鼠标选择定位器、录制新测试等。您可以通过在 VSCode 的扩展标签中搜索 `Playwright` 或访问 [Playwright 扩展页面](https://marketplace.visualstudio.com/items?itemName=ms-playwright.playwright) 来安装该扩展。
 
 <div style={{padding:"56.25% 0 0 0", position:"relative"}}>
     <iframe src="https://player.vimeo.com/video/949208495?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"

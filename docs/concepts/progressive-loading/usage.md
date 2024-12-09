@@ -1,18 +1,17 @@
 ---
 id: usage
-title: Usage
+title: 使用
 ---
 
-Now that we have learned about the retrieve configuration, let's see how we can use it in Cornerstone3D.
+现在我们已经了解了检索配置，让我们看看如何在 Cornerstone3D 中使用它。
 
 ## `imageRetrieveMetadataProvider`
 
-This is a new metadata provider that we have added to the Cornerstone3D library. It is responsible for retrieving the metadata for the image (or volume, as we will explore later). So, in order to perform progressive loading on a set of imageIds, you need to add your retrieve configuration to this provider.
+这是我们添加到 Cornerstone3D 库中的一个新的元数据提供器。它负责检索图像（或稍后我们将探讨的体积）的元数据。因此，为了对一组 imageIds 进行渐进式加载，您需要将您的检索配置添加到此提供器中。
 
-### Stack Viewport
+### 堆栈视口
 
-You can specify an imageId-specific retrieve configuration by including the imageIds as the key for your metadata. Considering our
-one stage retrieve configuration from the previous section we have the following:
+您可以通过将 imageIds 作为元数据的键来指定特定于 imageId 的检索配置。考虑到我们在前一节中的单阶段检索配置，我们有以下内容：
 
 ```js
 import { utilities } from '@cornerstone3d/core';
@@ -34,15 +33,15 @@ const retrieveConfiguration = {
 utilities.imageRetrieveMetadataProvider.add('imageId1', retrieveConfiguration);
 ```
 
-If you don't need to define an imageId-specific retrieve configuration, you can then scope your metadata to `stack` in order for it to be applied to all imageIds.
+如果您不需要定义特定于 imageId 的检索配置，则可以将元数据范围限定为 `stack`，以便将其应用于所有 imageIds。
 
 ```js
 utilities.imageRetrieveMetadataProvider.add('stack', retrieveConfiguration);
 ```
 
-### Volume Viewport
+### 体积视口
 
-For loading a volume as progressive loading, you can use the `volumeId` as the key for your metadata.
+要将体积加载为渐进式加载，您可以使用 `volumeId` 作为元数据的键。
 
 ```js
 import { utilities } from '@cornerstone3d/core';
@@ -51,12 +50,12 @@ const volumeId = ....get volume id....
 utilities.imageRetrieveMetadataProvider.add(volumeId, retrieveConfiguration);
 ```
 
-Or you can scope your metadata to `volume` in order for it to be applied to all volumeIds.
+或者，您可以将元数据范围限定为 `volume`，以便将其应用于所有 volumeIds。
 
 ```js
 utilities.imageRetrieveMetadataProvider.add('volume', retrieveConfiguration);
 ```
 
 :::tip
-That is all you need to do! Everything else for loading the image progressively is handled by the Cornerstone3D library.
+这就是您需要做的一切！加载图像的其他所有步骤都由 Cornerstone3D 库处理。
 :::

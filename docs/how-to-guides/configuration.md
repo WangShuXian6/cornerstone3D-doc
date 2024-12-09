@@ -1,4 +1,4 @@
 ---
 id: configuration
-title: Configuration
+title: 配置
 ---

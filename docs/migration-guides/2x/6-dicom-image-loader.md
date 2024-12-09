@@ -3,7 +3,6 @@ id: dicom-image-loader
 title: '@cornerstonejs/dicom-image-loader'
 ---
 
-
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
@@ -11,9 +10,9 @@ import TabItem from '@theme/TabItem';
 
 # @cornerstonejs/dicom-image-loader
 
-## Initialization and Configuration
+## 初始化和配置
 
-**Before:**
+**之前：**
 
 ```js
 cornerstoneDICOMImageLoader.external.cornerstone = cornerstone;
@@ -26,75 +25,39 @@ cornerstoneDICOMImageLoader.configure({
   },
 });
 
-// Additional configuration...
+// 其他配置...
 cornerstoneDICOMImageLoader.webWorkerManager.initialize(config);
 ```
 
-**After:**
+**之后：**
 
 ```js
 cornerstoneDICOMImageLoader.init();
 
-// optionally you can pass a config object to init
+// 可选地，您可以向 init 传递一个配置对象
 cornerstoneDICOMImageLoader.init({
   maxWebWorkers: 2, //
 });
 ```
 
-**Migration Guide:**
+**迁移指南：**
 
-1. You should replace configure with `init`
-2. You don't need to pass cornerstone and dicomParser anymore, we just use them internally and import them as dependencies
-3. Remove `useWebWorkers` option as web workers are now always used.
-4. Remove `decodeConfig` options as they are no longer applicable.
-5. Remove separate `webWorkerManager.initialize` call as it's now handled internally.
-6. Set `maxWebWorkers` in the configure options instead of a separate config object.
-   1. by default we set half of the available cores
+1. 您应该将 `configure` 替换为 `init`
+2. 您不再需要传递 `cornerstone` 和 `dicomParser`，我们在内部使用它们并作为依赖项导入
+3. 移除 `useWebWorkers` 选项，因为现在始终使用 web workers
+4. 移除 `decodeConfig` 选项，因为它们不再适用
+5. 移除单独的 `webWorkerManager.initialize` 调用，因为它现在在内部处理
+6. 在配置选项中设置 `maxWebWorkers`，而不是使用单独的配置对象
+   1. 默认情况下，我们设置可用核心的一半
 
-### Removal of External Module
+### 移除外部模块
 
-The `externalModules` file has been removed. Any code relying on `cornerstone.external` should be updated to use direct imports or the new configuration method.
-We just treat the cornerstonejs/core and dicomparser as any other dependency and import them directly internally
+`externalModules` 文件已被移除。任何依赖于 `cornerstone.external` 的代码应更新为使用直接导入或新的配置方法。
+我们只将 `cornerstonejs/core` 和 `dicomparser` 视为其他依赖项，并在内部直接导入它们。
 
-### Webpack Configuration
+### Webpack 配置
 
-Remove the following Webpack rule if present in your configuration:
-
-```json
-{
-  test: /\.worker\.(mjs|js|ts)$/,
-  use: [
-    {
-      loader: 'worker-loader',
-    },
-  ],
-},
-```
-
-Web workers are now handled internally by the library.
-
-## Always `Prescale`
-
-By default, Cornerstone3D always prescales images with the modality LUT (rescale slope and intercept). You probably don't need to make any changes to your codebase.
-
-<details>
-<summary>Why?</summary>
-The viewport previously made the decision to prescale, and all viewports followed this approach. However, we found prescaling bugs in some user-implemented custom image loaders. We have now fixed these issues by consistently applying prescaling.
-
-</details>
-
-## Decoders Update
-
-`@cornerstonejs/dicomImageLoader` previously utilized the old API for web workers, which is now deprecated. It has transitioned to the new web worker API via our new internal wrapper over `comlink` package. This change enables more seamless interaction with web workers and facilitates compiling and bundling the web workers to match the ESM version of the library.
-
-<details>
-<summary>Why?</summary>
-
-To consolidate the web worker API using a new ES module format, which will enable new bundlers like `vite` to work seamlessly with the library.
-
-</details>
-
-So if you had custom logic in your webpack or other bundler you can remove the following rule
+如果您的配置中存在以下 Webpack 规则，请将其移除：
 
 ```json
 {
@@ -104,36 +67,67 @@ So if you had custom logic in your webpack or other bundler you can remove the f
       loader: 'worker-loader',
     },
   ],
-},
+}
 ```
 
-## Removing support for non web worker decoders
+Web workers 现在由库内部处理。
 
-We have removed support for non-web worker decoders in the 2.0 version of the cornerstone3D. This change is to ensure that the library is more performant and to reduce the bundle size.
+## 始终 `Prescale`
+
+默认情况下，Cornerstone3D 始终使用模态 LUT（重新缩放斜率和截距）预缩放图像。您可能不需要对代码库进行任何更改。
 
 <details>
-<summary>Why?</summary>
-
-We see no compelling reason to use non-worker decoders anymore. Web worker decoders offer superior performance and better compatibility with modern bundlers.
-
+<summary>为什么？</summary>
+之前，视口决定是否预缩放，所有视口都遵循这种方法。然而，我们在一些用户实现的自定义图像加载器中发现了预缩放错误。我们现在通过一致地应用预缩放来修复这些问题。
 </details>
 
-## Removal of `minAfterScale` and `maxAfterScale` on `imageFrame`
+## 解码器更新
 
-in favor of `smallestPixelValue` and `largestPixelValue`, previously they were 4 all used together and was
-making it hard to use the correct one.
+`@cornerstonejs/dicomImageLoader` 之前使用了旧的 web workers API，现在已弃用。它已通过我们新的内部包装器 `comlink` 转换为新的 web workers API。这一更改使与 web workers 的交互更加无缝，并促进了将 web workers 编译和打包以匹配库的 ESM 版本。
 
-## DICOM Image Loader ESM default
+<details>
+<summary>为什么？</summary>
 
-We have changed the default export of the DICOM Image Loader to ESM in the 2.0 version of the cornerstone3D and correctly
-publish types
+使用新的 ES 模块格式整合 web worker API，这将使像 `vite` 这样的新打包器能够与库无缝协作。
+</details>
 
-This mean you don't need to have an alias for the dicom image loader anymore
+因此，如果您在 webpack 或其他打包器中有自定义逻辑，您可以移除以下规则：
+
+```json
+{
+  test: /\.worker\.(mjs|js|ts)$/,
+  use: [
+    {
+      loader: 'worker-loader',
+    },
+  ],
+}
+```
+
+## 移除对非 web worker 解码器的支持
+
+我们在 cornerstone3D 的 2.0 版本中移除了对非 web worker 解码器的支持。这一更改旨在确保库性能更佳并减少打包大小。
+
+<details>
+<summary>为什么？</summary>
+
+我们认为没有充分的理由再使用非 worker 解码器。Web worker 解码器提供更优的性能，并且与现代打包器兼容性更好。
+</details>
+
+## 移除 `imageFrame` 上的 `minAfterScale` 和 `maxAfterScale`
+
+取而代之的是 `smallestPixelValue` 和 `largestPixelValue`，之前它们都是一起使用，导致难以使用正确的值。
+
+## DICOM 图像加载器 ESM 默认
+
+我们在 cornerstone3D 的 2.0 版本中将 DICOM 图像加载器的默认导出更改为 ESM，并正确发布了类型。
+
+这意味着您不再需要为 DICOM 图像加载器设置别名。
 
 <Tabs>
   <TabItem value="Before" label="Before 📦 " default>
 
-Probably in your webpack or other bundler you had this
+可能在您的 webpack 或其他打包器中，您有以下内容
 
 ```js
  alias: {
@@ -145,16 +139,15 @@ Probably in your webpack or other bundler you had this
   </TabItem>
   <TabItem value="After" label="After 🚀🚀">
 
-Now you can remove this alias and use the default import
+现在，您可以移除此别名并使用默认导入
 
   </TabItem>
 </Tabs>
 
 <details>
-<summary>Why?</summary>
+<summary>为什么？</summary>
 
-ESM is the future of javascript, and we want to ensure that the library is compatible with modern bundlers and tools.
-
+ESM 是 JavaScript 的未来，我们希望确保库与现代打包器和工具兼容。
 </details>
 
 ---

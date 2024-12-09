@@ -1,7 +1,6 @@
 ---
 id: static-wado
-title: Static dicom web
+title: 静态 DICOMweb
 ---
 
-standard and non-standard options,
-as well as instructions on setting it up in the [Static DICOMweb](https://github.com/RadicalImaging/Static-DICOMWeb) repository, mainly as an illustrative example.
+标准和非标准选项，以及在 [Static DICOMweb](https://github.com/RadicalImaging/Static-DICOMWeb) 仓库中设置它的说明，主要作为一个说明性示例。

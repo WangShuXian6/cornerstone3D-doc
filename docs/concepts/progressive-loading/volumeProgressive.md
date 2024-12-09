@@ -1,82 +1,69 @@
 ---
 id: volumeProgressive
-title: Volume Progressive Loading
+title: 渐进加载体积
 ---
 
-## Volume Viewport Interleaved Decode
+## 体积视口交错解码
 
-Since, for volume viewports, we mostly deal with rendering the reconstructed views (MPR) of the actual volume, the ideal scenario would be to have the initial images of the volume (even if lossy) as quickly as possible to avoid rendering a gray volume. We can achieve this by interleaving the requests.
+由于对于体积视口，我们主要处理实际体积的重建视图（MPR）的渲染，理想的情况是尽快获取体积的初始图像（即使是有损的），以避免渲染出灰色体积。我们可以通过交错请求来实现这一点。
 
-Interleaving the images applies to any encoding for a volume.
-That is, fetching every Nth image first allows a 1/Nth frequency image to be
-displayed.
-The interleave code then simply replicates the images to the missing
-positions to produce a low resolution in the longitudinal direction.
+图像的交错适用于任何体积编码。
+也就是说，首先获取每第 N 张图像可以显示 1/N 频率的图像。
+然后，交错代码仅复制缺失位置的图像，以在纵向方向生成低分辨率图像。
 
-This interleaving can then be combined with any discrete fetch for a lossy
-version of an image - that is, a non-streamed decoding version of an image
-that returns an entire request at once.
+然后，这种交错可以与任何有损图像的离散获取结合使用——即以非流式解码方式获取图像，一次性返回整个请求。
 
-# Performance
+# 性能
 
-The performance gains on using progressive loading on volume viewports vary quite a bit depending on size of data
-and capabilities of the DICOMweb server components.
+在体积视口上使用渐进加载的性能提升因数据大小和 DICOMweb 服务器组件的能力而有很大差异。
 
-Note that none of the times include time to load the decoder, but is only seen on first render. These times are similar for
-both types.
+请注意，所有时间均不包括加载解码器的时间，仅在首次渲染时看到。这些时间对于两种类型来说是相似的。
 
-| Type             | Size | Network | First Render | Complete |
-| ---------------- | ---- | ------- | ------------ | -------- |
-| HTJ2K Stream     | 33 M | 4g      | 2503 ms      | 8817 ms  |
-| HTJ2K Byte Range | 33 M | 4g      | 1002 ms      | 8813 ms  |
+| 类型              | 大小 | 网络 | 首次渲染  | 完成时间   |
+| ----------------- | ---- | ---- | --------- | ---------- |
+| HTJ2K 流式传输    | 33 M | 4g   | 2503 ms   | 8817 ms    |
+| HTJ2K 字节范围    | 33 M | 4g   | 1002 ms   | 8813 ms    |
 
-The HTJ2K byte range is very slightly slower than straight JLS, but can be
-done against any DICOMweb server supporting HTJ2K and byte range requests.
+HTJ2K 字节范围的速度略慢于直接的 JLS，但可以在任何支持 HTJ2K 和字节范围请求的 DICOMweb 服务器上进行。
 
-- 4g speed - 30 mbit/s down, 5 mbit/s up, 10 ms latency
-- Full size images are 512x512x174
-- Reduce resolution images are 128x128 and lossy compressed
+- 4g 速度 - 下载 30 mbit/s，上行 5 mbit/s，延迟 10 ms
+- 全尺寸图像为 512x512x174
+- 降低分辨率的图像为 128x128，经过有损压缩
 
-## HTJ2K Streaming
+## HTJ2K 流式传输
 
-Note that this stage model will interleave requests across different viewports
-for the various stages, by the selection of the queue and the priority of the
-requests. The interleaving isn't perfect, as it interleaves stages rather than
-individual requests, but the appearance works reasonably well without complex
-logic being needed to work between volumes.
+请注意，这个阶段模型将通过队列的选择和请求的优先级在不同视口之间交错各种阶段的请求。交错并不完美，因为它交错的是阶段而不是单个请求，但在不需要复杂逻辑在体积之间工作的情况下，外观效果相当不错。
 
-As learned in the [advanced retrieve configuration](./advance-retrieve-config), we saw that
-we can make use of `decimate`, `offset` and different priorities to achieve the interleaving.
+正如在[高级检索配置](./advance-retrieve-config)中了解到的，我们可以利用 `decimate`、`offset` 和不同的优先级来实现交错。
 
-Decimation is a selection of every `N`th' image at the `F` offset, described as `N/F`,
-eg `4/3` is positions `3,7,11,...`
-This is done by retrieving, in order, the following stages:
+抽取是以 `F` 偏移量选择每第 `N` 张图像，描述为 `N/F`，例如 `4/3` 是位置 `3,7,11,...`
+这是通过按顺序检索以下阶段来完成的：
 
-- Initial images - images at position 0, 50%, 100%
-- Decimated 4/3 image using multipleFast retrieve type
-  - Displays a full volume at low resolution once this is complete
-- Decimated 4/1 image using multipleFast retrieve type
-  - Updates the initial volume with twice the resolution
-- Decimated 4/2 and 4/0 images using multipleFinal
-  - Replaces the replicated images with full resolution images
-- Decimated 4/3 and 4/1 using multipleFinal
-  - Replices the low resolution images with full resolution
+- 初始图像 - 位置 0、50%、100% 的图像
+- 使用 `multipleFast` 检索类型的 4/3 抽取图像
+  - 完成后以低分辨率显示完整体积
+- 使用 `multipleFast` 检索类型的 4/1 抽取图像
+  - 以两倍分辨率更新初始体积
+- 使用 `multipleFinal` 的 4/2 和 4/0 抽取图像
+  - 用全分辨率图像替换复制的图像
+- 使用 `multipleFinal` 的 4/3 和 4/1 抽取图像
+  - 用全分辨率图像复制低分辨率图像
 
-The configuration looks like:
+配置如下：
 
 ```javascript
   stages: [
     {
       id: 'initialImages',
-      // positions selects specific positions - middle image, first and last
+      // positions 选择特定位置 - 中间图像、第一张和最后一张
       positions: [0.5, 0, -1],
-      // Use teh default render type for these, which should retrieve full resolution
+      // 为这些使用默认的渲染类型，这应该检索全分辨率
       retrieveType: 'default',
-      // Use the Interaction queue
+      // 使用交互队列
       requestType: RequestType.INTERACTION,
-      // Priority 10, do first
+      // 优先级 10，首先执行
       priority: 10,
-      // Fill nearby frames from this data
+      // 从这些数据填充附近的帧
       nearbyFrames: {....},
     },
     {
@@ -87,8 +74,8 @@ The configuration looks like:
       priority: 9,
       nearbyFrames,
     },
-    ... other versions
-    // Replace the first data with final data
+    ... 其他版本
+    // 用最终数据替换第一批数据
     {
       id: 'finalFull',
       decimate: 4,
@@ -99,43 +86,34 @@ The configuration looks like:
   ],
 ```
 
-1. Fetch images shown initially at full resolution (first and last)
-2. Fetch every 4th image first `initialByteRange` bytes
+1. 以全分辨率获取最初显示的图像（第一张和最后一张）
+2. 首先获取每第 4 张图像的 `initialByteRange` 字节
 
-- Fetch byte range [0,64000]
-- Display partial resolution version immediately
-- Use partial resolution version to display nearby slices
+- 获取字节范围 [0,64000]
+- 立即显示部分分辨率版本
+- 使用部分分辨率版本显示附近的切片
 
-3. Other steps
+3. 其他步骤
 
-- There are other partial and full resolution views here to fill in data
+- 此处有其他部分和全分辨率视图来填充数据
 
-4. Fetch remaining data for #2 (do not refetch original data)
+4. 获取第 2 步的剩余数据（不重新获取原始数据）
 
-- Replaces the low resolution data from #2 with full data
+- 用全数据替换第 2 步的低分辨率数据
 
-## HTJ2K Byte Range
+## HTJ2K 字节范围
 
-The volume progressive loading extends the basic stack loading with the ability
-to interleave various images, interpolating them from a reduced resolution
-version both intra and inter image. That is, individual images might be fetched
-initially at 1/4 size (256x256 for a CT), and then only the initially displayed
-image plus every 4th image, with other images being interpolated. In this case,
-replicate interpolation is used to minimize interpolation overhead. Finally,
-after the lossy initial versions are fetched, the remaining images are fetched.
+体积渐进加载扩展了基本堆栈加载，具备交错各种图像的能力，从降低分辨率的版本在图像内和图像间进行插值。也就是说，单个图像可能最初以 1/4 尺寸（CT 为 256x256）获取，然后仅显示最初显示的图像和每第 4 张图像，其他图像通过插值生成。在这种情况下，使用复制插值以最小化插值开销。最后，在获取有损的初始版本后，获取剩余的图像。
 
-The default retrieve ordering is below, where Decimate is described as the
-interval between images included, and the offset in that set.
+默认的检索顺序如下，其中 Decimate 描述为包含图像之间的间隔以及该组中的偏移量。
 
-- Initial images, full resolution
-- Decimate 4/3 partial resolution
-  - Interpolate images -2...+1 (nearest neighbors)
-- Decimate 4/1 partial resolution
-- Decimate 4/2 full resolution
-- Decimate 4/4 full resolution
-- Decimate 4/3 full resolution
-- Decimate 4/1 full resolution
+- 初始图像，全分辨率
+- 4/3 抽取，部分分辨率
+  - 插值图像 -2...+1（最近邻）
+- 4/1 抽取，部分分辨率
+- 4/2 抽取，全分辨率
+- 4/4 抽取，全分辨率
+- 4/3 抽取，全分辨率
+- 4/1 抽取，全分辨率
 
-The same ordering is done if partial resolution is not configured, except that
-the last two stages are never run because the partial resolution has already
-loaded those. This DOES allow the interpolation of results to appear very quickly.
+如果未配置部分分辨率，则执行相同的排序，除了最后两个阶段不会运行，因为部分分辨率已经加载了这些。这确实允许结果的插值非常快速地显示出来。

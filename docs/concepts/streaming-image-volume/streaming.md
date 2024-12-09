@@ -2,39 +2,27 @@
 id: streaming
 ---
 
-# Streaming of Volume data
+# 体积数据的流式传输
 
-With the addition of [`Volumes`](../cornerstone-core/volumes.md) to `Cornerstone3D`, we are adding and maintaining `Streaming-volume-image-loader`
-which is a progressive loader for volumes. This loader is designed to accept imageIds and
-load them into a `Volume`.
+随着 [`Volumes`](../cornerstone-core/volumes.md) 被添加到 `Cornerstone3D`，我们正在添加和维护 `Streaming-volume-image-loader`，这是一个用于体积的渐进式加载器。此加载器旨在接受 imageIds 并将它们加载到 `Volume` 中。
 
-## Creating Volumes From Images
+## 从图像创建体积
 
-Since 3D `Volume` is composed of 2D images (in `StreamingImageVolume`), its volume metadata is derived from the metadata of the 2D images.
-Therefore, an initial call to fetch images metadata is required for this loader. This way,
-not only we can pre-allocate and cache a `Volume` in memory, but we also can render the volume
-as the 2D images are being loaded (progressive loading).
-
+由于 3D `Volume` 由 2D 图像组成（在 `StreamingImageVolume` 中），其体积元数据来源于 2D 图像的元数据。因此，此加载器需要初始调用来获取图像元数据。通过这种方式，我们不仅可以预先分配并缓存内存中的 `Volume`，还可以在 2D 图像被加载时渲染体积（渐进式加载）。
 
 ![](../../assets/volume-building.png)
 
+通过预先获取所有图像（`imageIds`）的元数据，我们不需要为每个 imageId 创建 [`Image`](../cornerstone-core/images.md) 对象。相反，我们可以将图像的 pixelData 直接插入到体积中的正确位置。这保证了速度和内存效率（但带来了预获取元数据的最低成本）。
 
-By pre-fetching the metadata from all images (`imageIds`), we don't need to create
-the [`Image`](../cornerstone-core/images.md) object for each imageId. Instead, we can
-just insert the pixelData of the image is directly inserted into the volume
-at the correct location. This guarantees speed and memory efficiency (but comes
-at minimal cost of pre-fetching the metadata).
+## 将体积与图像相互转换
 
-## Converting volumes from/to images
+`StreamingImageVolume` 基于一系列获取的图像（2D）加载体积，`Volume` 可以实现将其 3D 像素数据转换为 2D 图像的功能，而无需通过网络重新请求它们。例如，使用 `convertToCornerstoneImage`，`StreamingImageVolume` 实例接受一个 imageId 及其 imageId 索引，并返回一个 Cornerstone Image 对象（ImageId 索引是必需的，因为我们希望在 3D 数组中定位 imageId 的 pixelData 并将其复制到 Cornerstone Image 中）。
 
-`StreamingImageVolume` loads a volume based on a series of fetched images (2D), a `Volume` can implement functions to convert its 3D pixel data to 2D images without re-requesting them over the network. For instance, using `convertToCornerstoneImage`, `StreamingImageVolume` instance takes an imageId and its imageId index and return a Cornerstone Image object (ImageId Index is required since we want to locate the imageId pixelData in the 3D array and copy it over the Cornerstone Image).
+这是一个可以逆转的过程；如果一组 `imageIds` 具有体积的属性（相同的参考系、起点、维度、方向和像素间距），`Cornerstone3D` 可以从这些 `imageIds` 创建一个体积。
 
-This is a process that can be reverted; `Cornerstone3D` can create a volume from a set of `imageIds` if they have properties of a volume (Same FromOfReference, origin, dimension, direction and pixelSpacing).
+## 使用
 
-## Usage
-
-As mentioned before, a pre-cache volume should be created before hand from the image metadata. This can be
-done by calling the `createAndCacheVolume`.
+如前所述，应事先从图像元数据创建预缓存体积。这可以通过调用 `createAndCacheVolume` 来完成。
 
 ```js
 const ctVolumeId = 'cornerstoneStreamingImageVolume:CT_VOLUME';
@@ -43,7 +31,7 @@ const ctVolume = await volumeLoader.createAndCacheVolume(ctVolumeId, {
 });
 ```
 
-Then the volume can call its `load` method to actually load the pixel data of the images.
+然后，体积可以调用其 `load` 方法来实际加载图像的像素数据。
 
 ```js
 await ctVolume.load();
@@ -51,10 +39,7 @@ await ctVolume.load();
 
 ## imageLoader
 
-Since the volume loader does not need to create the [`Image`](../cornerstone-core/images.md) object for each imageId in
-the `StreamingImageVolume`, it will use the `skipCreateImage` option internally to skip the creation of the image object.
-Otherwise, the volume's image loader is the same as wadors image loader written in `cornerstone-wado-image-loader`.
-
+由于体积加载器不需要为 `StreamingImageVolume` 中的每个 imageId 创建 [`Image`](../cornerstone-core/images.md) 对象，它将内部使用 `skipCreateImage` 选项来跳过图像对象的创建。否则，体积的图像加载器与 `cornerstone-wado-image-loader` 中编写的 wadors 图像加载器相同。
 
 ```js
 const imageIds = ['wadors:imageId1', 'wadors:imageId2'];
@@ -68,23 +53,19 @@ const ctVolume = await volumeLoader.createAndCacheVolume(ctVolumeId, {
 await ctVolume.load();
 ```
 
-## Alternative implementations to consider
+## 可考虑的替代实现
 
-Although we believe our pre-fetching method for volumes ensures that the volume is loaded as fast as possible,
-There can be other implementations of volume loaders that don't rely on this prefetching.
+尽管我们相信我们的预获取体积方法确保了体积尽可能快速地加载，但仍然可以有其他不依赖此预获取的体积加载器实现。
 
-#### Creating Volumes without pre-fetching metadata
+#### 创建不预获取元数据的体积
 
-In this scenario, each image needs to be created separately, which means each image needs to be loaded and a
-Cornerstone [`Image`](../cornerstone-core/images.md) should be created. This is a costly operation as all the image
-objects are loaded in memory and a separate creation of a [`Volume`](../cornerstone-core/volumes.md) is required from
-those images.
+在这种情况下，每个图像需要单独创建，这意味着每个图像需要被加载并且应该创建一个 Cornerstone [`Image`](../cornerstone-core/images.md)。这是一个昂贵的操作，因为所有图像对象都被加载到内存中，并且需要从这些图像单独创建一个 [`Volume`](../cornerstone-core/volumes.md)。
 
-Advantages:
+优点：
 
-- Not need for a separate metadata call to fetch the image metadata.
+- 不需要单独的元数据调用来获取图像元数据。
 
-Disadvantages:
+缺点：
 
-- Performance cost
-- Cannot progressively load the image data, as it requires creating a new volume for each image change
+- 性能成本
+- 无法渐进式加载图像数据，因为它需要为每个图像更改创建一个新的体积

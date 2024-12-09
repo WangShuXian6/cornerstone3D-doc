@@ -2,18 +2,18 @@
 id: documentation
 ---
 
-# Writing Documentation
+# 编写文档
 
-We strongly recommend for each Pull Request you make you ask yourself the following questions:
+我们强烈建议您在每次提交 Pull Request 时问自己以下问题：
 
-- Does this change require change of documentation too?
-- Is this a new feature? If so, does it need to be documented?
+- 此更改是否也需要更改文档？
+- 这是一个新功能吗？如果是，是否需要记录？
 
-If the answer is Yes, it is recommended to document it.
+如果答案是肯定的，建议进行文档记录。
 
-## Running Documentation Page
+## 运行文档页面
 
-To run documentation you need to execute
+要运行文档，您需要执行
 
 ```sh
 cd packages/docs/
@@ -21,19 +21,14 @@ cd packages/docs/
 yarn run start
 ```
 
-This will open up port `3000` and start the documentation server. Then you can
-visit `http://localhost:3000` to see the documentation page.
+这将打开端口 `3000` 并启动文档服务器。然后您可以访问 `http://localhost:3000` 查看文档页面。
 
 :::note Important
-Running the documentation server for the first time will probably fail complaining about the `example.md`
-file not being found. This is because the `example.md` file is created at build time
-and is not available in the repository. To fix this, for the first time, you can run `yarn docs:dev` to build and
-to run the documentation server. After the first time, You can just run `yarn docs`
-to run the documentation server.
+第一次运行文档服务器可能会因为找不到 `example.md` 文件而失败。这是因为 `example.md` 文件是在构建时创建的，并且在仓库中不可用。为了解决这个问题，您可以第一次运行 `yarn docs:dev` 来构建并运行文档服务器。之后，您只需运行 `yarn docs` 来运行文档服务器。
 :::
 
-## Potential problems you may encounter
+## 您可能遇到的潜在问题
 
-### Side bar not showing up
+### 侧边栏未显示
 
-There is a bug in your markdown file, likely in the way you are using the markdown syntax.
+您的 markdown 文件中存在一个错误，可能是您使用 markdown 语法的方式有问题。

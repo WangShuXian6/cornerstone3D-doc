@@ -2,47 +2,22 @@
 id: related-libraries
 ---
 
-# Related Libraries
+# 相关库
 
-In this section we will explain various libraries that are related to `Cornerstone3D`.
+在本节中，我们将解释与 `Cornerstone3D` 相关的各种库。
 
-## History
+## 历史
 
-Before explaining the libraries, we will first discuss the history of `Cornerstone3D`.
-Prior to `Cornerstone3D` we developed and maintained [`cornerstone-core`](https://github.com/cornerstonejs/cornerstone)
-and [`cornerstone-tools`](https://github.com/cornerstonejs/cornerstoneTools)
-since 2014. Since the significance of improvements in `Cornerstone3D` over `cornerstone-core` and `Cornerstone3DTools` over `cornerstone-tools`
-is much greater, in long term we will switch our focus to `Cornerstone3D` and
-provide adequate documentation for how to upgrade from legacy `cornerstone`
-to the new `Cornerstone3D`. In the meantime, we will continue to maintain
-the legacy `cornerstone` packages and take care of potential critical bugs.
+在解释这些库之前，我们首先讨论一下 `Cornerstone3D` 的历史。在 `Cornerstone3D` 之前，我们自2014年以来开发并维护了 [`cornerstone-core`](https://github.com/cornerstonejs/cornerstone) 和 [`cornerstone-tools`](https://github.com/cornerstonejs/cornerstoneTools)。由于 `Cornerstone3D` 相对于 `cornerstone-core` 和 `Cornerstone3DTools` 相对于 `cornerstone-tools` 的改进意义更大，从长远来看，我们将把重点转向 `Cornerstone3D`，并提供如何从传统的 `cornerstone` 升级到新的 `Cornerstone3D` 的充分文档。同时，我们将继续维护传统的 `cornerstone` 包，并处理潜在的关键错误。
 
-In addition to the `cornerstone-core` and `cornerstone-tools` packages, we have also maintained
-[`react-vtkjs-viewport`](https://github.com/OHIF/react-vtkjs-viewport) our first iteration
-to enable 3D rendering using [vtk-js](https://github.com/kitware/vtk-js) in React.
-`react-vtkjs-viewport` is currently being used in the current main OHIF Viewer for the MPR
-views. One of the main motivations that prompted the development of the `Cornerstone3D` was
-the desire to be able to decouple the rendering from the UI by React similar to `cornerstone-core`.
-In addition, `react-vtkjs-viewport`'s memory management was a major challenge for more complex
-scenarios such as a PET/CT fusion with 10 viewports. Similar to
-legacy cornerstone, we will shift our efforts from `react-vtkjs-viewport` to use the new
-`Cornerstone3D` and `Cornerstone3DTools` packages.
+除了 `cornerstone-core` 和 `cornerstone-tools` 包，我们还维护了 [`react-vtkjs-viewport`](https://github.com/OHIF/react-vtkjs-viewport)，这是我们使用 [vtk-js](https://github.com/kitware/vtk-js) 在 React 中实现 3D 渲染的第一代。`react-vtkjs-viewport` 目前在当前的主要 OHIF Viewer 中用于 MPR 视图。促使 `Cornerstone3D` 开发的主要动机之一是希望能够通过 React 将渲染与 UI 解耦，类似于 `cornerstone-core`。此外，`react-vtkjs-viewport` 的内存管理是一个重大挑战，尤其是在处理具有 10 个视口的 PET/CT 融合等更复杂的场景时。类似于传统的 cornerstone，我们将把努力从 `react-vtkjs-viewport` 转向使用新的 `Cornerstone3D` 和 `Cornerstone3DTools` 包。
 
-## Libraries
+## 库
 
 ### vtk.js
 
-[`vtk-js`](https://github.com/kitware/vtk-js) is an open-source javascript library for 3D computer graphics, image processing and visualization.
-In the past, we have used `vtk-js` for rendering and interacting with 3D data
-in `react-vtkjs-viewport` library. `Cornerstone3D`'s Rendering Engine has been designed
-to use `vtk-js` for 3D rendering. `vtk-js` has annotation support using tools, but we have
-decided to use `Cornerstone3DTools` for this purpose, and only rely on `vtk-js` for
-the actual rendering. Our roadmap (not funded yet) includes enabling usage of `vtk-js`
-3D annotation tools in `Cornerstone3D`.
+[`vtk-js`](https://github.com/kitware/vtk-js) 是一个用于 3D 计算机图形、图像处理和可视化的开源 JavaScript 库。过去，我们在 `react-vtkjs-viewport` 库中使用 `vtk-js` 来渲染和交互 3D 数据。`Cornerstone3D` 的渲染引擎被设计为使用 `vtk-js` 进行 3D 渲染。`vtk-js` 支持使用工具进行注释，但我们决定使用 `Cornerstone3DTools` 来实现这一目的，并仅依赖 `vtk-js` 进行实际渲染。我们的路线图（尚未获得资金）包括在 `Cornerstone3D` 中启用使用 `vtk-js` 的 3D 注释工具。
 
 ### OHIF Viewer
 
-[Open Health Imaging Foundation (OHIF)](https://ohif.org/) image viewer is an open source image viewer
-that is being used in academic and commercial projects such as [The Cancer Imaging Archive (TCIA)](https://www.cancerimagingarchive.net/) and [NCI Imaging Data Commons](https://datacommons.cancer.gov/repository/imaging-data-commons).
-It is an extensible web imaging
-platform with zero footprint and installation required. Currently, OHIF 3.9 relies on the all the libraries in the `Cornerstone3D` monorepo for its image rendering and annotation features.
+[开放健康成像基金会 (OHIF)](https://ohif.org/) 图像查看器是一个开源图像查看器，正在被用于学术和商业项目，如 [癌症成像档案 (TCIA)](https://www.cancerimagingarchive.net/) 和 [NCI 成像数据共享中心](https://datacommons.cancer.gov/repository/imaging-data-commons)。它是一个可扩展的 Web 成像平台，无需占用资源和安装。目前，OHIF 3.9 依赖于 `Cornerstone3D` 单一仓库中的所有库来实现其图像渲染和注释功能。

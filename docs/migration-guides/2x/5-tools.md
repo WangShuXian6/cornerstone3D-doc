@@ -11,30 +11,30 @@ import TabItem from '@theme/TabItem';
 
 ## triggerAnnotationRenderForViewportIds
 
-Now only requires viewportIds and doesn't need renderingEngine anymore
+现在只需要 `viewportIds`，不再需要 `renderingEngine`。
 
 ```js
 triggerAnnotationRenderForViewportIds(renderingEngine, viewportIds) ---> triggerAnnotationRenderForViewportIds(viewportIds)
 ```
 
 <details>
-<summary>Why?</summary>
-Since there is one rendering engine per viewport, there is no need to pass the rendering engine as an argument.
+<summary>为什么？</summary>
+因为每个视口都有一个渲染引擎，因此不需要将渲染引擎作为参数传递。
 </details>
 
-## Tools
+## 工具
 
 ### StackScrollMouseWheelTool -> StackScrollTool
 
-We've decoupled the Mouse Wheel from the tool itself, allowing it to be applied as a binding similar to other mouse bindings.
+我们已经将鼠标滚轮与工具本身解耦，使其可以像其他鼠标绑定一样应用为绑定。
 
-This change offers several advantages:
+此更改带来了多个优势：
 
-- It can be combined with other mouse bindings
-- It can be paired with keyboard bindings
+- 它可以与其他鼠标绑定组合使用
+- 它可以与键盘绑定配对使用
 
 <Tabs>
-  <TabItem value="Before" label="Before 📦 " default>
+  <TabItem value="Before" label="之前 📦 " default>
 
 ```js
 cornerstoneTools.addTool(StackScrollMouseWheelTool);
@@ -43,7 +43,7 @@ toolGroup.setToolActive(StackScrollMouseWheelTool.toolName);
 ```
 
   </TabItem>
-  <TabItem value="After" label="After 🚀🚀">
+  <TabItem value="After" label="之后 🚀🚀">
 
 ```js
 cornerstoneTools.addTool(StackScrollTool);
@@ -62,12 +62,12 @@ toolGroup.setToolActive(StackScrollTool.toolName, {
 
 ### BaseTool
 
-The `getTargetVolumeId` method has been removed in favor of `getTargetId`, and `getTargetIdImage` has been renamed to `getTargetImageData` to make it more clear that it is an image data.
+`getTargetVolumeId` 方法已被移除，取而代之的是 `getTargetId`，而 `getTargetIdImage` 已重命名为 `getTargetImageData`，以更清楚地表明它是图像数据。
 
-### Usage Example
+### 使用示例
 
 <Tabs>
-<TabItem value="Before" label="Before 📦 " default>
+<TabItem value="Before" label="之前 📦 " default>
 
 ```typescript
 const volumeId = this.getTargetVolumeId(viewport);
@@ -75,7 +75,7 @@ const imageData = this.getTargetIdImage(targetId, renderingEngine);
 ```
 
 </TabItem>
-<TabItem value="After" label="After 🚀">
+<TabItem value="After" label="之后 🚀">
 
 ```typescript
 const imageData = this.getTargetImageData(targetId);
@@ -84,50 +84,50 @@ const imageData = this.getTargetImageData(targetId);
 </TabItem>
 </Tabs>
 
-## New Segmentation Model
+## 新的分割模型
 
-We have a new segmentation model that is more flexible and easier to use.
+我们有一个新的分割模型，更加灵活且易于使用。
 
-### Same Terminology, Different Architecture
+### 相同术语，不同架构
 
-In Cornerstone3D version 2, we've made significant architectural changes to our segmentation model while maintaining familiar terminology. This redesign aims to provide a more flexible and intuitive approach to working with segmentations across different viewports. Here are the key changes and the reasons behind them:
+在 Cornerstone3D 版本 2 中，我们对分割模型进行了重大架构更改，同时保持了熟悉的术语。此重新设计旨在为在不同视口中处理分割提供更灵活和直观的方法。以下是主要更改及其背后的原因：
 
-1. **Viewport-Specific, Not Tool Group-Based**:
+1. **视口特定，而非基于工具组**：
 
-   - Old: Segmentations were tied to tool groups, which typically consist of multiple viewports. This created complications when users wanted to add segmentations to some viewports but not others within the same tool group.
-   - New: Segmentations are now viewport-specific. Instead of adding or removing representations to a tool group, users can add them directly to viewports. This provides much finer control over what each viewport renders.
-   - Why: We discovered that tying rendering to a tool group is not an effective approach. It often necessitated creating an extra tool group for a specific viewport to customize or prevent rendering.
+   - 以前：分割与工具组绑定，工具组通常由多个视口组成。当用户希望在同一工具组内为某些视口添加分割而不是其他视口时，这会带来复杂性。
+   - 现在：分割现在是视口特定的。用户可以直接向视口添加分割，而不是向工具组添加或移除表示。这为每个视口渲染的内容提供了更细致的控制。
+   - 为什么：我们发现将渲染绑定到工具组并不是一种有效的方法。它通常需要为特定视口创建额外的工具组以进行自定义或防止渲染。
 
-2. **Simplified Identification of Segmentation Representations**:
+2. **简化分割表示的识别**：
 
-   - Old: Required a unique segmentationRepresentationUID for identification.
-   - New: Segmentation representations are identified by a combination of `segmentationId` and representation `type`. This allows each viewport to have different representations of the same segmentation.
-   - Why: This simplification makes it easier to manage and reference segmentation representations across different viewports.
+   - 以前：需要一个唯一的 `segmentationRepresentationUID` 进行识别。
+   - 现在：分割表示通过 `segmentationId` 和表示 `type` 的组合进行识别。这允许每个视口对同一分割有不同的表示。
+   - 为什么：这种简化使得在不同视口中管理和引用分割表示更加容易。
 
-3. **Decoupling of Data and Visualization**:
+3. **数据与可视化的解耦**：
 
-   - Old: Segmentation rendering was tightly coupled with tool groups.
-   - New: Segmentation is now treated purely as data, separate from the tools used to interact with it.
-   - Why: While it's appropriate for tools to be bound to tool groups, viewport-specific functionalities like segmentation rendering should be the responsibility of individual viewports. This separation allows for more flexible rendering and interaction options across different viewports.
+   - 以前：分割渲染与工具组紧密耦合。
+   - 现在：分割现在纯粹作为数据处理，与用于交互的工具分离。
+   - 为什么：虽然将工具绑定到工具组是合适的，但像分割渲染这样的视口特定功能应该由各个视口负责。这种分离允许在不同视口中有更灵活的渲染和交互选项。
 
-4. **Polymorphic Segmentation Support**:
+4. **多态分割支持**：
 
-   - The new architecture better supports the concept of polymorphic segmentations, where a single segmentation can have multiple representations (e.g., labelmap, contour, surface) that can be efficiently converted between each other.
-   - Why: This flexibility allows for more efficient storage, analysis, and real-time visualization of segmentations.
+   - 新架构更好地支持多态分割的概念，即单个分割可以有多个表示（例如，标签图、轮廓、表面），并且可以在它们之间高效地转换。
+   - 为什么：这种灵活性允许更高效地存储、分析和实时可视化分割。
 
-5. **Consistent API Across Representation Types**:
-   - The new API provides a unified way to work with different segmentation representations, making it easier to manage complex scenarios involving multiple viewports and representation types.
-   - Why: This consistency simplifies development and reduces the likelihood of errors when working with different segmentation types.
+5. **跨表示类型的一致 API**：
 
-These architectural changes provide a more robust foundation for working with segmentations, especially in complex multi-viewport scenarios. The new approach has proven to be highly effective and opens up possibilities for future enhancements. While the core concepts remain similar, the way you interact with segmentations in your code will change significantly. This migration guide will walk you through these changes, providing before-and-after examples to help you update your existing codebase to the new architecture.
+   - 新的 API 提供了一种统一的方式来处理不同的分割表示，使得管理涉及多个视口和表示类型的复杂场景更加容易。
+   - 为什么：这种一致性简化了开发，并减少了在处理不同分割类型时出错的可能性。
 
-### Segmentation State
+这些架构更改为处理分割提供了更坚实的基础，特别是在复杂的多视口场景中。新方法已被证明非常有效，并为未来的增强功能打开了可能性。虽然核心概念保持相似，但您在代码中与分割交互的方式将会显著改变。本迁移指南将引导您完成这些更改，提供前后示例，帮助您将现有代码库更新到新架构。
 
-The `Segmentation` type has been restructured to better organize segment information and representation data. Let's take a look at the changes before we
-talk about migration guides.
+### 分割状态
+
+`Segmentation` 类型已被重组，以更好地组织分割信息和表示数据。在讨论迁移指南之前，让我们先看看更改。
 
 <Tabs>
-  <TabItem value="Before" label="Before 📦 " default>
+<TabItem value="Before" label="之前 📦 " default>
 
 ```typescript
 type Segmentation = {
@@ -142,8 +142,8 @@ type Segmentation = {
 };
 ```
 
-  </TabItem>
-  <TabItem value="After" label="After 🚀🚀">
+</TabItem>
+<TabItem value="After" label="之后 🚀🚀">
 
 ```typescript
 type Segmentation = {
@@ -164,17 +164,17 @@ type Segment = {
 };
 ```
 
-  </TabItem>
+</TabItem>
 </Tabs>
 
-The new segmentation state model offers a more organized data structure. Previously scattered information such as `cachedStats`, `segmentLabels`, and `activeSegmentIndex` has been consolidated under the `segments` property. This restructuring enhances clarity and efficiency. In the following sections, we'll discuss migration guides that will explain how to access and modify these properties within the new structure. This reorganization primarily affects the segmentation store level.
+新的分割状态模型提供了更有组织的数据结构。以前分散的信息，如 `cachedStats`、`segmentLabels` 和 `activeSegmentIndex`，已被整合到 `segments` 属性下。这种重组增强了清晰度和效率。在接下来的部分中，我们将讨论迁移指南，解释如何在新结构中访问和修改这些属性。这种重组主要影响分割存储级别。
 
-#### Representation Data Key
+#### 表示数据键
 
-The `SegmentationRepresentations` enum has been updated to use title case instead of uppercase to make it match the rest of the Enums.
+`SegmentationRepresentations` 枚举已更新为使用标题大小写而不是全大写，以使其与其他枚举保持一致。
 
 <Tabs>
-  <TabItem value="Before" label="Before 📦 " default>
+<TabItem value="Before" label="之前 📦 " default>
 
 ```typescript
 enum SegmentationRepresentations {
@@ -184,8 +184,8 @@ enum SegmentationRepresentations {
 }
 ```
 
-  </TabItem>
-  <TabItem value="After" label="After 🚀🚀">
+</TabItem>
+<TabItem value="After" label="之后 🚀🚀">
 
 ```typescript
 enum SegmentationRepresentations {
@@ -195,13 +195,202 @@ enum SegmentationRepresentations {
 }
 ```
 
+</TabItem>
+</Tabs>
+
+## triggerAnnotationRenderForViewportIds
+
+现在只需要 `viewportIds`，不再需要 `renderingEngine`。
+
+```js
+triggerAnnotationRenderForViewportIds(renderingEngine, viewportIds) ---> triggerAnnotationRenderForViewportIds(viewportIds)
+```
+
+<details>
+<summary>为什么？</summary>
+因为每个视口都有一个渲染引擎，因此不需要将渲染引擎作为参数传递。
+</details>
+
+## 工具
+
+### StackScrollMouseWheelTool -> StackScrollTool
+
+我们已经将鼠标滚轮与工具本身解耦，使其可以像其他鼠标绑定一样应用为绑定。
+
+此更改带来了多个优势：
+
+- 它可以与其他鼠标绑定组合使用
+- 它可以与键盘绑定配对使用
+
+<Tabs>
+  <TabItem value="Before" label="之前 📦 " default>
+
+```js
+cornerstoneTools.addTool(StackScrollMouseWheelTool);
+toolGroup.addTool(StackScrollMouseWheelTool.toolName);
+toolGroup.setToolActive(StackScrollMouseWheelTool.toolName);
+```
+
+  </TabItem>
+  <TabItem value="After" label="之后 🚀🚀">
+
+```js
+cornerstoneTools.addTool(StackScrollTool);
+toolGroup.addTool(StackScrollTool.toolName);
+toolGroup.setToolActive(StackScrollTool.toolName, {
+  bindings: [
+    {
+      mouseButton: MouseBindings.Wheel,
+    },
+  ],
+});
+```
+
   </TabItem>
 </Tabs>
 
-This change affects how representation data is accessed:
+### BaseTool
+
+`getTargetVolumeId` 方法已被移除，取而代之的是 `getTargetId`，而 `getTargetIdImage` 已重命名为 `getTargetImageData`，以更清楚地表明它是图像数据。
+
+### 使用示例
 
 <Tabs>
-  <TabItem value="Before" label="Before 📦 " default>
+<TabItem value="Before" label="之前 📦 " default>
+
+```typescript
+const volumeId = this.getTargetVolumeId(viewport);
+const imageData = this.getTargetIdImage(targetId, renderingEngine);
+```
+
+</TabItem>
+<TabItem value="After" label="之后 🚀">
+    
+```typescript
+const imageData = this.getTargetImageData(targetId);
+```
+
+</TabItem>
+</Tabs>
+
+## 新的分割模型
+
+我们有一个新的分割模型，更加灵活且易于使用。
+
+### 相同术语，不同架构
+
+在 Cornerstone3D 版本 2 中，我们对分割模型进行了重大架构更改，同时保持了熟悉的术语。此重新设计旨在为在不同视口中处理分割提供更灵活和直观的方法。以下是主要更改及其背后的原因：
+
+1. **视口特定，而非基于工具组**：
+
+   - **以前**：分割与工具组绑定，工具组通常由多个视口组成。当用户希望在同一工具组内为某些视口添加分割而不是其他视口时，这会带来复杂性。
+   - **现在**：分割现在是视口特定的。用户可以直接向视口添加分割，而不是向工具组添加或移除表示。这为每个视口渲染的内容提供了更细致的控制。
+   - **为什么**：我们发现将渲染绑定到工具组并不是一种有效的方法。它通常需要为特定视口创建额外的工具组以进行自定义或防止渲染。
+
+2. **简化分割表示的识别**：
+
+   - **以前**：需要一个唯一的 `segmentationRepresentationUID` 进行识别。
+   - **现在**：分割表示通过 `segmentationId` 和表示 `type` 的组合进行识别。这允许每个视口对同一分割有不同的表示。
+   - **为什么**：这种简化使得在不同视口中管理和引用分割表示更加容易。
+
+3. **数据与可视化的解耦**：
+
+   - **以前**：分割渲染与工具组紧密耦合。
+   - **现在**：分割现在纯粹作为数据处理，与用于交互的工具分离。
+   - **为什么**：虽然将工具绑定到工具组是合适的，但像分割渲染这样的视口特定功能应该由各个视口负责。这种分离允许在不同视口中有更灵活的渲染和交互选项。
+
+4. **多态分割支持**：
+
+   - 新架构更好地支持多态分割的概念，即单个分割可以有多个表示（例如，标签图、轮廓、表面），并且可以在它们之间高效地转换。
+   - **为什么**：这种灵活性允许更高效地存储、分析和实时可视化分割。
+
+5. **跨表示类型的一致 API**：
+
+   - 新的 API 提供了一种统一的方式来处理不同的分割表示，使得管理涉及多个视口和表示类型的复杂场景更加容易。
+   - **为什么**：这种一致性简化了开发，并减少了在处理不同分割类型时出错的可能性。
+
+这些架构更改为处理分割提供了更坚实的基础，特别是在复杂的多视口场景中。新方法已被证明非常有效，并为未来的增强功能打开了可能性。虽然核心概念保持相似，但您在代码中与分割交互的方式将会显著改变。本迁移指南将引导您完成这些更改，提供前后示例，帮助您将现有代码库更新到新架构。
+
+### 分割状态
+
+`Segmentation` 类型已被重组，以更好地组织分割信息和表示数据。在讨论迁移指南之前，让我们先看看更改。
+
+<Tabs>
+<TabItem value="Before" label="之前 📦 " default>
+
+```typescript
+type Segmentation = {
+  segmentationId: string;
+  type: Enums.SegmentationRepresentations;
+  label: string;
+  activeSegmentIndex: number;
+  segmentsLocked: Set<number>;
+  cachedStats: { [key: string]: number };
+  segmentLabels: { [key: string]: string };
+  representationData: SegmentationRepresentationData;
+};
+```
+
+</TabItem>
+<TabItem value="After" label="之后 🚀🚀">
+
+```typescript
+type Segmentation = {
+  segmentationId: string;
+  label: string;
+  segments: {
+    [segmentIndex: number]: Segment;
+  };
+  representationData: RepresentationsData;
+};
+
+type Segment = {
+  segmentIndex: number;
+  label: string;
+  locked: boolean;
+  cachedStats: { [key: string]: unknown };
+  active: boolean;
+};
+```
+
+</TabItem>
+</Tabs>
+
+新的分割状态模型提供了更有组织的数据结构。以前分散的信息，如 `cachedStats`、`segmentLabels` 和 `activeSegmentIndex`，已被整合到 `segments` 属性下。这种重组增强了清晰度和效率。在接下来的部分中，我们将讨论迁移指南，解释如何在新结构中访问和修改这些属性。这种重组主要影响分割存储级别。
+
+#### 表示数据键
+
+`SegmentationRepresentations` 枚举已更新为使用标题大小写而不是全大写，以使其与其他枚举保持一致。
+
+<Tabs>
+<TabItem value="Before" label="之前 📦 " default>
+
+```typescript
+enum SegmentationRepresentations {
+  Labelmap = 'LABELMAP',
+  Contour = 'CONTOUR',
+  Surface = 'SURFACE',
+}
+```
+
+</TabItem>
+<TabItem value="After" label="之后 🚀🚀">
+
+```typescript
+enum SegmentationRepresentations {
+  Labelmap = 'Labelmap',
+  Contour = 'Contour',
+  Surface = 'Surface',
+}
+```
+
+</TabItem>
+</Tabs>
+
+这项更改影响了表示数据的访问方式：
+
+<Tabs>
+  <TabItem value="Before" label="之前 📦 " default>
 
 ```typescript
 const representationData = segmentation.representationData.SURFACE;
@@ -210,7 +399,7 @@ const representationData = segmentation.representationData.CONTOUR;
 ```
 
   </TabItem>
-  <TabItem value="After" label="After 🚀🚀">
+  <TabItem value="After" label="之后 🚀🚀">
 
 ```typescript
 const representationData = segmentation.representationData.Surface;
@@ -221,12 +410,12 @@ const representationData = segmentation.representationData.Contour;
   </TabItem>
 </Tabs>
 
-#### Segmentation Representation
+#### 分割表示
 
-The representation structure has been simplified and is now viewport-specific.
+表示结构已被简化，现在是视口特定的。
 
 <Tabs>
-  <TabItem value="Before" label="Before 📦 " default>
+  <TabItem value="Before" label="之前 📦 " default>
 
 ```typescript
 type ToolGroupSpecificRepresentation =
@@ -238,7 +427,7 @@ type ToolGroupSpecificRepresentationState = {
   segmentationId: string;
   type: Enums.SegmentationRepresentations;
   active: boolean;
-  segmentsHidden: Set<number>;
+  segmentsLocked: Set<number>;
   colorLUTIndex: number;
 };
 
@@ -253,7 +442,7 @@ type SegmentationState = {
 ```
 
   </TabItem>
-  <TabItem value="After" label="After 🚀🚀">
+  <TabItem value="After" label="之后 🚀🚀">
 
 ```typescript
 type SegmentationRepresentation =
@@ -284,9 +473,9 @@ type SegmentationState = {
   </TabItem>
 </Tabs>
 
-Previously, the segmentation representation was tool group specific, which led to some issues. In the new structure, segmentation representation is viewport specific. It now consists of a segmentationId, a type, and various settings for that segmentation. As a result of this change, several functions have been removed or modified. Here's a summary of the changes:
+以前，分割表示是基于工具组的，这导致了一些问题。在新的结构中，分割表示是视口特定的。它现在由 `segmentationId`、`type` 以及该分割的各种设置组成。由于这一变化，几个函数被移除或修改。以下是更改的总结：
 
-#### Removed Functions
+#### 移除的函数
 
 - `getDefaultSegmentationStateManager`
 - `getSegmentationRepresentations`
@@ -306,7 +495,7 @@ Previously, the segmentation representation was tool group specific, which led t
 - `addSegmentationRepresentation`
 - `getSegmentationRepresentationByUID`
 
-#### New Functions
+#### 新的函数
 
 - `addSegmentations(segmentationInputArray)`
 - `removeSegmentation(segmentationId)`
@@ -326,11 +515,11 @@ Previously, the segmentation representation was tool group specific, which led t
 - `getStackSegmentationImageIdsForViewport(viewportId, segmentationId)`
 - `destroy()`
 
-### Removal of SegmentationDisplayTool
+### 移除 SegmentationDisplayTool
 
-There's no need to add the SegmentationDisplayTool to the toolGroup anymore.
+不再需要将 SegmentationDisplayTool 添加到 toolGroup。
 
-Before
+**之前**
 
 ```js
 toolGroup2.addTool(SegmentationDisplayTool.toolName);
@@ -338,37 +527,37 @@ toolGroup2.addTool(SegmentationDisplayTool.toolName);
 toolGroup1.setToolEnabled(SegmentationDisplayTool.toolName);
 ```
 
-Now
+**现在**
 
 ```js
-// nothing
+// 无需任何操作
 ```
 
-### Stack Labelmaps
+### 堆栈标签图
 
-To create a Stack Labelmap, you no longer need to manually create a reference between labelmap imageIds and viewport imageIds. We now handle this process automatically for you.
+要创建堆栈标签图，您不再需要手动在标签图 imageIds 和视口 imageIds 之间创建引用。我们现在为您自动处理此过程。
 
-This is a long Why ...
+这需要一个长篇的为什么...
 
-The previous model required users to provide an imageIdReferenceMap, which linked labelmap imageIds to viewport imageIds. This approach presented several challenges when implementing advanced segmentation use cases:
+以前的模型要求用户提供一个 imageIdReferenceMap，将标签图 imageIds 链接到视口 imageIds。这种方法在实现高级分割用例时带来了几个挑战：
 
-1. Manual creation of the map was error-prone, particularly regarding the order of imageIds.
+1. 手动创建映射容易出错，特别是在 imageIds 的顺序方面。
 
-2. Once a segmentation was associated with specific viewport imageIds, rendering it elsewhere became problematic. For example:
+2. 一旦分割与特定的视口 imageIds 相关联，就很难在其他地方渲染。例如：
 
-   - Rendering a CT image stack segmentation on a single key image.
-   - Rendering a CT image stack segmentation on a stack that includes both CT and other images.
-   - Rendering a DX dual energy segmentation from energy 1 on energy 2.
-   - Rendering a CT labelmap from a stack viewport on a PT labelmap in the same space.
+   - 在单个关键图像上渲染 CT 图像堆栈分割。
+   - 在包含 CT 和其他图像的堆栈上渲染 CT 图像堆栈分割。
+   - 在能量 1 上渲染 DX 双能分割到能量 2。
+   - 在同一空间的 PT 标签图上从堆栈视口渲染 CT 标签图。
 
-These scenarios highlight the limitations of the previous model.
+这些场景突显了以前模型的局限性。
 
-We've now transitioned to a system where users only need to provide imageIds. During rendering, we match the viewport's current imageId against the labelmap imageIds and render the segmentation if there's a match. This matching process occurs in the SegmentationStateManager, with the criterion being that the segmentation must be in the same plane as the referenced viewport.
+我们现在已经过渡到一个系统，用户只需提供 imageIds。在渲染过程中，我们将视口的当前 imageId 与标签图 imageIds 进行匹配，如果有匹配项，则渲染分割。这个匹配过程发生在 SegmentationStateManager 中，条件是分割必须与引用的视口处于同一平面。
 
-This new approach enables numerous additional use cases and offers greater flexibility in segmentation rendering.
+这种新方法启用了许多额外的用例，并为分割渲染提供了更大的灵活性。
 
 <Tabs>
-  <TabItem value="Before" label="Before 📦 " default>
+  <TabItem value="Before" label="之前 📦 " default>
 
 ```js
 segmentation.addSegmentations([
@@ -389,7 +578,8 @@ segmentation.addSegmentations([
 ```
 
   </TabItem>
-  <TabItem value="After" label="After 🚀🚀">
+  <TabItem value="After" label="之后 🚀🚀">
+
 
 ```js
 segmentation.addSegmentations([
@@ -408,150 +598,274 @@ segmentation.addSegmentations([
   </TabItem>
 </Tabs>
 
-### Adding Segmentations
+## triggerAnnotationRenderForViewportIds
 
-#### Function Signature Update
+现在只需要 `viewportIds`，不再需要 `renderingEngine`。
 
-The `addSegmentations` function now accepts an optional `suppressEvents` parameter.
+```js
+triggerAnnotationRenderForViewportIds(renderingEngine, viewportIds) ---> triggerAnnotationRenderForViewportIds(viewportIds)
+```
+
+<details>
+<summary>为什么？</summary>
+因为每个视口都有一个渲染引擎，因此不需要将渲染引擎作为参数传递。
+</details>
+
+## 工具
+
+### StackScrollMouseWheelTool -> StackScrollTool
+
+我们已经将鼠标滚轮与工具本身解耦，使其可以像其他鼠标绑定一样应用为绑定。
+
+此更改带来了多个优势：
+
+- 它可以与其他鼠标绑定组合使用
+- 它可以与键盘绑定配对使用
 
 <Tabs>
-  <TabItem value="Before" label="Before 📦 " default>
+  <TabItem value="Before" label="之前 📦 " default>
 
-```typescript
-function addSegmentations(
-  segmentationInputArray: SegmentationPublicInput[]
-): void;
+```js
+cornerstoneTools.addTool(StackScrollMouseWheelTool);
+toolGroup.addTool(StackScrollMouseWheelTool.toolName);
+toolGroup.setToolActive(StackScrollMouseWheelTool.toolName);
 ```
 
   </TabItem>
-  <TabItem value="After" label="After 🚀🚀">
+  <TabItem value="After" label="之后 🚀🚀">
 
-```typescript
-function addSegmentations(
-  segmentationInputArray: SegmentationPublicInput[],
-  suppressEvents?: boolean
-): void;
+```js
+cornerstoneTools.addTool(StackScrollTool);
+toolGroup.addTool(StackScrollTool.toolName);
+toolGroup.setToolActive(StackScrollTool.toolName, {
+  bindings: [
+    {
+      mouseButton: MouseBindings.Wheel,
+    },
+  ],
+});
 ```
 
   </TabItem>
 </Tabs>
 
-**Migration Steps:**
+### BaseTool
 
-1. Update any calls to `addSegmentations` to include the `suppressEvents` parameter if needed.
-2. If you don't want to suppress events, you can omit the second parameter.
+`getTargetVolumeId` 方法已被移除，取而代之的是 `getTargetId`，而 `getTargetIdImage` 已重命名为 `getTargetImageData`，以更清楚地表明它是图像数据。
 
-#### SegmentationPublicInput Type Updates
-
-The `SegmentationPublicInput` type has been extended to include an optional `config` property.
+### 使用示例
 
 <Tabs>
-  <TabItem value="Before" label="Before 📦 " default>
+<TabItem value="Before" label="之前 📦 " default>
 
 ```typescript
-type SegmentationPublicInput = {
-  segmentationId: string;
-  representation: {
-    type: Enums.SegmentationRepresentations;
-    data?: RepresentationData;
-  };
-};
+const volumeId = this.getTargetVolumeId(viewport);
+const imageData = this.getTargetIdImage(targetId, renderingEngine);
 ```
 
-  </TabItem>
-  <TabItem value="After" label="After 🚀🚀">
+</TabItem>
+<TabItem value="After" label="之后 🚀">
 
 ```typescript
-type SegmentationPublicInput = {
-  segmentationId: string;
-  representation: {
-    type: Enums.SegmentationRepresentations;
-    data?: RepresentationData;
-  };
-  config?: {
-    segments?: {
-      [segmentIndex: number]: Partial<Segment>;
-    };
-    label?: string;
-  };
-};
+const imageData = this.getTargetImageData(targetId);
 ```
 
-  </TabItem>
+</TabItem>
 </Tabs>
 
-**Migration Steps:**
+## 新的分割模型
 
-1. Update any code that creates or manipulates `SegmentationPublicInput` objects to include the new `config` property if needed.
-2. Replace specific segmentation data types with the generic `RepresentationData` type.
+我们有一个新的分割模型，更加灵活且易于使用。
 
-### Adding Segmentation Representations
+### 相同术语，不同架构
 
-#### Viewport-Centric Approach
+在 Cornerstone3D 版本 2 中，我们对分割模型进行了重大架构更改，同时保持了熟悉的术语。此重新设计旨在为在不同视口中处理分割提供更灵活和直观的方法。以下是主要更改及其背后的原因：
 
-The API now focuses on viewports instead of tool groups, providing more granular control over segmentation representations.
+1. **视口特定，而非基于工具组**：
 
-<Tabs>
-  <TabItem value="Before" label="Before 📦 " default>
+   - **以前**：分割与工具组绑定，工具组通常由多个视口组成。当用户希望在同一工具组内为某些视口添加分割而不是其他视口时，这会带来复杂性。
+   - **现在**：分割现在是视口特定的。用户可以直接向视口添加分割，而不是向工具组添加或移除表示。这为每个视口渲染的内容提供了更细致的控制。
+   - **为什么**：我们发现将渲染绑定到工具组并不是一种有效的方法。它通常需要为特定视口创建额外的工具组以进行自定义或防止渲染。
 
-```typescript
-function addSegmentationRepresentations(
-  toolGroupId: string,
-  representationInputArray: RepresentationPublicInput[],
-  toolGroupSpecificRepresentationConfig?: SegmentationRepresentationConfig
-): Promise<string[]>;
-```
+2. **简化分割表示的识别**：
 
-  </TabItem>
-  <TabItem value="After" label="After 🚀🚀">
+   - **以前**：需要一个唯一的 `segmentationRepresentationUID` 进行识别。
+   - **现在**：分割表示通过 `segmentationId` 和表示 `type` 的组合进行识别。这允许每个视口对同一分割有不同的表示。
+   - **为什么**：这种简化使得在不同视口中管理和引用分割表示更加容易。
 
-```typescript
-function addSegmentationRepresentations(
-  viewportId: string,
-  segmentationInputArray: RepresentationPublicInput[]
-);
-```
+3. **数据与可视化的解耦**：
 
-  </TabItem>
-</Tabs>
+   - **以前**：分割渲染与工具组紧密耦合。
+   - **现在**：分割现在纯粹作为数据处理，与用于交互的工具分离。
+   - **为什么**：虽然将工具绑定到工具组是合适的，但像分割渲染这样的视口特定功能应该由各个视口负责。这种分离允许在不同视口中有更灵活的渲染和交互选项。
 
-**Migration Steps:**
+4. **多态分割支持**：
 
-1. Replace `toolGroupId` with `viewportId` in function calls.
-2. Remove the `toolGroupSpecificRepresentationConfig` parameter.
-3. Update any code that relies on the returned Promise of segmentation representation UIDs.
+   - 新架构更好地支持多态分割的概念，即单个分割可以有多个表示（例如，标签图、轮廓、表面），并且可以在它们之间高效地转换。
+   - **为什么**：这种灵活性允许更高效地存储、分析和实时可视化分割。
 
-#### RepresentationPublicInput Changes
+5. **跨表示类型的一致 API**：
 
-The `RepresentationPublicInput` type has been simplified and some properties have been renamed or removed.
+   - 新的 API 提供了一种统一的方式来处理不同的分割表示，使得管理涉及多个视口和表示类型的复杂场景更加容易。
+   - **为什么**：这种一致性简化了开发，并减少了在处理不同分割类型时出错的可能性。
+
+这些架构更改为处理分割提供了更坚实的基础，特别是在复杂的多视口场景中。新方法已被证明非常有效，并为未来的增强功能打开了可能性。虽然核心概念保持相似，但您在代码中与分割交互的方式将会显著改变。本迁移指南将引导您完成这些更改，提供前后示例，帮助您将现有代码库更新到新架构。
+
+### 分割状态
+
+`Segmentation` 类型已被重组，以更好地组织分割信息和表示数据。在讨论迁移指南之前，让我们先看看更改。
 
 <Tabs>
-  <TabItem value="Before" label="Before 📦 " default>
+<TabItem value="Before" label="之前 📦 " default>
 
 ```typescript
-type RepresentationPublicInput = {
+type Segmentation = {
   segmentationId: string;
   type: Enums.SegmentationRepresentations;
-  options?: {
-    segmentationRepresentationUID?: string;
-    colorLUTOrIndex?: Types.ColorLUT | number;
-    polySeg?: {
-      enabled: boolean;
-      options?: any;
+  label: string;
+  activeSegmentIndex: number;
+  segmentsLocked: Set<number>;
+  cachedStats: { [key: string]: number };
+  segmentLabels: { [key: string]: string };
+  representationData: SegmentationRepresentationData;
+};
+```
+
+</TabItem>
+<TabItem value="After" label="之后 🚀🚀">
+
+```typescript
+type Segmentation = {
+  segmentationId: string;
+  label: string;
+  segments: {
+    [segmentIndex: number]: Segment;
+  };
+  representationData: RepresentationsData;
+};
+
+type Segment = {
+  segmentIndex: number;
+  label: string;
+  locked: boolean;
+  cachedStats: { [key: string]: unknown };
+  active: boolean;
+};
+```
+
+</TabItem>
+</Tabs>
+
+新的分割状态模型提供了更有组织的数据结构。以前分散的信息，如 `cachedStats`、`segmentLabels` 和 `activeSegmentIndex`，已被整合到 `segments` 属性下。这种重组增强了清晰度和效率。在接下来的部分中，我们将讨论迁移指南，解释如何在新结构中访问和修改这些属性。这种重组主要影响分割存储级别。
+
+#### 表示数据键
+
+`SegmentationRepresentations` 枚举已更新为使用标题大小写而不是全大写，以使其与其他枚举保持一致。
+
+<Tabs>
+<TabItem value="Before" label="之前 📦 " default>
+
+```typescript
+enum SegmentationRepresentations {
+  Labelmap = 'LABELMAP',
+  Contour = 'CONTOUR',
+  Surface = 'SURFACE',
+}
+```
+
+</TabItem>
+<TabItem value="After" label="之后 🚀🚀">
+
+```typescript
+enum SegmentationRepresentations {
+  Labelmap = 'Labelmap',
+  Contour = 'Contour',
+  Surface = 'Surface',
+}
+```
+
+</TabItem>
+</Tabs>
+
+这项更改影响了表示数据的访问方式：
+
+<Tabs>
+  <TabItem value="Before" label="之前 📦 " default>
+
+```typescript
+const representationData = segmentation.representationData.SURFACE;
+const representationData = segmentation.representationData.LABELMAP;
+const representationData = segmentation.representationData.CONTOUR;
+```
+
+  </TabItem>
+  <TabItem value="After" label="之后 🚀🚀">
+
+```typescript
+const representationData = segmentation.representationData.Surface;
+const representationData = segmentation.representationData.Labelmap;
+const representationData = segmentation.representationData.Contour;
+```
+
+  </TabItem>
+</Tabs>
+
+#### 分割表示
+
+表示结构已被简化，现在是视口特定的。
+
+<Tabs>
+  <TabItem value="Before" label="之前 📦 " default>
+
+```typescript
+type ToolGroupSpecificRepresentation =
+  | ToolGroupSpecificLabelmapRepresentation
+  | ToolGroupSpecificContourRepresentation;
+
+type ToolGroupSpecificRepresentationState = {
+  segmentationRepresentationUID: string;
+  segmentationId: string;
+  type: Enums.SegmentationRepresentations;
+  active: boolean;
+  segmentsLocked: Set<number>;
+  colorLUTIndex: number;
+};
+
+type SegmentationState = {
+  toolGroups: {
+    [key: string]: {
+      segmentationRepresentations: ToolGroupSpecificRepresentations;
+      config: SegmentationRepresentationConfig;
     };
   };
 };
 ```
 
   </TabItem>
-  <TabItem value="After" label="After 🚀🚀">
+  <TabItem value="After" label="之后 🚀🚀">
 
 ```typescript
-type RepresentationPublicInput = {
+type SegmentationRepresentation =
+  | LabelmapRepresentation
+  | ContourRepresentation
+  | SurfaceRepresentation;
+
+type BaseSegmentationRepresentation = {
+  colorLUTIndex: number;
   segmentationId: string;
-  type?: Enums.SegmentationRepresentations;
-  config?: {
-    colorLUTOrIndex?: Types.ColorLUT[] | number;
+  type: Enums.SegmentationRepresentations;
+  visible: boolean;
+  active: boolean;
+  segments: {
+    [segmentIndex: number]: {
+      visible: boolean;
+    };
+  };
+};
+
+type SegmentationState = {
+  viewportSegRepresentations: {
+    [viewportId: string]: Array<SegmentationRepresentation>;
   };
 };
 ```
@@ -559,65 +873,1102 @@ type RepresentationPublicInput = {
   </TabItem>
 </Tabs>
 
-**Migration Steps:**
+以前，分割表示是基于工具组的，这导致了一些问题。在新的结构中，分割表示是视口特定的。它现在由 `segmentationId`、`type` 以及该分割的各种设置组成。由于这一变化，几个函数被移除或修改。以下是更改的总结：
 
-1. Remove the `options` property and move `colorLUTOrIndex` to the `config` object.
-2. Remove `segmentationRepresentationUID` and `polySeg` properties if used, polySEG is default enabled.
-3. Update the `colorLUTOrIndex` type to accept an array of `Types.ColorLUT` instead of a single value.
+#### 移除的函数
 
-#### New Representation-Specific Functions
+- `getDefaultSegmentationStateManager`
+- `getSegmentationRepresentations`
+- `getAllSegmentationRepresentations`
+- `getSegmentationIdRepresentations`
+- `findSegmentationRepresentationByUID`
+- `getToolGroupIdsWithSegmentation`
+- `getToolGroupSpecificConfig`
+- `setToolGroupSpecificConfig`
+- `getGlobalConfig`
+- `setGlobalConfig`
+- `setSegmentationRepresentationSpecificConfig`
+- `getSegmentationRepresentationSpecificConfig`
+- `getSegmentSpecificRepresentationConfig`
+- `setSegmentSpecificRepresentationConfig`
+- `getToolGroupIdFromSegmentationRepresentationUID`
+- `addSegmentationRepresentation`
+- `getSegmentationRepresentationByUID`
 
-Version 2 introduces new functions for adding specific types of segmentation representations to viewports.
+#### 新的函数
+
+- `addSegmentations(segmentationInputArray)`
+- `removeSegmentation(segmentationId)`
+- `getSegmentation(segmentationId)`
+- `getSegmentations()`
+- `getSegmentationRepresentation(viewportId, specifier)`
+- `getSegmentationRepresentations(viewportId, specifier)`
+- `removeSegmentationRepresentation(viewportId, specifier, immediate)`
+- `removeAllSegmentationRepresentations()`
+- `removeLabelmapRepresentation(viewportId, segmentationId, immediate)`
+- `removeContourRepresentation(viewportId, segmentationId, immediate)`
+- `removeSurfaceRepresentation(viewportId, segmentationId, immediate)`
+- `getViewportSegmentations(viewportId, type)`
+- `getViewportIdsWithSegmentation(segmentationId)`
+- `getCurrentLabelmapImageIdForViewport(viewportId, segmentationId)`
+- `updateLabelmapSegmentationImageReferences(segmentationId, imageIds)`
+- `getStackSegmentationImageIdsForViewport(viewportId, segmentationId)`
+- `destroy()`
+
+### 移除 SegmentationDisplayTool
+
+不再需要将 SegmentationDisplayTool 添加到 toolGroup。
+
+**之前**
+
+```js
+toolGroup2.addTool(SegmentationDisplayTool.toolName);
+
+toolGroup1.setToolEnabled(SegmentationDisplayTool.toolName);
+```
+
+**现在**
+
+```js
+// 无需任何操作
+```
+
+### 堆栈标签图
+
+要创建堆栈标签图，您不再需要手动在标签图 imageIds 和视口 imageIds 之间创建引用。我们现在为您自动处理此过程。
+
+这需要一个长篇的为什么...
+
+以前的模型要求用户提供一个 imageIdReferenceMap，将标签图 imageIds 链接到视口 imageIds。这种方法在实现高级分割用例时带来了几个挑战：
+
+1. 手动创建映射容易出错，特别是在 imageIds 的顺序方面。
+
+2. 一旦分割与特定的视口 imageIds 相关联，就很难在其他地方渲染。例如：
+
+   - 在单个关键图像上渲染 CT 图像堆栈分割。
+   - 在包含 CT 和其他图像的堆栈上渲染 CT 图像堆栈分割。
+   - 在能量 1 上渲染 DX 双能分割到能量 2。
+   - 在同一空间的 PT 标签图上从堆栈视口渲染 CT 标签图。
+
+这些场景突显了以前模型的局限性。
+
+我们现在已经过渡到一个系统，用户只需提供 imageIds。在渲染过程中，我们将视口的当前 imageId 与标签图 imageIds 进行匹配，如果有匹配项，则渲染分割。这个匹配过程发生在 SegmentationStateManager 中，条件是分割必须与引用的视口处于同一平面。
+
+这种新方法启用了许多额外的用例，并为分割渲染提供了更大的灵活性。
 
 <Tabs>
-  <TabItem value="Before" label="Before 📦 " default>
+  <TabItem value="Before" label="之前 📦 " default>
 
-```typescript
-// No equivalent functions in version 1
+```js
+segmentation.addSegmentations([
+  {
+    segmentationId,
+    representation: {
+      type: csToolsEnums.SegmentationRepresentations.Labelmap,
+      data: {
+        imageIdReferenceMap:
+          cornerstoneTools.utilities.segmentation.createImageIdReferenceMap(
+            imageIds,
+            segmentationImageIds
+          ),
+      },
+    },
+  },
+]);
 ```
 
   </TabItem>
-  <TabItem value="After" label="After 🚀🚀">
+  <TabItem value="After" label="之后 🚀🚀">
 
-```typescript
-function addContourRepresentationToViewport(
-  viewportId: string,
-  contourInputArray: RepresentationPublicInput[]
-);
-
-function addLabelmapRepresentationToViewport(
-  viewportId: string,
-  labelmapInputArray: RepresentationPublicInput[]
-);
-
-function addSurfaceRepresentationToViewport(
-  viewportId: string,
-  surfaceInputArray: RepresentationPublicInput[]
-);
+```js
+// 在这里填写“之后”部分的代码
 ```
 
   </TabItem>
 </Tabs>
 
-**Migration Steps:**
+## triggerAnnotationRenderForViewportIds
 
-1. Replace generic `addSegmentationRepresentations` calls with the appropriate representation-specific function.
-2. Update the input array to match the new `RepresentationPublicInput` type.
-3. Remove any type-specific logic from your code, as it's now handled by these new functions.
+现在只需要 `viewportIds`，不再需要 `renderingEngine`。
 
-#### Multi-Viewport Functions
+```js
+triggerAnnotationRenderForViewportIds(renderingEngine, viewportIds) ---> triggerAnnotationRenderForViewportIds(viewportIds)
+```
 
-Version 2 introduces new functions for adding segmentation representations to multiple viewports simultaneously.
+<details>
+<summary>为什么？</summary>
+因为每个视口都有一个渲染引擎，因此不需要将渲染引擎作为参数传递。
+</details>
+
+## 工具
+
+### StackScrollMouseWheelTool -> StackScrollTool
+
+我们已经将鼠标滚轮与工具本身解耦，使其可以像其他鼠标绑定一样应用为绑定。
+
+此更改带来了多个优势：
+
+- 它可以与其他鼠标绑定组合使用
+- 它可以与键盘绑定配对使用
 
 <Tabs>
-  <TabItem value="Before" label="Before 📦 " default>
+  <TabItem value="Before" label="之前 📦 " default>
 
-```typescript
-// No equivalent functions in version 1
+```js
+cornerstoneTools.addTool(StackScrollMouseWheelTool);
+toolGroup.addTool(StackScrollMouseWheelTool.toolName);
+toolGroup.setToolActive(StackScrollMouseWheelTool.toolName);
 ```
 
   </TabItem>
-  <TabItem value="After" label="After 🚀🚀">
+  <TabItem value="After" label="之后 🚀🚀">
+
+```js
+cornerstoneTools.addTool(StackScrollTool);
+toolGroup.addTool(StackScrollTool.toolName);
+toolGroup.setToolActive(StackScrollTool.toolName, {
+  bindings: [
+    {
+      mouseButton: MouseBindings.Wheel,
+    },
+  ],
+});
+```
+
+  </TabItem>
+</Tabs>
+
+### BaseTool
+
+`getTargetVolumeId` 方法已被移除，取而代之的是 `getTargetId`，而 `getTargetIdImage` 已重命名为 `getTargetImageData`，以更清楚地表明它是图像数据。
+
+### 使用示例
+
+<Tabs>
+<TabItem value="Before" label="之前 📦 " default>
+
+```typescript
+const volumeId = this.getTargetVolumeId(viewport);
+const imageData = this.getTargetIdImage(targetId, renderingEngine);
+```
+
+</TabItem>
+<TabItem value="After" label="之后 🚀">
+
+```typescript
+const imageData = this.getTargetImageData(targetId);
+```
+
+</TabItem>
+</Tabs>
+
+## 新的分割模型
+
+我们有一个新的分割模型，更加灵活且易于使用。
+
+### 相同术语，不同架构
+
+在 Cornerstone3D 版本 2 中，我们对分割模型进行了重大架构更改，同时保持了熟悉的术语。此重新设计旨在为在不同视口中处理分割提供更灵活和直观的方法。以下是主要更改及其背后的原因：
+
+1. **视口特定，而非基于工具组**：
+
+   - **以前**：分割与工具组绑定，工具组通常由多个视口组成。当用户希望在同一工具组内为某些视口添加分割而不是其他视口时，这会带来复杂性。
+   - **现在**：分割现在是视口特定的。用户可以直接向视口添加分割，而不是向工具组添加或移除表示。这为每个视口渲染的内容提供了更细致的控制。
+   - **为什么**：我们发现将渲染绑定到工具组并不是一种有效的方法。它通常需要为特定视口创建额外的工具组以进行自定义或防止渲染。
+
+2. **简化分割表示的识别**：
+
+   - **以前**：需要一个唯一的 `segmentationRepresentationUID` 进行识别。
+   - **现在**：分割表示通过 `segmentationId` 和表示 `type` 的组合进行识别。这允许每个视口对同一分割有不同的表示。
+   - **为什么**：这种简化使得在不同视口中管理和引用分割表示更加容易。
+
+3. **数据与可视化的解耦**：
+
+   - **以前**：分割渲染与工具组紧密耦合。
+   - **现在**：分割现在纯粹作为数据处理，与用于交互的工具分离。
+   - **为什么**：虽然将工具绑定到工具组是合适的，但像分割渲染这样的视口特定功能应该由各个视口负责。这种分离允许在不同视口中有更灵活的渲染和交互选项。
+
+4. **多态分割支持**：
+
+   - 新架构更好地支持多态分割的概念，即单个分割可以有多个表示（例如，标签图、轮廓、表面），并且可以在它们之间高效地转换。
+   - **为什么**：这种灵活性允许更高效地存储、分析和实时可视化分割。
+
+5. **跨表示类型的一致 API**：
+
+   - 新的 API 提供了一种统一的方式来处理不同的分割表示，使得管理涉及多个视口和表示类型的复杂场景更加容易。
+   - **为什么**：这种一致性简化了开发，并减少了在处理不同分割类型时出错的可能性。
+
+这些架构更改为处理分割提供了更坚实的基础，特别是在复杂的多视口场景中。新方法已被证明非常有效，并为未来的增强功能打开了可能性。虽然核心概念保持相似，但您在代码中与分割交互的方式将会显著改变。本迁移指南将引导您完成这些更改，提供前后示例，帮助您将现有代码库更新到新架构。
+
+### 分割状态
+
+`Segmentation` 类型已被重组，以更好地组织分割信息和表示数据。在讨论迁移指南之前，让我们先看看更改。
+
+<Tabs>
+<TabItem value="Before" label="之前 📦 " default>
+
+```typescript
+type Segmentation = {
+  segmentationId: string;
+  type: Enums.SegmentationRepresentations;
+  label: string;
+  activeSegmentIndex: number;
+  segmentsLocked: Set<number>;
+  cachedStats: { [key: string]: number };
+  segmentLabels: { [key: string]: string };
+  representationData: SegmentationRepresentationData;
+};
+```
+
+</TabItem>
+<TabItem value="After" label="之后 🚀🚀">
+
+```typescript
+type Segmentation = {
+  segmentationId: string;
+  label: string;
+  segments: {
+    [segmentIndex: number]: Segment;
+  };
+  representationData: RepresentationsData;
+};
+
+type Segment = {
+  segmentIndex: number;
+  label: string;
+  locked: boolean;
+  cachedStats: { [key: string]: unknown };
+  active: boolean;
+};
+```
+
+</TabItem>
+</Tabs>
+
+新的分割状态模型提供了更有组织的数据结构。以前分散的信息，如 `cachedStats`、`segmentLabels` 和 `activeSegmentIndex`，已被整合到 `segments` 属性下。这种重组增强了清晰度和效率。在接下来的部分中，我们将讨论迁移指南，解释如何在新结构中访问和修改这些属性。这种重组主要影响分割存储级别。
+
+#### 表示数据键
+
+`SegmentationRepresentations` 枚举已更新为使用标题大小写而不是全大写，以使其与其他枚举保持一致。
+
+<Tabs>
+<TabItem value="Before" label="之前 📦 " default>
+
+```typescript
+enum SegmentationRepresentations {
+  Labelmap = 'LABELMAP',
+  Contour = 'CONTOUR',
+  Surface = 'SURFACE',
+}
+```
+
+</TabItem>
+<TabItem value="After" label="之后 🚀🚀">
+
+```typescript
+enum SegmentationRepresentations {
+  Labelmap = 'Labelmap',
+  Contour = 'Contour',
+  Surface = 'Surface',
+}
+```
+
+</TabItem>
+</Tabs>
+
+这项更改影响了表示数据的访问方式：
+
+<Tabs>
+<TabItem value="Before" label="之前 📦 " default>
+
+```typescript
+const representationData = segmentation.representationData.SURFACE;
+const representationData = segmentation.representationData.LABELMAP;
+const representationData = segmentation.representationData.CONTOUR;
+```
+
+</TabItem>
+<TabItem value="After" label="之后 🚀🚀">
+
+```typescript
+const representationData = segmentation.representationData.Surface;
+const representationData = segmentation.representationData.Labelmap;
+const representationData = segmentation.representationData.Contour;
+```
+
+</TabItem>
+</Tabs>
+
+#### 分割表示
+
+表示结构已被简化，现在是视口特定的。
+
+<Tabs>
+<TabItem value="Before" label="之前 📦 " default>
+
+```typescript
+type ToolGroupSpecificRepresentation =
+  | ToolGroupSpecificLabelmapRepresentation
+  | ToolGroupSpecificContourRepresentation;
+
+type ToolGroupSpecificRepresentationState = {
+  segmentationRepresentationUID: string;
+  segmentationId: string;
+  type: Enums.SegmentationRepresentations;
+  active: boolean;
+  segmentsLocked: Set<number>;
+  colorLUTIndex: number;
+};
+
+type SegmentationState = {
+  toolGroups: {
+    [key: string]: {
+      segmentationRepresentations: ToolGroupSpecificRepresentations;
+      config: SegmentationRepresentationConfig;
+    };
+  };
+};
+```
+
+</TabItem>
+<TabItem value="After" label="之后 🚀🚀">
+
+```typescript
+type SegmentationRepresentation =
+  | LabelmapRepresentation
+  | ContourRepresentation
+  | SurfaceRepresentation;
+
+type BaseSegmentationRepresentation = {
+  colorLUTIndex: number;
+  segmentationId: string;
+  type: Enums.SegmentationRepresentations;
+  visible: boolean;
+  active: boolean;
+  segments: {
+    [segmentIndex: number]: {
+      visible: boolean;
+    };
+  };
+};
+
+type SegmentationState = {
+  viewportSegRepresentations: {
+    [viewportId: string]: Array<SegmentationRepresentation>;
+  };
+};
+```
+
+</TabItem>
+</Tabs>
+
+以前，分割表示是基于工具组的，这导致了一些问题。在新的结构中，分割表示是视口特定的。它现在由 `segmentationId`、`type` 以及该分割的各种设置组成。由于这一变化，几个函数被移除或修改。以下是更改的总结：
+
+#### 移除的函数
+
+- `getDefaultSegmentationStateManager`
+- `getSegmentationRepresentations`
+- `getAllSegmentationRepresentations`
+- `getSegmentationIdRepresentations`
+- `findSegmentationRepresentationByUID`
+- `getToolGroupIdsWithSegmentation`
+- `getToolGroupSpecificConfig`
+- `setToolGroupSpecificConfig`
+- `getGlobalConfig`
+- `setGlobalConfig`
+- `setSegmentationRepresentationSpecificConfig`
+- `getSegmentationRepresentationSpecificConfig`
+- `getSegmentSpecificRepresentationConfig`
+- `setSegmentSpecificRepresentationConfig`
+- `getToolGroupIdFromSegmentationRepresentationUID`
+- `addSegmentationRepresentation`
+- `getSegmentationRepresentationByUID`
+
+#### 新的函数
+
+- `addSegmentations(segmentationInputArray)`
+- `removeSegmentation(segmentationId)`
+- `getSegmentation(segmentationId)`
+- `getSegmentations()`
+- `getSegmentationRepresentation(viewportId, specifier)`
+- `getSegmentationRepresentations(viewportId, specifier)`
+- `removeSegmentationRepresentation(viewportId, specifier, immediate)`
+- `removeAllSegmentationRepresentations()`
+- `removeLabelmapRepresentation(viewportId, segmentationId, immediate)`
+- `removeContourRepresentation(viewportId, segmentationId, immediate)`
+- `removeSurfaceRepresentation(viewportId, segmentationId, immediate)`
+- `getViewportSegmentations(viewportId, type)`
+- `getViewportIdsWithSegmentation(segmentationId)`
+- `getCurrentLabelmapImageIdForViewport(viewportId, segmentationId)`
+- `updateLabelmapSegmentationImageReferences(segmentationId, imageIds)`
+- `getStackSegmentationImageIdsForViewport(viewportId, segmentationId)`
+- `destroy()`
+
+### 移除 SegmentationDisplayTool
+
+不再需要将 SegmentationDisplayTool 添加到 toolGroup。
+
+**之前**
+
+```js
+toolGroup2.addTool(SegmentationDisplayTool.toolName);
+
+toolGroup1.setToolEnabled(SegmentationDisplayTool.toolName);
+```
+
+**现在**
+
+```js
+// 无需任何操作
+```
+
+### 堆栈标签图
+
+要创建堆栈标签图，您不再需要手动在标签图 imageIds 和视口 imageIds 之间创建引用。我们现在为您自动处理此过程。
+
+这需要一个长篇的为什么...
+
+以前的模型要求用户提供一个 imageIdReferenceMap，将标签图 imageIds 链接到视口 imageIds。这种方法在实现高级分割用例时带来了几个挑战：
+
+1. 手动创建映射容易出错，特别是在 imageIds 的顺序方面。
+
+2. 一旦分割与特定的视口 imageIds 相关联，就很难在其他地方渲染。例如：
+
+   - 在单个关键图像上渲染 CT 图像堆栈分割。
+   - 在包含 CT 和其他图像的堆栈上渲染 CT 图像堆栈分割。
+   - 在能量 1 上渲染 DX 双能分割到能量 2。
+   - 在同一空间的 PT 标签图上从堆栈视口渲染 CT 标签图。
+
+这些场景突显了以前模型的局限性。
+
+我们现在已经过渡到一个系统，用户只需提供 imageIds。在渲染过程中，我们将视口的当前 imageId 与标签图 imageIds 进行匹配，如果有匹配项，则渲染分割。这个匹配过程发生在 SegmentationStateManager 中，条件是分割必须与引用的视口处于同一平面。
+
+这种新方法启用了许多额外的用例，并为分割渲染提供了更大的灵活性。
+
+<Tabs>
+<TabItem value="Before" label="之前 📦 " default>
+
+```js
+segmentation.addSegmentations([
+  {
+    segmentationId,
+    representation: {
+      type: csToolsEnums.SegmentationRepresentations.Labelmap,
+      data: {
+        imageIdReferenceMap:
+          cornerstoneTools.utilities.segmentation.createImageIdReferenceMap(
+            imageIds,
+            segmentationImageIds
+          ),
+      },
+    },
+  },
+]);
+```
+
+</TabItem>
+<TabItem value="After" label="之后 🚀🚀">
+
+```js
+// 在这里填写“之后”部分的代码
+```
+
+</TabItem>
+</Tabs>
+
+---
+
+**迁移步骤:**
+
+1. 将通用的 `addSegmentationRepresentations` 调用替换为适当的特定表示函数。
+2. 更新输入数组以匹配新的 `RepresentationPublicInput` 类型。
+3. 从代码中移除任何特定类型的逻辑，因为现在这些逻辑由这些新函数处理。
+
+#### 多视口函数
+
+版本 2 引入了新的函数，用于同时向多个视口添加分割表示。
+
+<Tabs>
+<TabItem value="Before" label="之前 📦 " default>
+
+```typescript
+// 版本 1 中没有等效的函数
+```
+
+</TabItem>
+<TabItem value="After" label="之后 🚀🚀">
+
+```typescript
+function addContourRepresentationToViewportMap(viewportInputMap: {
+  [viewportId: string]: RepresentationPublicInput[];
+});
+
+function addLabelmapRepresentationToViewportMap(viewportInputMap: {
+  [viewportId: string]: RepresentationPublicInput[];
+});
+
+function addSurfaceRepresentationToViewportMap(viewportInputMap: {
+  [viewportId: string]: RepresentationPublicInput[];
+});
+```
+
+</TabItem>
+</Tabs>
+
+**迁移步骤:**
+
+1. 如果您之前向多个工具组添加表示，请重构代码以使用这些新的多视口函数。
+2. 创建一个 `viewportInputMap` 对象，将视口 ID 作为键，`RepresentationPublicInput` 数组作为值。
+3. 根据表示类型调用适当的多视口函数。
+
+### 事件
+
+由于我们从工具组转向视口，许多事件已被重命名，以包含 `viewportId` 而不是 `toolGroupId`，并且
+一些事件详情已更改为包含 `segmentationId` 而不是 `segmentationRepresentationUID` 或 `toolGroupId`。
+
+#### 移除工具组特定事件
+
+`triggerSegmentationRepresentationModified` 和 `triggerSegmentationRepresentationRemoved` 函数已被移除。取而代之的是，库现在使用更通用的方法来处理分割事件。
+
+<Tabs>
+<TabItem value="Before" label="之前 📦 " default>
+
+```typescript
+function triggerSegmentationRepresentationModified(
+  toolGroupId: string,
+  segmentationRepresentationUID?: string
+): void {
+  // ...
+}
+
+function triggerSegmentationRepresentationRemoved(
+  toolGroupId: string,
+  segmentationRepresentationUID: string
+): void {
+  // ...
+}
+```
+
+</TabItem>
+<TabItem value="After" label="之后 🚀🚀">
+
+```typescript
+function triggerSegmentationRepresentationModified(
+  viewportId: string,
+  segmentationId: string,
+  type?: SegmentationRepresentations
+): void {
+  // ...
+}
+
+function triggerSegmentationRepresentationRemoved(
+  viewportId: string,
+  segmentationId: string,
+  type: SegmentationRepresentations
+): void {
+  // ...
+}
+```
+
+</TabItem>
+</Tabs>
+
+**迁移步骤:**
+
+1. 在函数调用中将 `toolGroupId` 替换为 `viewportId`。
+2. 将 `segmentationRepresentationUID` 替换为 `segmentationId`。
+3. 添加 `type` 参数以指定分割表示类型。
+
+#### 简化的分割修改事件
+
+`triggerSegmentationModified` 函数已简化，始终需要一个 `segmentationId`。
+
+<Tabs>
+<TabItem value="Before" label="之前 📦 " default>
+
+```typescript
+function triggerSegmentationModified(segmentationId?: string): void {
+  // ...
+}
+```
+
+</TabItem>
+<TabItem value="After" label="之后 🚀🚀">
+
+```typescript
+function triggerSegmentationModified(segmentationId: string): void {
+  // ...
+}
+```
+
+</TabItem>
+</Tabs>
+
+**迁移步骤:**
+
+1. 确保在调用 `triggerSegmentationModified` 时始终提供 `segmentationId`。
+2. 移除任何处理 `segmentationId` 未定义情况的逻辑。
+
+#### 更新的事件详情类型
+
+几个事件详情类型已更新，以反映分割系统中的更改：
+
+<Tabs>
+<TabItem value="Before" label="之前 📦 " default>
+
+```typescript
+type SegmentationRepresentationModifiedEventDetail = {
+  toolGroupId: string;
+  segmentationRepresentationUID: string;
+};
+
+type SegmentationRepresentationRemovedEventDetail = {
+  toolGroupId: string;
+  segmentationRepresentationUID: string;
+};
+
+type SegmentationRenderedEventDetail = {
+  viewportId: string;
+  toolGroupId: string;
+};
+```
+
+</TabItem>
+<TabItem value="After" label="之后 🚀🚀">
+
+```typescript
+type SegmentationRepresentationModifiedEventDetail = {
+  segmentationId: string;
+  type: string;
+  viewportId: string;
+};
+
+type SegmentationRepresentationRemovedEventDetail = {
+  segmentationId: string;
+  type: string;
+  viewportId: string;
+};
+
+type SegmentationRenderedEventDetail = {
+  viewportId: string;
+  segmentationId: string;
+  type: string;
+};
+```
+
+</TabItem>
+</Tabs>
+
+## triggerAnnotationRenderForViewportIds
+
+现在只需要 `viewportIds`，不再需要 `renderingEngine`。
+
+```js
+triggerAnnotationRenderForViewportIds(renderingEngine, viewportIds) ---> triggerAnnotationRenderForViewportIds(viewportIds)
+```
+
+<details>
+<summary>为什么？</summary>
+因为每个视口都有一个渲染引擎，因此不需要将渲染引擎作为参数传递。
+</details>
+
+## 工具
+
+### StackScrollMouseWheelTool -> StackScrollTool
+
+我们已经将鼠标滚轮与工具本身解耦，使其可以像其他鼠标绑定一样应用为绑定。
+
+此更改带来了多个优势：
+
+- 它可以与其他鼠标绑定组合使用
+- 它可以与键盘绑定配对使用
+
+<Tabs>
+  <TabItem value="Before" label="之前 📦 " default>
+
+```js
+cornerstoneTools.addTool(StackScrollMouseWheelTool);
+toolGroup.addTool(StackScrollMouseWheelTool.toolName);
+toolGroup.setToolActive(StackScrollMouseWheelTool.toolName);
+```
+
+  </TabItem>
+  <TabItem value="After" label="之后 🚀🚀">
+
+```js
+cornerstoneTools.addTool(StackScrollTool);
+toolGroup.addTool(StackScrollTool.toolName);
+toolGroup.setToolActive(StackScrollTool.toolName, {
+  bindings: [
+    {
+      mouseButton: MouseBindings.Wheel,
+    },
+  ],
+});
+```
+
+  </TabItem>
+</Tabs>
+
+### BaseTool
+
+`getTargetVolumeId` 方法已被移除，取而代之的是 `getTargetId`，而 `getTargetIdImage` 已重命名为 `getTargetImageData`，以更清楚地表明它是图像数据。
+
+### 使用示例
+
+<Tabs>
+<TabItem value="Before" label="之前 📦 " default>
+
+```typescript
+const volumeId = this.getTargetVolumeId(viewport);
+const imageData = this.getTargetIdImage(targetId, renderingEngine);
+```
+
+</TabItem>
+<TabItem value="After" label="之后 🚀">
+
+```typescript
+const imageData = this.getTargetImageData(targetId);
+```
+
+</TabItem>
+</Tabs>
+
+## 新的分割模型
+
+我们有一个新的分割模型，更加灵活且易于使用。
+
+### 相同术语，不同架构
+
+在 Cornerstone3D 版本 2 中，我们对分割模型进行了重大架构更改，同时保持了熟悉的术语。此重新设计旨在为在不同视口中处理分割提供更灵活和直观的方法。以下是主要更改及其背后的原因：
+
+1. **视口特定，而非基于工具组**：
+
+   - **以前**：分割与工具组绑定，工具组通常由多个视口组成。当用户希望在同一工具组内为某些视口添加分割而不是其他视口时，这会带来复杂性。
+   - **现在**：分割现在是视口特定的。用户可以直接向视口添加分割，而不是向工具组添加或移除表示。这为每个视口渲染的内容提供了更细致的控制。
+   - **为什么**：我们发现将渲染绑定到工具组并不是一种有效的方法。它通常需要为特定视口创建额外的工具组以进行自定义或防止渲染。
+
+2. **简化分割表示的识别**：
+
+   - **以前**：需要一个唯一的 `segmentationRepresentationUID` 进行识别。
+   - **现在**：分割表示通过 `segmentationId` 和表示 `type` 的组合进行识别。这允许每个视口对同一分割有不同的表示。
+   - **为什么**：这种简化使得在不同视口中管理和引用分割表示更加容易。
+
+3. **数据与可视化的解耦**：
+
+   - **以前**：分割渲染与工具组紧密耦合。
+   - **现在**：分割现在纯粹作为数据处理，与用于交互的工具分离。
+   - **为什么**：虽然将工具绑定到工具组是合适的，但像分割渲染这样的视口特定功能应该由各个视口负责。这种分离允许在不同视口中有更灵活的渲染和交互选项。
+
+4. **多态分割支持**：
+
+   - 新架构更好地支持多态分割的概念，即单个分割可以有多个表示（例如，标签图、轮廓、表面），并且可以在它们之间高效地转换。
+   - **为什么**：这种灵活性允许更高效地存储、分析和实时可视化分割。
+
+5. **跨表示类型的一致 API**：
+
+   - 新的 API 提供了一种统一的方式来处理不同的分割表示，使得管理涉及多个视口和表示类型的复杂场景更加容易。
+   - **为什么**：这种一致性简化了开发，并减少了在处理不同分割类型时出错的可能性。
+
+这些架构更改为处理分割提供了更坚实的基础，特别是在复杂的多视口场景中。新方法已被证明非常有效，并为未来的增强功能打开了可能性。虽然核心概念保持相似，但您在代码中与分割交互的方式将会显著改变。本迁移指南将引导您完成这些更改，提供前后示例，帮助您将现有代码库更新到新架构。
+
+### 分割状态
+
+`Segmentation` 类型已被重组，以更好地组织分割信息和表示数据。在讨论迁移指南之前，让我们先看看更改。
+
+<Tabs>
+<TabItem value="Before" label="之前 📦 " default>
+
+```typescript
+type Segmentation = {
+  segmentationId: string;
+  type: Enums.SegmentationRepresentations;
+  label: string;
+  activeSegmentIndex: number;
+  segmentsLocked: Set<number>;
+  cachedStats: { [key: string]: number };
+  segmentLabels: { [key: string]: string };
+  representationData: SegmentationRepresentationData;
+};
+```
+
+</TabItem>
+<TabItem value="After" label="之后 🚀🚀">
+
+```typescript
+type Segmentation = {
+  segmentationId: string;
+  label: string;
+  segments: {
+    [segmentIndex: number]: Segment;
+  };
+  representationData: RepresentationsData;
+};
+
+type Segment = {
+  segmentIndex: number;
+  label: string;
+  locked: boolean;
+  cachedStats: { [key: string]: unknown };
+  active: boolean;
+};
+```
+
+</TabItem>
+</Tabs>
+
+新的分割状态模型提供了更有组织的数据结构。以前分散的信息，如 `cachedStats`、`segmentLabels` 和 `activeSegmentIndex`，已被整合到 `segments` 属性下。这种重组增强了清晰度和效率。在接下来的部分中，我们将讨论迁移指南，解释如何在新结构中访问和修改这些属性。这种重组主要影响分割存储级别。
+
+#### 表示数据键
+
+`SegmentationRepresentations` 枚举已更新为使用标题大小写而不是全大写，以使其与其他枚举保持一致。
+
+<Tabs>
+<TabItem value="Before" label="之前 📦 " default>
+
+```typescript
+enum SegmentationRepresentations {
+  Labelmap = 'LABELMAP',
+  Contour = 'CONTOUR',
+  Surface = 'SURFACE',
+}
+```
+
+</TabItem>
+<TabItem value="After" label="之后 🚀🚀">
+
+```typescript
+enum SegmentationRepresentations {
+  Labelmap = 'Labelmap',
+  Contour = 'Contour',
+  Surface = 'Surface',
+}
+```
+
+</TabItem>
+</Tabs>
+
+这项更改影响了表示数据的访问方式：
+
+<Tabs>
+<TabItem value="Before" label="之前 📦 " default>
+
+```typescript
+const representationData = segmentation.representationData.SURFACE;
+const representationData = segmentation.representationData.LABELMAP;
+const representationData = segmentation.representationData.CONTOUR;
+```
+
+</TabItem>
+<TabItem value="After" label="之后 🚀🚀">
+
+```typescript
+const representationData = segmentation.representationData.Surface;
+const representationData = segmentation.representationData.Labelmap;
+const representationData = segmentation.representationData.Contour;
+```
+
+</TabItem>
+</Tabs>
+
+#### 分割表示
+
+表示结构已被简化，现在是视口特定的。
+
+<Tabs>
+<TabItem value="Before" label="之前 📦 " default>
+
+```typescript
+type ToolGroupSpecificRepresentation =
+  | ToolGroupSpecificLabelmapRepresentation
+  | ToolGroupSpecificContourRepresentation;
+
+type ToolGroupSpecificRepresentationState = {
+  segmentationRepresentationUID: string;
+  segmentationId: string;
+  type: Enums.SegmentationRepresentations;
+  active: boolean;
+  segmentsLocked: Set<number>;
+  colorLUTIndex: number;
+};
+
+type SegmentationState = {
+  toolGroups: {
+    [key: string]: {
+      segmentationRepresentations: ToolGroupSpecificRepresentations;
+      config: SegmentationRepresentationConfig;
+    };
+  };
+};
+```
+
+</TabItem>
+<TabItem value="After" label="之后 🚀🚀">
+
+```typescript
+type SegmentationRepresentation =
+  | LabelmapRepresentation
+  | ContourRepresentation
+  | SurfaceRepresentation;
+
+type BaseSegmentationRepresentation = {
+  colorLUTIndex: number;
+  segmentationId: string;
+  type: Enums.SegmentationRepresentations;
+  visible: boolean;
+  active: boolean;
+  segments: {
+    [segmentIndex: number]: {
+      visible: boolean;
+    };
+  };
+};
+
+type SegmentationState = {
+  viewportSegRepresentations: {
+    [viewportId: string]: Array<SegmentationRepresentation>;
+  };
+};
+```
+
+</TabItem>
+</Tabs>
+
+以前，分割表示是基于工具组的，这导致了一些问题。在新的结构中，分割表示是视口特定的。它现在由 `segmentationId`、`type` 以及该分割的各种设置组成。由于这一变化，几个函数被移除或修改。以下是更改的总结：
+
+#### 移除的函数
+
+- `getDefaultSegmentationStateManager`
+- `getSegmentationRepresentations`
+- `getAllSegmentationRepresentations`
+- `getSegmentationIdRepresentations`
+- `findSegmentationRepresentationByUID`
+- `getToolGroupIdsWithSegmentation`
+- `getToolGroupSpecificConfig`
+- `setToolGroupSpecificConfig`
+- `getGlobalConfig`
+- `setGlobalConfig`
+- `setSegmentationRepresentationSpecificConfig`
+- `getSegmentationRepresentationSpecificConfig`
+- `getSegmentSpecificRepresentationConfig`
+- `setSegmentSpecificRepresentationConfig`
+- `getToolGroupIdFromSegmentationRepresentationUID`
+- `addSegmentationRepresentation`
+- `getSegmentationRepresentationByUID`
+
+#### 新的函数
+
+- `addSegmentations(segmentationInputArray)`
+- `removeSegmentation(segmentationId)`
+- `getSegmentation(segmentationId)`
+- `getSegmentations()`
+- `getSegmentationRepresentation(viewportId, specifier)`
+- `getSegmentationRepresentations(viewportId, specifier)`
+- `removeSegmentationRepresentation(viewportId, specifier, immediate)`
+- `removeAllSegmentationRepresentations()`
+- `removeLabelmapRepresentation(viewportId, segmentationId, immediate)`
+- `removeContourRepresentation(viewportId, segmentationId, immediate)`
+- `removeSurfaceRepresentation(viewportId, segmentationId, immediate)`
+- `getViewportSegmentations(viewportId, type)`
+- `getViewportIdsWithSegmentation(segmentationId)`
+- `getCurrentLabelmapImageIdForViewport(viewportId, segmentationId)`
+- `updateLabelmapSegmentationImageReferences(segmentationId, imageIds)`
+- `getStackSegmentationImageIdsForViewport(viewportId, segmentationId)`
+- `destroy()`
+
+### 移除 SegmentationDisplayTool
+
+不再需要将 SegmentationDisplayTool 添加到 toolGroup。
+
+**之前**
+
+```js
+toolGroup2.addTool(SegmentationDisplayTool.toolName);
+
+toolGroup1.setToolEnabled(SegmentationDisplayTool.toolName);
+```
+
+**现在**
+
+```js
+// 无需任何操作
+```
+
+### 堆栈标签图
+
+要创建堆栈标签图，您不再需要手动在标签图 imageIds 和视口 imageIds 之间创建引用。我们现在为您自动处理此过程。
+
+这需要一个长篇的为什么...
+
+以前的模型要求用户提供一个 `imageIdReferenceMap`，将标签图 imageIds 链接到视口 imageIds。这种方法在实现高级分割用例时带来了几个挑战：
+
+1. 手动创建映射容易出错，特别是在 imageIds 的顺序方面。
+
+2. 一旦分割与特定的视口 imageIds 相关联，就很难在其他地方渲染。例如：
+
+   - 在单个关键图像上渲染 CT 图像堆栈分割。
+   - 在包含 CT 和其他图像的堆栈上渲染 CT 图像堆栈分割。
+   - 在能量 1 上渲染 DX 双能分割到能量 2。
+   - 在同一空间的 PT 标签图上从堆栈视口渲染 CT 标签图。
+
+这些场景突显了以前模型的局限性。
+
+我们现在已经过渡到一个系统，用户只需提供 imageIds。在渲染过程中，我们将视口的当前 imageId 与标签图 imageIds 进行匹配，如果有匹配项，则渲染分割。这个匹配过程发生在 SegmentationStateManager 中，条件是分割必须与引用的视口处于同一平面。
+
+这种新方法启用了许多额外的用例，并为分割渲染提供了更大的灵活性。
+
+<Tabs>
+  <TabItem value="Before" label="之前 📦 " default>
+
+```js
+segmentation.addSegmentations([
+  {
+    segmentationId,
+    representation: {
+      type: csToolsEnums.SegmentationRepresentations.Labelmap,
+      data: {
+        imageIdReferenceMap:
+          cornerstoneTools.utilities.segmentation.createImageIdReferenceMap(
+            imageIds,
+            segmentationImageIds
+          ),
+      },
+    },
+  },
+]);
+```
+
+  </TabItem>
+  <TabItem value="After" label="之后 🚀🚀">
+
+```js
+// 在这里填写“之后”部分的代码
+```
+
+  </TabItem>
+</Tabs>
+
+---
+
+**迁移步骤:**
+
+1. 将通用的 `addSegmentationRepresentations` 调用替换为适当的特定表示函数。
+2. 更新输入数组以匹配新的 `RepresentationPublicInput` 类型。
+3. 从代码中移除任何特定类型的逻辑，因为现在这些逻辑由这些新函数处理。
+
+#### 多视口函数
+
+版本 2 引入了新的函数，用于同时向多个视口添加分割表示。
+
+<Tabs>
+  <TabItem value="Before" label="之前 📦 " default>
+
+```typescript
+// 版本 1 中没有等效的函数
+```
+
+  </TabItem>
+  <TabItem value="After" label="之后 🚀🚀">
 
 ```typescript
 function addContourRepresentationToViewportMap(viewportInputMap: {
@@ -636,23 +1987,23 @@ function addSurfaceRepresentationToViewportMap(viewportInputMap: {
   </TabItem>
 </Tabs>
 
-**Migration Steps:**
+**迁移步骤:**
 
-1. If you were previously adding representations to multiple tool groups, refactor your code to use these new multi-viewport functions.
-2. Create a `viewportInputMap` object with viewport IDs as keys and arrays of `RepresentationPublicInput` as values.
-3. Call the appropriate multi-viewport function based on the representation type.
+1. 如果您之前向多个工具组添加表示，请重构代码以使用这些新的多视口函数。
+2. 创建一个 `viewportInputMap` 对象，将视口 ID 作为键，`RepresentationPublicInput` 数组作为值。
+3. 根据表示类型调用适当的多视口函数。
 
-### Events
+### 事件
 
-Since we moved from toolGroup to viewport, many events have been renamed to include `viewportId` instead of `toolGroupId`, and
-some event details have been changed to include `segmentationId` instead of `segmentationRepresentationUID` or toolGroupId
+由于我们从工具组转向视口，许多事件已被重命名，以包含 `viewportId` 而不是 `toolGroupId`，并且
+一些事件详情已更改为包含 `segmentationId` 而不是 `segmentationRepresentationUID` 或 `toolGroupId`。
 
-#### Removal of ToolGroup Specific Events
+#### 移除工具组特定事件
 
-The `triggerSegmentationRepresentationModified` and `triggerSegmentationRepresentationRemoved` functions have been removed. Instead, the library now uses a more generalized approach for handling segmentation events.
+`triggerSegmentationRepresentationModified` 和 `triggerSegmentationRepresentationRemoved` 函数已被移除。取而代之的是，库现在使用更通用的方法来处理分割事件。
 
 <Tabs>
-  <TabItem value="Before" label="Before 📦 " default>
+  <TabItem value="Before" label="之前 📦 " default>
 
 ```typescript
 function triggerSegmentationRepresentationModified(
@@ -671,7 +2022,7 @@ function triggerSegmentationRepresentationRemoved(
 ```
 
   </TabItem>
-  <TabItem value="After" label="After 🚀🚀">
+  <TabItem value="After" label="之后 🚀🚀">
 
 ```typescript
 function triggerSegmentationRepresentationModified(
@@ -694,18 +2045,18 @@ function triggerSegmentationRepresentationRemoved(
   </TabItem>
 </Tabs>
 
-**Migration Steps:**
+**迁移步骤:**
 
-1. Replace `toolGroupId` with `viewportId` in function calls.
-2. Replace `segmentationRepresentationUID` with `segmentationId`.
-3. Add the `type` parameter to specify the segmentation representation type.
+1. 在函数调用中将 `toolGroupId` 替换为 `viewportId`。
+2. 将 `segmentationRepresentationUID` 替换为 `segmentationId`。
+3. 添加 `type` 参数以指定分割表示类型。
 
-#### Simplified Segmentation Modified Event
+#### 简化的分割修改事件
 
-The `triggerSegmentationModified` function has been simplified to always require a `segmentationId`.
+`triggerSegmentationModified` 函数已简化，始终需要一个 `segmentationId`。
 
 <Tabs>
-  <TabItem value="Before" label="Before 📦 " default>
+  <TabItem value="Before" label="之前 📦 " default>
 
 ```typescript
 function triggerSegmentationModified(segmentationId?: string): void {
@@ -714,7 +2065,7 @@ function triggerSegmentationModified(segmentationId?: string): void {
 ```
 
   </TabItem>
-  <TabItem value="After" label="After 🚀🚀">
+  <TabItem value="After" label="之后 🚀🚀">
 
 ```typescript
 function triggerSegmentationModified(segmentationId: string): void {
@@ -725,17 +2076,17 @@ function triggerSegmentationModified(segmentationId: string): void {
   </TabItem>
 </Tabs>
 
-**Migration Steps:**
+**迁移步骤:**
 
-1. Ensure that `segmentationId` is always provided when calling `triggerSegmentationModified`.
-2. Remove any logic that handles the case where `segmentationId` is undefined.
+1. 确保在调用 `triggerSegmentationModified` 时始终提供 `segmentationId`。
+2. 移除任何处理 `segmentationId` 未定义情况的逻辑。
 
-#### Updated Event Detail Types
+#### 更新的事件详情类型
 
-Several event detail types have been updated to reflect the changes in the segmentation system:
+几个事件详情类型已更新，以反映分割系统中的更改：
 
 <Tabs>
-  <TabItem value="Before" label="Before 📦 " default>
+  <TabItem value="Before" label="之前 📦 " default>
 
 ```typescript
 type SegmentationRepresentationModifiedEventDetail = {
@@ -755,7 +2106,7 @@ type SegmentationRenderedEventDetail = {
 ```
 
   </TabItem>
-  <TabItem value="After" label="After 🚀🚀">
+  <TabItem value="After" label="之后 🚀🚀">
 
 ```typescript
 type SegmentationRepresentationModifiedEventDetail = {
@@ -780,273 +2131,616 @@ type SegmentationRenderedEventDetail = {
   </TabItem>
 </Tabs>
 
-**Migration Steps:**
+## triggerAnnotationRenderForViewportIds
 
-1. Update event listeners to use the new event detail types.
-2. Replace `toolGroupId` with `viewportId` where applicable.
-3. Use `segmentationId` instead of `segmentationRepresentationUID`.
-4. Add handling for the new `type` field in event details.
+现在只需要 `viewportIds`，不再需要 `renderingEngine`。
 
-### Segmentation Config/Style
+```js
+triggerAnnotationRenderForViewportIds(renderingEngine, viewportIds) ---> triggerAnnotationRenderForViewportIds(viewportIds)
+```
 
-In Cornerstone3D version 2.x, we have significantly refactored the segmentation configuration APIs to provide a more flexible and unified approach for managing segmentation styles across different representations (Labelmap, Contour, Surface). The old APIs for getting and setting segmentation configurations have been replaced with new functions that utilize a specifier object to target specific segmentations, viewports, and segments.
+<details>
+<summary>为什么？</summary>
+因为每个视口都有一个渲染引擎，因此不需要将渲染引擎作为参数传递。
+</details>
 
-#### Removed Functions
+## 工具
 
-- `getGlobalConfig`
-- `setGlobalConfig`
-- `getGlobalRepresentationConfig`
-- `setGlobalRepresentationConfig`
+### StackScrollMouseWheelTool -> StackScrollTool
+
+我们已经将鼠标滚轮与工具本身解耦，使其可以像其他鼠标绑定一样应用为绑定。
+
+此更改带来了多个优势：
+
+- 它可以与其他鼠标绑定组合使用
+- 它可以与键盘绑定配对使用
+
+<Tabs>
+  <TabItem value="Before" label="之前 📦 " default>
+
+```js
+cornerstoneTools.addTool(StackScrollMouseWheelTool);
+toolGroup.addTool(StackScrollMouseWheelTool.toolName);
+toolGroup.setToolActive(StackScrollMouseWheelTool.toolName);
+```
+
+  </TabItem>
+  <TabItem value="After" label="之后 🚀🚀">
+
+```js
+cornerstoneTools.addTool(StackScrollTool);
+toolGroup.addTool(StackScrollTool.toolName);
+toolGroup.setToolActive(StackScrollTool.toolName, {
+  bindings: [
+    {
+      mouseButton: MouseBindings.Wheel,
+    },
+  ],
+});
+```
+
+  </TabItem>
+</Tabs>
+
+### BaseTool
+
+`getTargetVolumeId` 方法已被移除，取而代之的是 `getTargetId`，而 `getTargetIdImage` 已重命名为 `getTargetImageData`，以更清楚地表明它是图像数据。
+
+### 使用示例
+
+<Tabs>
+<TabItem value="Before" label="之前 📦 " default>
+
+```typescript
+const volumeId = this.getTargetVolumeId(viewport);
+const imageData = this.getTargetIdImage(targetId, renderingEngine);
+```
+
+</TabItem>
+<TabItem value="After" label="之后 🚀">
+
+```typescript
+const imageData = this.getTargetImageData(targetId);
+```
+
+</TabItem>
+</Tabs>
+
+## 新的分割模型
+
+我们有一个新的分割模型，更加灵活且易于使用。
+
+### 相同术语，不同架构
+
+在 Cornerstone3D 版本 2 中，我们对分割模型进行了重大架构更改，同时保持了熟悉的术语。此重新设计旨在为在不同视口中处理分割提供更灵活和直观的方法。以下是主要更改及其背后的原因：
+
+1. **视口特定，而非基于工具组**：
+
+   - **以前**：分割与工具组绑定，工具组通常由多个视口组成。当用户希望在同一工具组内为某些视口添加分割而不是其他视口时，这会带来复杂性。
+   - **现在**：分割现在是视口特定的。用户可以直接向视口添加分割，而不是向工具组添加或移除表示。这为每个视口渲染的内容提供了更细致的控制。
+   - **为什么**：我们发现将渲染绑定到工具组并不是一种有效的方法。它通常需要为特定视口创建额外的工具组以进行自定义或防止渲染。
+
+2. **简化分割表示的识别**：
+
+   - **以前**：需要一个唯一的 `segmentationRepresentationUID` 进行识别。
+   - **现在**：分割表示通过 `segmentationId` 和表示 `type` 的组合进行识别。这允许每个视口对同一分割有不同的表示。
+   - **为什么**：这种简化使得在不同视口中管理和引用分割表示更加容易。
+
+3. **数据与可视化的解耦**：
+
+   - **以前**：分割渲染与工具组紧密耦合。
+   - **现在**：分割现在纯粹作为数据处理，与用于交互的工具分离。
+   - **为什么**：虽然将工具绑定到工具组是合适的，但像分割渲染这样的视口特定功能应该由各个视口负责。这种分离允许在不同视口中有更灵活的渲染和交互选项。
+
+4. **多态分割支持**：
+
+   - 新架构更好地支持多态分割的概念，即单个分割可以有多个表示（例如，标签图、轮廓、表面），并且可以在它们之间高效地转换。
+   - **为什么**：这种灵活性允许更高效地存储、分析和实时可视化分割。
+
+5. **跨表示类型的一致 API**：
+
+   - 新的 API 提供了一种统一的方式来处理不同的分割表示，使得管理涉及多个视口和表示类型的复杂场景更加容易。
+   - **为什么**：这种一致性简化了开发，并减少了在处理不同分割类型时出错的可能性。
+
+这些架构更改为处理分割提供了更坚实的基础，特别是在复杂的多视口场景中。新方法已被证明非常有效，并为未来的增强功能打开了可能性。虽然核心概念保持相似，但您在代码中与分割交互的方式将会显著改变。本迁移指南将引导您完成这些更改，提供前后示例，帮助您将现有代码库更新到新架构。
+
+### 分割状态
+
+`Segmentation` 类型已被重组，以更好地组织分割信息和表示数据。在讨论迁移指南之前，让我们先看看更改。
+
+<Tabs>
+<TabItem value="Before" label="之前 📦 " default>
+
+```typescript
+type Segmentation = {
+  segmentationId: string;
+  type: Enums.SegmentationRepresentations;
+  label: string;
+  activeSegmentIndex: number;
+  segmentsLocked: Set<number>;
+  cachedStats: { [key: string]: number };
+  segmentLabels: { [key: string]: string };
+  representationData: SegmentationRepresentationData;
+};
+```
+
+</TabItem>
+<TabItem value="After" label="之后 🚀🚀">
+
+```typescript
+type Segmentation = {
+  segmentationId: string;
+  label: string;
+  segments: {
+    [segmentIndex: number]: Segment;
+  };
+  representationData: RepresentationsData;
+};
+
+type Segment = {
+  segmentIndex: number;
+  label: string;
+  locked: boolean;
+  cachedStats: { [key: string]: unknown };
+  active: boolean;
+};
+```
+
+</TabItem>
+</Tabs>
+
+新的分割状态模型提供了更有组织的数据结构。以前分散的信息，如 `cachedStats`、`segmentLabels` 和 `activeSegmentIndex`，已被整合到 `segments` 属性下。这种重组增强了清晰度和效率。在接下来的部分中，我们将讨论迁移指南，解释如何在新结构中访问和修改这些属性。这种重组主要影响分割存储级别。
+
+#### 表示数据键
+
+`SegmentationRepresentations` 枚举已更新为使用标题大小写而不是全大写，以使其与其他枚举保持一致。
+
+<Tabs>
+<TabItem value="Before" label="之前 📦 " default>
+
+```typescript
+enum SegmentationRepresentations {
+  Labelmap = 'LABELMAP',
+  Contour = 'CONTOUR',
+  Surface = 'SURFACE',
+}
+```
+
+</TabItem>
+<TabItem value="After" label="之后 🚀🚀">
+
+```typescript
+enum SegmentationRepresentations {
+  Labelmap = 'Labelmap',
+  Contour = 'Contour',
+  Surface = 'Surface',
+}
+```
+
+</TabItem>
+</Tabs>
+
+这项更改影响了表示数据的访问方式：
+
+<Tabs>
+  <TabItem value="Before" label="之前 📦 " default>
+
+```typescript
+const representationData = segmentation.representationData.SURFACE;
+const representationData = segmentation.representationData.LABELMAP;
+const representationData = segmentation.representationData.CONTOUR;
+```
+
+  </TabItem>
+  <TabItem value="After" label="之后 🚀🚀">
+
+```typescript
+const representationData = segmentation.representationData.Surface;
+const representationData = segmentation.representationData.Labelmap;
+const representationData = segmentation.representationData.Contour;
+```
+
+  </TabItem>
+</Tabs>
+
+#### 分割表示
+
+表示结构已被简化，现在是视口特定的。
+
+<Tabs>
+<TabItem value="Before" label="之前 📦 " default>
+
+```typescript
+type ToolGroupSpecificRepresentation =
+  | ToolGroupSpecificLabelmapRepresentation
+  | ToolGroupSpecificContourRepresentation;
+
+type ToolGroupSpecificRepresentationState = {
+  segmentationRepresentationUID: string;
+  segmentationId: string;
+  type: Enums.SegmentationRepresentations;
+  active: boolean;
+  segmentsLocked: Set<number>;
+  colorLUTIndex: number;
+};
+
+type SegmentationState = {
+  toolGroups: {
+    [key: string]: {
+      segmentationRepresentations: ToolGroupSpecificRepresentations;
+      config: SegmentationRepresentationConfig;
+    };
+  };
+};
+```
+
+</TabItem>
+<TabItem value="After" label="之后 🚀🚀">
+
+```typescript
+type SegmentationRepresentation =
+  | LabelmapRepresentation
+  | ContourRepresentation
+  | SurfaceRepresentation;
+
+type BaseSegmentationRepresentation = {
+  colorLUTIndex: number;
+  segmentationId: string;
+  type: Enums.SegmentationRepresentations;
+  visible: boolean;
+  active: boolean;
+  segments: {
+    [segmentIndex: number]: {
+      visible: boolean;
+    };
+  };
+};
+
+type SegmentationState = {
+  viewportSegRepresentations: {
+    [viewportId: string]: Array<SegmentationRepresentation>;
+  };
+};
+```
+
+</TabItem>
+</Tabs>
+
+以前，分割表示是基于工具组的，这导致了一些问题。在新的结构中，分割表示是视口特定的。它现在由 `segmentationId`、`type` 以及该分割的各种设置组成。由于这一变化，几个函数被移除或修改。以下是更改的总结：
+
+#### 移除的函数
+
+- `getDefaultSegmentationStateManager`
+- `getSegmentationRepresentations`
+- `getAllSegmentationRepresentations`
+- `getSegmentationIdRepresentations`
+- `findSegmentationRepresentationByUID`
+- `getToolGroupIdsWithSegmentation`
 - `getToolGroupSpecificConfig`
 - `setToolGroupSpecificConfig`
-- `getSegmentSpecificConfig`
-- `setSegmentSpecificConfig`
-- `getSegmentationRepresentationSpecificConfig`
+- `getGlobalConfig`
+- `setGlobalConfig`
 - `setSegmentationRepresentationSpecificConfig`
+- `getSegmentationRepresentationSpecificConfig`
+- `getSegmentSpecificRepresentationConfig`
+- `setSegmentSpecificRepresentationConfig`
+- `getToolGroupIdFromSegmentationRepresentationUID`
+- `addSegmentationRepresentation`
+- `getSegmentationRepresentationByUID`
 
-#### New Functions
+#### 新的函数
 
-- `getStyle(specifier)`
-- `setStyle(specifier, style)`
-- `setRenderInactiveSegmentations(viewportId, renderInactiveSegmentations)`
-- `getRenderInactiveSegmentations(viewportId)`
-- `resetToGlobalStyle()`
-- `hasCustomStyle(specifier)`
+- `addSegmentations(segmentationInputArray)`
+- `removeSegmentation(segmentationId)`
+- `getSegmentation(segmentationId)`
+- `getSegmentations()`
+- `getSegmentationRepresentation(viewportId, specifier)`
+- `getSegmentationRepresentations(viewportId, specifier)`
+- `removeSegmentationRepresentation(viewportId, specifier, immediate)`
+- `removeAllSegmentationRepresentations()`
+- `removeLabelmapRepresentation(viewportId, segmentationId, immediate)`
+- `removeContourRepresentation(viewportId, segmentationId, immediate)`
+- `removeSurfaceRepresentation(viewportId, segmentationId, immediate)`
+- `getViewportSegmentations(viewportId, type)`
+- `getViewportIdsWithSegmentation(segmentationId)`
+- `getCurrentLabelmapImageIdForViewport(viewportId, segmentationId)`
+- `updateLabelmapSegmentationImageReferences(segmentationId, imageIds)`
+- `getStackSegmentationImageIdsForViewport(viewportId, segmentationId)`
+- `destroy()`
 
-#### Getting Global Segmentation Config
+### 移除 SegmentationDisplayTool
+
+不再需要将 SegmentationDisplayTool 添加到 toolGroup。
+
+**之前**
+
+```js
+toolGroup2.addTool(SegmentationDisplayTool.toolName);
+
+toolGroup1.setToolEnabled(SegmentationDisplayTool.toolName);
+```
+
+**现在**
+
+```js
+// 无需任何操作
+```
+
+### 堆栈标签图
+
+要创建堆栈标签图，您不再需要手动在标签图 imageIds 和视口 imageIds 之间创建引用。我们现在为您自动处理此过程。
+
+这需要一个长篇的为什么...
+
+以前的模型要求用户提供一个 `imageIdReferenceMap`，将标签图 imageIds 链接到视口 imageIds。这种方法在实现高级分割用例时带来了几个挑战：
+
+1. 手动创建映射容易出错，特别是在 imageIds 的顺序方面。
+
+2. 一旦分割与特定的视口 imageIds 相关联，就很难在其他地方渲染。例如：
+
+   - 在单个关键图像上渲染 CT 图像堆栈分割。
+   - 在包含 CT 和其他图像的堆栈上渲染 CT 图像堆栈分割。
+   - 在能量 1 上渲染 DX 双能分割到能量 2。
+   - 在同一空间的 PT 标签图上从堆栈视口渲染 CT 标签图。
+
+这些场景突显了以前模型的局限性。
+
+我们现在已经过渡到一个系统，用户只需提供 imageIds。在渲染过程中，我们将视口的当前 imageId 与标签图 imageIds 进行匹配，如果有匹配项，则渲染分割。这个匹配过程发生在 SegmentationStateManager 中，条件是分割必须与引用的视口处于同一平面。
+
+这种新方法启用了许多额外的用例，并为分割渲染提供了更大的灵活性。
 
 <Tabs>
-<TabItem value="Before" label="Before 📦" default>
+  <TabItem value="Before" label="之前 📦 " default>
 
 ```js
-// Get the global segmentation config
-const globalConfig = getGlobalConfig();
-
-// Get global representation config for a specific representation type
-const labelmapConfig = getGlobalRepresentationConfig(
-  SegmentationRepresentations.Labelmap
-);
-```
-
-</TabItem>
-<TabItem value="After" label="After 🚀">
-
-```js
-// Get the global style for a specific representation type
-const labelmapStyle = getStyle({ type: SegmentationRepresentations.Labelmap });
-```
-
-</TabItem>
-</Tabs>
-
-##### Setting Global Segmentation Config
-
-<Tabs>
-<TabItem value="Before" label="Before 📦" default>
-
-```js
-// Set the global segmentation config
-setGlobalConfig(newGlobalConfig);
-
-// Set global representation config for a specific representation type
-setGlobalRepresentationConfig(
-  SegmentationRepresentations.Labelmap,
-  newLabelmapConfig
-);
-```
-
-</TabItem>
-<TabItem value="After" label="After 🚀">
-
-```js
-// Set the global style for a specific representation type
-setStyle({ type: SegmentationRepresentations.Labelmap }, newLabelmapStyle);
-```
-
-</TabItem>
-</Tabs>
-
-#### Getting and Setting ToolGroup-Specific Config
-
-ToolGroup-specific configurations have been removed in favor of viewport-specific styles. The following will set the style for a specific viewport and specific segmentation.
-
-<Tabs>
-<TabItem value="Before" label="Before 📦" default>
-
-```js
-// Get toolGroup-specific config
-const toolGroupConfig = getToolGroupSpecificConfig(toolGroupId);
-
-// Set toolGroup-specific config
-setToolGroupSpecificConfig(toolGroupId, newToolGroupConfig);
-```
-
-</TabItem>
-<TabItem value="After" label="After 🚀">
-
-```js
-// Set style for a specific viewport and segmentation representation
-setStyle(
+segmentation.addSegmentations([
   {
-    viewportId: 'viewport1',
-    segmentationId: 'segmentation1',
-    type: SegmentationRepresentations.Labelmap,
-  },
-  newLabelmapStyle
-);
-
-// Get style for a specific viewport and segmentation representation
-const style = getStyle({
-  viewportId: 'viewport1',
-  segmentationId: 'segmentation1',
-  type: SegmentationRepresentations.Labelmap,
-});
-```
-
-</TabItem>
-</Tabs>
-
-#### Getting and Setting Segmentation Representation-Specific Config
-
-In Cornerstone3D version 2.x, the functions for getting and setting segmentation representation-specific configurations have been replaced with a unified style management API. The old functions:
-
-`getSegmentationRepresentationSpecificConfig`
-`setSegmentationRepresentationSpecificConfig`
-
-are no longer available. Instead, you should use the getStyle and setStyle functions with a specifier object to target specific segmentations and representations.
-
-<Tabs>
-<TabItem value="Before" label="Before 📦 " default>
-
-```js
-// Get segmentation representation-specific config
-const representationConfig = getSegmentationRepresentationSpecificConfig(
-  toolGroupId,
-  segmentationRepresentationUID
-);
-
-// Set segmentation representation-specific config
-setSegmentationRepresentationSpecificConfig(
-  toolGroupId,
-  segmentationRepresentationUID,
-  {
-    LABELMAP: {
-      renderOutline: true,
-      outlineWidth: 2,
+    segmentationId,
+    representation: {
+      type: csToolsEnums.SegmentationRepresentations.Labelmap,
+      data: {
+        imageIdReferenceMap:
+          cornerstoneTools.utilities.segmentation.createImageIdReferenceMap(
+            imageIds,
+            segmentationImageIds
+          ),
+      },
     },
-  }
-);
+  },
+]);
 ```
 
-</TabItem>
-<TabItem value="After" label="After 🚀🚀">
+  </TabItem>
+  <TabItem value="After" label="之后 🚀🚀">
 
 ```js
-// Get style for a specific segmentation representation
-const style = getStyle({
-  segmentationId: 'segmentation1',
-  type: SegmentationRepresentations.Labelmap,
-});
-
-// Set style for a specific segmentation representation in all viewports
-setStyle(
-  {
-    segmentationId: 'segmentation1',
-    type: SegmentationRepresentations.Labelmap,
-  },
-  {
-    renderOutline: true,
-    outlineWidth: 2,
-  }
-);
+// 在这里填写“之后”部分的代码
 ```
 
-</TabItem>
+  </TabItem>
 </Tabs>
 
-#### Getting and Setting Segment-Specific Config
+---
+
+**迁移步骤:**
+
+1. 将通用的 `addSegmentationRepresentations` 调用替换为适当的特定表示函数。
+2. 更新输入数组以匹配新的 `RepresentationPublicInput` 类型。
+3. 从代码中移除任何特定类型的逻辑，因为现在这些逻辑由这些新函数处理。
+
+#### 多视口函数
+
+版本 2 引入了新的函数，用于同时向多个视口添加分割表示。
 
 <Tabs>
-<TabItem value="Before" label="Before 📦 " default>
+  <TabItem value="Before" label="之前 📦 " default>
 
-```js
-// Get segment-specific config
-const segmentConfig = getSegmentSpecificConfig(
-  toolGroupId,
-  segmentationRepresentationUID,
-  segmentIndex
-);
-
-// Set segment-specific config
-setSegmentSpecificConfig(
-  toolGroupId,
-  segmentationRepresentationUID,
-  segmentIndex,
-  newSegmentConfig
-);
+```typescript
+// 版本 1 中没有等效的函数
 ```
 
-</TabItem>
-<TabItem value="After" label="After 🚀">
+  </TabItem>
+  <TabItem value="After" label="之后 🚀🚀">
 
-```js
-// Set style for a specific segment
-setStyle(
-  {
-    segmentationId: 'segmentation1',
-    type: SegmentationRepresentations.Labelmap,
-    segmentIndex: 1,
-  },
-  newSegmentStyle
-);
+```typescript
+function addContourRepresentationToViewportMap(viewportInputMap: {
+  [viewportId: string]: RepresentationPublicInput[];
+});
 
-// Get style for a specific segment
-const segmentStyle = getStyle({
-  segmentationId: 'segmentation1',
-  type: SegmentationRepresentations.Labelmap,
-  segmentIndex: 1,
+function addLabelmapRepresentationToViewportMap(viewportInputMap: {
+  [viewportId: string]: RepresentationPublicInput[];
+});
+
+function addSurfaceRepresentationToViewportMap(viewportInputMap: {
+  [viewportId: string]: RepresentationPublicInput[];
 });
 ```
 
-</TabItem>
+  </TabItem>
 </Tabs>
 
-#### Setting Render Inactive Segmentations
+**迁移步骤:**
 
-The function to enable or disable rendering of inactive segmentations has been updated.
+1. 如果您之前向多个工具组添加表示，请重构代码以使用这些新的多视口函数。
+2. 创建一个 `viewportInputMap` 对象，将视口 ID 作为键，`RepresentationPublicInput` 数组作为值。
+3. 根据表示类型调用适当的多视口函数。
 
-**Before**
+### 事件
 
-This was part of the segmentation configuration:
+由于我们从工具组转向视口，许多事件已被重命名，以包含 `viewportId` 而不是 `toolGroupId`，并且
+一些事件详情已更改为包含 `segmentationId` 而不是 `segmentationRepresentationUID` 或 `toolGroupId`。
+
+#### 移除工具组特定事件
+
+`triggerSegmentationRepresentationModified` 和 `triggerSegmentationRepresentationRemoved` 函数已被移除。取而代之的是，库现在使用更通用的方法来处理分割事件。
+
+<Tabs>
+  <TabItem value="Before" label="之前 📦 " default>
+
+```typescript
+function triggerSegmentationRepresentationModified(
+  toolGroupId: string,
+  segmentationRepresentationUID?: string
+): void {
+  // ...
+}
+
+function triggerSegmentationRepresentationRemoved(
+  toolGroupId: string,
+  segmentationRepresentationUID: string
+): void {
+  // ...
+}
+```
+
+  </TabItem>
+  <TabItem value="After" label="之后 🚀🚀">
+
+```typescript
+function triggerSegmentationRepresentationModified(
+  viewportId: string,
+  segmentationId: string,
+  type?: SegmentationRepresentations
+): void {
+  // ...
+}
+
+function triggerSegmentationRepresentationRemoved(
+  viewportId: string,
+  segmentationId: string,
+  type: SegmentationRepresentations
+): void {
+  // ...
+}
+```
+
+  </TabItem>
+</Tabs>
+
+**迁移步骤:**
+
+1. 在函数调用中将 `toolGroupId` 替换为 `viewportId`。
+2. 将 `segmentationRepresentationUID` 替换为 `segmentationId`。
+3. 添加 `type` 参数以指定分割表示类型。
+
+#### 简化的分割修改事件
+
+`triggerSegmentationModified` 函数已简化，始终需要一个 `segmentationId`。
+
+<Tabs>
+  <TabItem value="Before" label="之前 📦 " default>
+
+```typescript
+function triggerSegmentationModified(segmentationId?: string): void {
+  // ...
+}
+```
+
+  </TabItem>
+  <TabItem value="After" label="之后 🚀🚀">
+
+```typescript
+function triggerSegmentationModified(segmentationId: string): void {
+  // ...
+}
+```
+
+  </TabItem>
+</Tabs>
+
+**迁移步骤:**
+
+1. 确保在调用 `triggerSegmentationModified` 时始终提供 `segmentationId`。
+2. 移除任何处理 `segmentationId` 未定义情况的逻辑。
+
+#### 更新的事件详情类型
+
+几个事件详情类型已更新，以反映分割系统中的更改：
+
+<Tabs>
+  <TabItem value="Before" label="之前 📦 " default>
+
+```typescript
+type SegmentationRepresentationModifiedEventDetail = {
+  toolGroupId: string;
+  segmentationRepresentationUID: string;
+};
+
+type SegmentationRepresentationRemovedEventDetail = {
+  toolGroupId: string;
+  segmentationRepresentationUID: string;
+};
+
+type SegmentationRenderedEventDetail = {
+  viewportId: string;
+  toolGroupId: string;
+};
+```
+
+  </TabItem>
+  <TabItem value="After" label="之后 🚀🚀">
+
+```typescript
+type SegmentationRepresentationModifiedEventDetail = {
+  segmentationId: string;
+  type: string;
+  viewportId: string;
+};
+
+type SegmentationRepresentationRemovedEventDetail = {
+  segmentationId: string;
+  type: string;
+  viewportId: string;
+};
+
+type SegmentationRenderedEventDetail = {
+  viewportId: string;
+  segmentationId: string;
+  type: string;
+};
+```
+
+  </TabItem>
+</Tabs>
+
+---
+
+#### 设置渲染非活动分割
+
+启用或禁用渲染非活动分割的函数已更新。
+
+**之前**
+
+这是分割配置的一部分：
 
 ```js
 setGlobalConfig({ renderInactiveSegmentations: true });
 ```
 
-**After**
+**现在**
 
-Use `setRenderInactiveSegmentations`:
+使用 `setRenderInactiveSegmentations`：
 
 ```js
-// Set whether to render inactive segmentations in a viewport
+// 设置是否在视口中渲染非活动分割
 setRenderInactiveSegmentations(viewportId, true);
 
-// Get whether inactive segmentations are rendered in a viewport
+// 获取视口中是否渲染非活动分割
 const renderInactive = getRenderInactiveSegmentations(viewportId);
 ```
 
-#### Resetting to Global Style
+#### 重置为全局样式
 
-To reset all segmentation styles to the global style:
+要将所有分割样式重置为全局样式：
 
 ```js
 resetToGlobalStyle();
 ```
 
-#### Example Migration
+#### 示例迁移
 
 <Tabs>
-  <TabItem value="Before" label="Before 📦 " default>
+  <TabItem value="Before" label="之前 📦 " default>
 
 ```js
 import {
@@ -1062,16 +2756,16 @@ import {
   getSegmentationRepresentationSpecificConfig,
 } from './segmentationConfig';
 
-// Get the global segmentation config
+// 获取全局分割配置
 const globalConfig = getGlobalConfig();
 
-// Set global representation config
+// 设置全局表示配置
 setGlobalRepresentationConfig(SegmentationRepresentations.Labelmap, {
   renderOutline: true,
   outlineWidth: 2,
 });
 
-// Set toolGroup-specific config
+// 设置工具组特定配置
 setToolGroupSpecificConfig(toolGroupId, {
   representations: {
     LABELMAP: {
@@ -1080,7 +2774,7 @@ setToolGroupSpecificConfig(toolGroupId, {
   },
 });
 
-// Set segment-specific config
+// 设置段特定配置
 setSegmentSpecificConfig(
   toolGroupId,
   segmentationRepresentationUID,
@@ -1094,7 +2788,7 @@ setSegmentSpecificConfig(
 ```
 
   </TabItem>
-  <TabItem value="After" label="After 🚀🚀">
+  <TabItem value="After" label="之后 🚀🚀">
 
 ```js
 import {
@@ -1106,10 +2800,10 @@ import {
   hasCustomStyle,
 } from '@cornerstonejs/core';
 
-// Get the global style for Labelmap representation
+// 获取 Labelmap 表示的全局样式
 const labelmapStyle = getStyle({ type: SegmentationRepresentations.Labelmap });
 
-// Set the global style for Labelmap representation
+// 设置 Labelmap 表示的全局样式
 setStyle(
   { type: SegmentationRepresentations.Labelmap },
   {
@@ -1118,7 +2812,7 @@ setStyle(
   }
 );
 
-// Set style for a specific viewport and segmentation
+// 设置特定视口和分割的样式
 setStyle(
   {
     viewportId: 'viewport1',
@@ -1130,7 +2824,7 @@ setStyle(
   }
 );
 
-// Set style for a specific segment
+// 设置特定段的样式
 setStyle(
   {
     segmentationId: 'segmentation1',
@@ -1142,13 +2836,13 @@ setStyle(
   }
 );
 
-// Set render inactive segmentations for a viewport
+// 设置视口的渲染非活动分割
 setRenderInactiveSegmentations('viewport1', true);
 
-// Get render inactive segmentations setting for a viewport
+// 获取视口的渲染非活动分割设置
 const renderInactive = getRenderInactiveSegmentations('viewport1');
 
-// Reset all styles to global
+// 重置所有样式为全局样式
 resetToGlobalStyle();
 ```
 
@@ -1157,25 +2851,25 @@ resetToGlobalStyle();
 
 ---
 
-#### Summary
+#### 总结
 
-- **Unified Style Management**: The new `getStyle` and `setStyle` functions provide a unified way to manage segmentation styles across different levels—global, segmentation-specific, viewport-specific, and segment-specific.
-- **Specifier Object**: The `specifier` object allows you to target specific viewports, segmentations, and segments.
-  - `type` is required
-  - if `segmentationId` is provided, the style will be applied to the specific segmentation representation in all viewports
-  - if `segmentationId` and `segmentIndex` are provided, the style will be applied to the specific segment of the specific segmentation representation
-  - if `viewportId` is provided, the style will be applied to all segmentations in the specific viewport
-  - if `viewportId`, `segmentationId`, and `segmentIndex` are provided, the style will be applied to the specific segment of the specific segmentation in the specific viewport
-- **Hierarchy of Styles**: The effective style is determined by a hierarchy that considers global styles, segmentation-specific styles, and viewport-specific styles.
+- **统一的样式管理**：新的 `getStyle` 和 `setStyle` 函数提供了一种统一的方式来管理不同层级的分割样式——全局、分割特定、视口特定和段特定。
+- **指定器对象**：`specifier` 对象允许您针对特定的视口、分割和段。
+  - `type` 是必需的
+  - 如果提供了 `segmentationId`，样式将应用于所有视口中该分割的特定表示
+  - 如果同时提供了 `segmentationId` 和 `segmentIndex`，样式将应用于特定视口中该分割的特定段
+  - 如果提供了 `viewportId`，样式将应用于特定视口中的所有分割
+  - 如果同时提供了 `viewportId`、`segmentationId` 和 `segmentIndex`，样式将应用于特定视口中该分割的特定段
+- **样式层级**：有效样式由一个层级决定，考虑了全局样式、分割特定样式和视口特定样式。
 
 ### Active
 
-#### Viewport-based Operations
+#### 基于视口的操作
 
-The API now uses viewport IDs instead of tool group IDs for identifying the context of segmentation operations.
+API 现在使用视口 ID 而不是工具组 ID 来识别分割操作的上下文。
 
 <Tabs>
-  <TabItem value="Before" label="Before 📦 " default>
+  <TabItem value="Before" label="之前 📦 " default>
 
 ```typescript
 function getActiveSegmentationRepresentation(toolGroupId: string);
@@ -1189,7 +2883,7 @@ function setActiveSegmentationRepresentation(
 ```
 
   </TabItem>
-  <TabItem value="After" label="After 🚀🚀">
+  <TabItem value="After" label="之后 🚀🚀">
 
 ```typescript
 function getActiveSegmentation(viewportId: string);
@@ -1204,15 +2898,790 @@ function setActiveSegmentation(
   </TabItem>
 </Tabs>
 
-#### Migration Steps:
+#### 迁移步骤:
 
-1. Replace all instances of `toolGroupId` with `viewportId` in function calls.
-2. Update `getActiveSegmentationRepresentation` and `getActiveSegmentation` calls to use the new `getActiveSegmentation` function.
-3. Replace `setActiveSegmentationRepresentation` calls with `setActiveSegmentation`, using the new parameter structure.
+1. 将所有函数调用中的 `toolGroupId` 替换为 `viewportId`。
+2. 更新 `getActiveSegmentationRepresentation` 和 `getActiveSegmentation` 调用以使用新的 `getActiveSegmentation` 函数。
+3. 将 `setActiveSegmentationRepresentation` 调用替换为 `setActiveSegmentation`，并使用新的参数结构。
 
-#### Return Type Changes
+## triggerAnnotationRenderForViewportIds
 
-The return type of `getActiveSegmentation` has changed from an implicit `undefined` to an explicit `Segmentation` type.
+现在只需要 `viewportIds`，不再需要 `renderingEngine`。
+
+```js
+triggerAnnotationRenderForViewportIds(renderingEngine, viewportIds) ---> triggerAnnotationRenderForViewportIds(viewportIds)
+```
+
+<details>
+<summary>为什么？</summary>
+因为每个视口都有一个渲染引擎，因此不需要将渲染引擎作为参数传递。
+</details>
+
+## 工具
+
+### StackScrollMouseWheelTool -> StackScrollTool
+
+我们已经将鼠标滚轮与工具本身解耦，使其可以像其他鼠标绑定一样应用为绑定。
+
+此更改带来了多个优势：
+
+- 它可以与其他鼠标绑定组合使用
+- 它可以与键盘绑定配对使用
+
+<Tabs>
+  <TabItem value="Before" label="之前 📦 " default>
+
+```js
+cornerstoneTools.addTool(StackScrollMouseWheelTool);
+toolGroup.addTool(StackScrollMouseWheelTool.toolName);
+toolGroup.setToolActive(StackScrollMouseWheelTool.toolName);
+```
+
+  </TabItem>
+  <TabItem value="After" label="之后 🚀🚀">
+
+```js
+cornerstoneTools.addTool(StackScrollTool);
+toolGroup.addTool(StackScrollTool.toolName);
+toolGroup.setToolActive(StackScrollTool.toolName, {
+  bindings: [
+    {
+      mouseButton: MouseBindings.Wheel,
+    },
+  ],
+});
+```
+
+  </TabItem>
+</Tabs>
+
+### BaseTool
+
+`getTargetVolumeId` 方法已被移除，取而代之的是 `getTargetId`，而 `getTargetIdImage` 已重命名为 `getTargetImageData`，以更清楚地表明它是图像数据。
+
+### 使用示例
+
+<Tabs>
+<TabItem value="Before" label="之前 📦 " default>
+
+```typescript
+const volumeId = this.getTargetVolumeId(viewport);
+const imageData = this.getTargetIdImage(targetId, renderingEngine);
+```
+
+</TabItem>
+<TabItem value="After" label="之后 🚀">
+
+```typescript
+const imageData = this.getTargetImageData(targetId);
+```
+
+</TabItem>
+</Tabs>
+
+## 新的分割模型
+
+我们有一个新的分割模型，更加灵活且易于使用。
+
+### 相同术语，不同架构
+
+在 Cornerstone3D 版本 2 中，我们对分割模型进行了重大架构更改，同时保持了熟悉的术语。此重新设计旨在为在不同视口中处理分割提供更灵活和直观的方法。以下是主要更改及其背后的原因：
+
+1. **视口特定，而非基于工具组**：
+
+   - **以前**：分割与工具组绑定，工具组通常由多个视口组成。当用户希望在同一工具组内为某些视口添加分割而不是其他视口时，这会带来复杂性。
+   - **现在**：分割现在是视口特定的。用户可以直接向视口添加分割，而不是向工具组添加或移除表示。这为每个视口渲染的内容提供了更细致的控制。
+   - **为什么**：我们发现将渲染绑定到工具组并不是一种有效的方法。它通常需要为特定视口创建额外的工具组以进行自定义或防止渲染。
+
+2. **简化分割表示的识别**：
+
+   - **以前**：需要一个唯一的 `segmentationRepresentationUID` 进行识别。
+   - **现在**：分割表示通过 `segmentationId` 和表示 `type` 的组合进行识别。这允许每个视口对同一分割有不同的表示。
+   - **为什么**：这种简化使得在不同视口中管理和引用分割表示更加容易。
+
+3. **数据与可视化的解耦**：
+
+   - **以前**：分割渲染与工具组紧密耦合。
+   - **现在**：分割现在纯粹作为数据处理，与用于交互的工具分离。
+   - **为什么**：虽然将工具绑定到工具组是合适的，但像分割渲染这样的视口特定功能应该由各个视口负责。这种分离允许在不同视口中有更灵活的渲染和交互选项。
+
+4. **多态分割支持**：
+
+   - 新架构更好地支持多态分割的概念，即单个分割可以有多个表示（例如，标签图、轮廓、表面），并且可以在它们之间高效地转换。
+   - **为什么**：这种灵活性允许更高效地存储、分析和实时可视化分割。
+
+5. **跨表示类型的一致 API**：
+
+   - 新的 API 提供了一种统一的方式来处理不同的分割表示，使得管理涉及多个视口和表示类型的复杂场景更加容易。
+   - **为什么**：这种一致性简化了开发，并减少了在处理不同分割类型时出错的可能性。
+
+这些架构更改为处理分割提供了更坚实的基础，特别是在复杂的多视口场景中。新方法已被证明非常有效，并为未来的增强功能打开了可能性。虽然核心概念保持相似，但您在代码中与分割交互的方式将会显著改变。本迁移指南将引导您完成这些更改，提供前后示例，帮助您将现有代码库更新到新架构。
+
+### 分割状态
+
+`Segmentation` 类型已被重组，以更好地组织分割信息和表示数据。在讨论迁移指南之前，让我们先看看更改。
+
+<Tabs>
+<TabItem value="Before" label="之前 📦 " default>
+
+```typescript
+type Segmentation = {
+  segmentationId: string;
+  type: Enums.SegmentationRepresentations;
+  label: string;
+  activeSegmentIndex: number;
+  segmentsLocked: Set<number>;
+  cachedStats: { [key: string]: number };
+  segmentLabels: { [key: string]: string };
+  representationData: SegmentationRepresentationData;
+};
+```
+
+</TabItem>
+<TabItem value="After" label="之后 🚀🚀">
+
+```typescript
+type Segmentation = {
+  segmentationId: string;
+  label: string;
+  segments: {
+    [segmentIndex: number]: Segment;
+  };
+  representationData: RepresentationsData;
+};
+
+type Segment = {
+  segmentIndex: number;
+  label: string;
+  locked: boolean;
+  cachedStats: { [key: string]: unknown };
+  active: boolean;
+};
+```
+
+</TabItem>
+</Tabs>
+
+新的分割状态模型提供了更有组织的数据结构。以前分散的信息，如 `cachedStats`、`segmentLabels` 和 `activeSegmentIndex`，已被整合到 `segments` 属性下。这种重组增强了清晰度和效率。在接下来的部分中，我们将讨论迁移指南，解释如何在新结构中访问和修改这些属性。这种重组主要影响分割存储级别。
+
+#### 表示数据键
+
+`SegmentationRepresentations` 枚举已更新为使用标题大小写而不是全大写，以使其与其他枚举保持一致。
+
+<Tabs>
+<TabItem value="Before" label="之前 📦 " default>
+
+```typescript
+enum SegmentationRepresentations {
+  Labelmap = 'LABELMAP',
+  Contour = 'CONTOUR',
+  Surface = 'SURFACE',
+}
+```
+
+</TabItem>
+<TabItem value="After" label="之后 🚀🚀">
+
+```typescript
+enum SegmentationRepresentations {
+  Labelmap = 'Labelmap',
+  Contour = 'Contour',
+  Surface = 'Surface',
+}
+```
+
+</TabItem>
+</Tabs>
+
+这项更改影响了表示数据的访问方式：
+
+<Tabs>
+<TabItem value="Before" label="之前 📦 " default>
+
+```typescript
+const representationData = segmentation.representationData.SURFACE;
+const representationData = segmentation.representationData.LABELMAP;
+const representationData = segmentation.representationData.CONTOUR;
+```
+
+</TabItem>
+<TabItem value="After" label="之后 🚀🚀">
+
+```typescript
+const representationData = segmentation.representationData.Surface;
+const representationData = segmentation.representationData.Labelmap;
+const representationData = segmentation.representationData.Contour;
+```
+
+</TabItem>
+</Tabs>
+
+#### 分割表示
+
+表示结构已被简化，现在是视口特定的。
+
+<Tabs>
+<TabItem value="Before" label="之前 📦 " default>
+
+```typescript
+type ToolGroupSpecificRepresentation =
+  | ToolGroupSpecificLabelmapRepresentation
+  | ToolGroupSpecificContourRepresentation;
+
+type ToolGroupSpecificRepresentationState = {
+  segmentationRepresentationUID: string;
+  segmentationId: string;
+  type: Enums.SegmentationRepresentations;
+  active: boolean;
+  segmentsLocked: Set<number>;
+  colorLUTIndex: number;
+};
+
+type SegmentationState = {
+  toolGroups: {
+    [key: string]: {
+      segmentationRepresentations: ToolGroupSpecificRepresentations;
+      config: SegmentationRepresentationConfig;
+    };
+  };
+};
+```
+
+</TabItem>
+<TabItem value="After" label="之后 🚀🚀">
+
+```typescript
+type SegmentationRepresentation =
+  | LabelmapRepresentation
+  | ContourRepresentation
+  | SurfaceRepresentation;
+
+type BaseSegmentationRepresentation = {
+  colorLUTIndex: number;
+  segmentationId: string;
+  type: Enums.SegmentationRepresentations;
+  visible: boolean;
+  active: boolean;
+  segments: {
+    [segmentIndex: number]: {
+      visible: boolean;
+    };
+  };
+};
+
+type SegmentationState = {
+  viewportSegRepresentations: {
+    [viewportId: string]: Array<SegmentationRepresentation>;
+  };
+};
+```
+
+</TabItem>
+</Tabs>
+
+以前，分割表示是基于工具组的，这导致了一些问题。在新的结构中，分割表示是视口特定的。它现在由 `segmentationId`、`type` 以及该分割的各种设置组成。由于这一变化，几个函数被移除或修改。以下是更改的总结：
+
+#### 移除的函数
+
+- `getDefaultSegmentationStateManager`
+- `getSegmentationRepresentations`
+- `getAllSegmentationRepresentations`
+- `getSegmentationIdRepresentations`
+- `findSegmentationRepresentationByUID`
+- `getToolGroupIdsWithSegmentation`
+- `getToolGroupSpecificConfig`
+- `setToolGroupSpecificConfig`
+- `getGlobalConfig`
+- `setGlobalConfig`
+- `setSegmentationRepresentationSpecificConfig`
+- `getSegmentationRepresentationSpecificConfig`
+- `getSegmentSpecificRepresentationConfig`
+- `setSegmentSpecificRepresentationConfig`
+- `getToolGroupIdFromSegmentationRepresentationUID`
+- `addSegmentationRepresentation`
+- `getSegmentationRepresentationByUID`
+
+#### 新的函数
+
+- `addSegmentations(segmentationInputArray)`
+- `removeSegmentation(segmentationId)`
+- `getSegmentation(segmentationId)`
+- `getSegmentations()`
+- `getSegmentationRepresentation(viewportId, specifier)`
+- `getSegmentationRepresentations(viewportId, specifier)`
+- `removeSegmentationRepresentation(viewportId, specifier, immediate)`
+- `removeAllSegmentationRepresentations()`
+- `removeLabelmapRepresentation(viewportId, segmentationId, immediate)`
+- `removeContourRepresentation(viewportId, segmentationId, immediate)`
+- `removeSurfaceRepresentation(viewportId, segmentationId, immediate)`
+- `getViewportSegmentations(viewportId, type)`
+- `getViewportIdsWithSegmentation(segmentationId)`
+- `getCurrentLabelmapImageIdForViewport(viewportId, segmentationId)`
+- `updateLabelmapSegmentationImageReferences(segmentationId, imageIds)`
+- `getStackSegmentationImageIdsForViewport(viewportId, segmentationId)`
+- `destroy()`
+
+### 移除 SegmentationDisplayTool
+
+不再需要将 SegmentationDisplayTool 添加到 toolGroup。
+
+**之前**
+
+```js
+toolGroup2.addTool(SegmentationDisplayTool.toolName);
+
+toolGroup1.setToolEnabled(SegmentationDisplayTool.toolName);
+```
+
+**现在**
+
+```js
+// 无需任何操作
+```
+
+### 堆栈标签图
+
+要创建堆栈标签图，您不再需要手动在标签图 imageIds 和视口 imageIds 之间创建引用。我们现在为您自动处理此过程。
+
+这需要一个长篇的为什么...
+
+以前的模型要求用户提供一个 `imageIdReferenceMap`，将标签图 imageIds 链接到视口 imageIds。这种方法在实现高级分割用例时带来了几个挑战：
+
+1. 手动创建映射容易出错，特别是在 imageIds 的顺序方面。
+
+2. 一旦分割与特定的视口 imageIds 相关联，就很难在其他地方渲染。例如：
+
+   - 在单个关键图像上渲染 CT 图像堆栈分割。
+   - 在包含 CT 和其他图像的堆栈上渲染 CT 图像堆栈分割。
+   - 在能量 1 上渲染 DX 双能分割到能量 2。
+   - 在同一空间的 PT 标签图上从堆栈视口渲染 CT 标签图。
+
+这些场景突显了以前模型的局限性。
+
+我们现在已经过渡到一个系统，用户只需提供 imageIds。在渲染过程中，我们将视口的当前 imageId 与标签图 imageIds 进行匹配，如果有匹配项，则渲染分割。这个匹配过程发生在 SegmentationStateManager 中，条件是分割必须与引用的视口处于同一平面。
+
+这种新方法启用了许多额外的用例，并为分割渲染提供了更大的灵活性。
+
+<Tabs>
+<TabItem value="Before" label="之前 📦 " default>
+
+```js
+segmentation.addSegmentations([
+  {
+    segmentationId,
+    representation: {
+      type: csToolsEnums.SegmentationRepresentations.Labelmap,
+      data: {
+        imageIdReferenceMap:
+          cornerstoneTools.utilities.segmentation.createImageIdReferenceMap(
+            imageIds,
+            segmentationImageIds
+          ),
+      },
+    },
+  },
+]);
+```
+
+</TabItem>
+<TabItem value="After" label="之后 🚀🚀">
+
+```js
+// 在这里填写“之后”部分的代码
+```
+
+</TabItem>
+</Tabs>
+
+---
+
+#### 迁移步骤:
+
+1. 将通用的 `addSegmentationRepresentations` 调用替换为适当的特定表示函数。
+2. 更新输入数组以匹配新的 `RepresentationPublicInput` 类型。
+3. 从代码中移除任何特定类型的逻辑，因为现在这些逻辑由这些新函数处理。
+
+#### 多视口函数
+
+版本 2 引入了新的函数，用于同时向多个视口添加分割表示。
+
+<Tabs>
+<TabItem value="Before" label="之前 📦 " default>
+
+```typescript
+// 版本 1 中没有等效的函数
+```
+
+</TabItem>
+<TabItem value="After" label="之后 🚀🚀">
+
+```typescript
+function addContourRepresentationToViewportMap(viewportInputMap: {
+  [viewportId: string]: RepresentationPublicInput[];
+});
+
+function addLabelmapRepresentationToViewportMap(viewportInputMap: {
+  [viewportId: string]: RepresentationPublicInput[];
+});
+
+function addSurfaceRepresentationToViewportMap(viewportInputMap: {
+  [viewportId: string]: RepresentationPublicInput[];
+});
+```
+
+</TabItem>
+</Tabs>
+
+**迁移步骤:**
+
+1. 如果您之前向多个工具组添加表示，请重构代码以使用这些新的多视口函数。
+2. 创建一个 `viewportInputMap` 对象，将视口 ID 作为键，`RepresentationPublicInput` 数组作为值。
+3. 根据表示类型调用适当的多视口函数。
+
+### 事件
+
+由于我们从工具组转向视口，许多事件已被重命名，以包含 `viewportId` 而不是 `toolGroupId`，并且
+一些事件详情已更改为包含 `segmentationId` 而不是 `segmentationRepresentationUID` 或 `toolGroupId`。
+
+#### 移除工具组特定事件
+
+`triggerSegmentationRepresentationModified` 和 `triggerSegmentationRepresentationRemoved` 函数已被移除。取而代之的是，库现在使用更通用的方法来处理分割事件。
+
+<Tabs>
+<TabItem value="Before" label="之前 📦 " default>
+
+```typescript
+function triggerSegmentationRepresentationModified(
+  toolGroupId: string,
+  segmentationRepresentationUID?: string
+): void {
+  // ...
+}
+
+function triggerSegmentationRepresentationRemoved(
+  toolGroupId: string,
+  segmentationRepresentationUID: string
+): void {
+  // ...
+}
+```
+
+</TabItem>
+<TabItem value="After" label="之后 🚀🚀">
+
+```typescript
+function triggerSegmentationRepresentationModified(
+  viewportId: string,
+  segmentationId: string,
+  type?: SegmentationRepresentations
+): void {
+  // ...
+}
+
+function triggerSegmentationRepresentationRemoved(
+  viewportId: string,
+  segmentationId: string,
+  type: SegmentationRepresentations
+): void {
+  // ...
+}
+```
+
+</TabItem>
+</Tabs>
+
+**迁移步骤:**
+
+1. 在函数调用中将 `toolGroupId` 替换为 `viewportId`。
+2. 将 `segmentationRepresentationUID` 替换为 `segmentationId`。
+3. 添加 `type` 参数以指定分割表示类型。
+
+#### 简化的分割修改事件
+
+`triggerSegmentationModified` 函数已简化，始终需要一个 `segmentationId`。
+
+<Tabs>
+<TabItem value="Before" label="之前 📦 " default>
+
+```typescript
+function triggerSegmentationModified(segmentationId?: string): void {
+  // ...
+}
+```
+
+</TabItem>
+<TabItem value="After" label="之后 🚀🚀">
+
+```typescript
+function triggerSegmentationModified(segmentationId: string): void {
+  // ...
+}
+```
+
+</TabItem>
+</Tabs>
+
+**迁移步骤:**
+
+1. 确保在调用 `triggerSegmentationModified` 时始终提供 `segmentationId`。
+2. 移除任何处理 `segmentationId` 未定义情况的逻辑。
+
+#### 更新的事件详情类型
+
+几个事件详情类型已更新，以反映分割系统中的更改：
+
+<Tabs>
+<TabItem value="Before" label="之前 📦 " default>
+
+```typescript
+type SegmentationRepresentationModifiedEventDetail = {
+  toolGroupId: string;
+  segmentationRepresentationUID: string;
+};
+
+type SegmentationRepresentationRemovedEventDetail = {
+  toolGroupId: string;
+  segmentationRepresentationUID: string;
+};
+
+type SegmentationRenderedEventDetail = {
+  viewportId: string;
+  toolGroupId: string;
+};
+```
+
+</TabItem>
+<TabItem value="After" label="之后 🚀🚀">
+
+```typescript
+type SegmentationRepresentationModifiedEventDetail = {
+  segmentationId: string;
+  type: string;
+  viewportId: string;
+};
+
+type SegmentationRepresentationRemovedEventDetail = {
+  segmentationId: string;
+  type: string;
+  viewportId: string;
+};
+
+type SegmentationRenderedEventDetail = {
+  viewportId: string;
+  segmentationId: string;
+  type: string;
+};
+```
+
+</TabItem>
+</Tabs>
+
+---
+
+#### 设置渲染非活动分割
+
+启用或禁用渲染非活动分割的函数已更新。
+
+**之前**
+
+这是分割配置的一部分：
+
+```js
+setGlobalConfig({ renderInactiveSegmentations: true });
+```
+
+**现在**
+
+使用 `setRenderInactiveSegmentations`：
+
+```js
+// 设置是否在视口中渲染非活动分割
+setRenderInactiveSegmentations(viewportId, true);
+
+// 获取视口中是否渲染非活动分割
+const renderInactive = getRenderInactiveSegmentations(viewportId);
+```
+
+#### 重置为全局样式
+
+要将所有分割样式重置为全局样式：
+
+```js
+resetToGlobalStyle();
+```
+
+#### 示例迁移
+
+<Tabs>
+<TabItem value="Before" label="之前 📦 " default>
+
+```js
+import {
+  getGlobalConfig,
+  getGlobalRepresentationConfig,
+  getToolGroupSpecificConfig,
+  setGlobalConfig,
+  setGlobalRepresentationConfig,
+  setToolGroupSpecificConfig,
+  setSegmentSpecificConfig,
+  getSegmentSpecificConfig,
+  setSegmentationRepresentationSpecificConfig,
+  getSegmentationRepresentationSpecificConfig,
+} from './segmentationConfig';
+
+// 获取全局分割配置
+const globalConfig = getGlobalConfig();
+
+// 设置全局表示配置
+setGlobalRepresentationConfig(SegmentationRepresentations.Labelmap, {
+  renderOutline: true,
+  outlineWidth: 2,
+});
+
+// 设置工具组特定配置
+setToolGroupSpecificConfig(toolGroupId, {
+  representations: {
+    LABELMAP: {
+      renderOutline: false,
+    },
+  },
+});
+
+// 设置段特定配置
+setSegmentSpecificConfig(
+  toolGroupId,
+  segmentationRepresentationUID,
+  segmentIndex,
+  {
+    LABELMAP: {
+      renderFill: false,
+    },
+  }
+);
+```
+
+</TabItem>
+<TabItem value="After" label="之后 🚀🚀">
+
+```js
+import {
+  getStyle,
+  setStyle,
+  setRenderInactiveSegmentations,
+  getRenderInactiveSegmentations,
+  resetToGlobalStyle,
+  hasCustomStyle,
+} from '@cornerstonejs/core';
+
+// 获取 Labelmap 表示的全局样式
+const labelmapStyle = getStyle({ type: SegmentationRepresentations.Labelmap });
+
+// 设置 Labelmap 表示的全局样式
+setStyle(
+  { type: SegmentationRepresentations.Labelmap },
+  {
+    renderOutline: true,
+    outlineWidth: 2,
+  }
+);
+
+// 设置特定视口和分割的样式
+setStyle(
+  {
+    viewportId: 'viewport1',
+    segmentationId: 'segmentation1',
+    type: SegmentationRepresentations.Labelmap,
+  },
+  {
+    renderOutline: false,
+  }
+);
+
+// 设置特定段的样式
+setStyle(
+  {
+    segmentationId: 'segmentation1',
+    type: SegmentationRepresentations.Labelmap,
+    segmentIndex: segmentIndex,
+  },
+  {
+    renderFill: false,
+  }
+);
+
+// 设置视口的渲染非活动分割
+setRenderInactiveSegmentations('viewport1', true);
+
+// 获取视口的渲染非活动分割设置
+const renderInactive = getRenderInactiveSegmentations('viewport1');
+
+// 重置所有样式为全局样式
+resetToGlobalStyle();
+```
+
+</TabItem>
+</Tabs>
+
+---
+
+#### 总结
+
+- **统一的样式管理**：新的 `getStyle` 和 `setStyle` 函数提供了一种统一的方式来管理不同层级的分割样式——全局、分割特定、视口特定和段特定。
+- **指定器对象**：`specifier` 对象允许您针对特定的视口、分割和段。
+  - `type` 是必需的
+  - 如果提供了 `segmentationId`，样式将应用于所有视口中该分割的特定表示
+  - 如果同时提供了 `segmentationId` 和 `segmentIndex`，样式将应用于特定视口中该分割的特定段
+  - 如果提供了 `viewportId`，样式将应用于特定视口中的所有分割
+  - 如果同时提供了 `viewportId`、`segmentationId` 和 `segmentIndex`，样式将应用于特定视口中该分割的特定段
+- **样式层级**：有效样式由一个层级决定，考虑了全局样式、分割特定样式和视口特定样式。
+
+### Active
+
+#### 基于视口的操作
+
+API 现在使用视口 ID 而不是工具组 ID 来识别分割操作的上下文。
+
+<Tabs>
+<TabItem value="Before" label="Before 📦 " default>
+
+```typescript
+function getActiveSegmentationRepresentation(toolGroupId: string);
+
+function getActiveSegmentation(toolGroupId: string);
+
+function setActiveSegmentationRepresentation(
+  toolGroupId: string,
+  segmentationRepresentationUID: string
+);
+```
+
+</TabItem>
+<TabItem value="After" label="After 🚀🚀">
+
+```typescript
+function getActiveSegmentation(viewportId: string);
+
+function setActiveSegmentation(
+  viewportId: string,
+  segmentationId: string,
+  suppressEvent: boolean = false
+);
+```
+
+</TabItem>
+</Tabs>
+
+#### 迁移步骤:
+
+1. 将所有函数调用中的 `toolGroupId` 替换为 `viewportId`。
+2. 更新 `getActiveSegmentationRepresentation` 和 `getActiveSegmentation` 调用以使用新的 `getActiveSegmentation` 函数。
+3. 将 `setActiveSegmentationRepresentation` 调用替换为 `setActiveSegmentation`，并使用新的参数结构。
+
+---
+
+#### 返回类型更改
+
+`getActiveSegmentation` 的返回类型已从隐式的 `undefined` 更改为显式的 `Segmentation` 类型。
 
 <Tabs>
   <TabItem value="Before" label="Before 📦 " default>
@@ -1231,18 +3700,18 @@ function getActiveSegmentation(viewportId: string): Segmentation;
   </TabItem>
 </Tabs>
 
-#### Migration Steps:
+#### 迁移步骤:
 
-1. Replace all calls to `getActiveSegmentationRepresentation` with `getActiveSegmentation`.
-2. Update any code that relied on the `ToolGroupSpecificRepresentation` type to work with the `Segmentation` type instead.
+1. 将所有对 `getActiveSegmentationRepresentation` 的调用替换为 `getActiveSegmentation`。
+2. 更新依赖于 `ToolGroupSpecificRepresentation` 类型的任何代码，以改为使用 `Segmentation` 类型。
 
-These changes aim to simplify the API and make it more intuitive to use. By focusing on viewport-based operations and removing the distinction between segmentation representations and segmentations, the new API should be easier to work with while maintaining the core functionality of the library.
+这些更改旨在简化 API 并使其更直观易用。通过专注于基于视口的操作并消除分割表示和分割之间的区别，新的 API 应该更易于使用，同时保持库的核心功能。
 
-### Visibility
+### 可见性
 
-#### Viewport-Centric Approach
+#### 视口中心方法
 
-The API now focuses on viewports rather than tool groups, reflecting a shift in the library's architecture.
+API 现在专注于视口而不是工具组，反映了库架构的变化。
 
 <Tabs>
   <TabItem value="Before" label="Before 📦 " default>
@@ -1276,16 +3745,16 @@ function setSegmentationRepresentationVisibility(
   </TabItem>
 </Tabs>
 
-**Migration Steps:**
+**迁移步骤:**
 
-1. Replace `toolGroupId` with `viewportId` in function calls.
-2. Use a `specifier` object instead of `segmentationRepresentationUID`.
-3. Include `segmentationId` in the `specifier` object.
-4. Optionally specify the `type` of segmentation representation.
+1. 在函数调用中将 `toolGroupId` 替换为 `viewportId`。
+2. 使用 `specifier` 对象代替 `segmentationRepresentationUID`。
+3. 在 `specifier` 对象中包含 `segmentationId`。
+4. 可选地指定分割表示的 `type`。
 
-#### Segmentation Representation Types
+#### 分割表示类型
 
-Version 2 introduces the concept of segmentation representation types, allowing for more granular control over different representation styles.
+版本 2 引入了分割表示类型的概念，允许对不同表示样式进行更细粒度的控制。
 
 <Tabs>
   <TabItem value="Before" label="Before 📦 " default>
@@ -1317,15 +3786,15 @@ function getSegmentationRepresentationVisibility(
   </TabItem>
 </Tabs>
 
-**Migration Steps:**
+**迁移步骤:**
 
-1. Update function names from `getSegmentationVisibility` to `getSegmentationRepresentationVisibility`.
-2. Replace `toolGroupId` with `viewportId`.
-3. Use a `specifier` object with `segmentationId` and `type` instead of `segmentationRepresentationUID`.
+1. 将函数名称从 `getSegmentationVisibility` 更新为 `getSegmentationRepresentationVisibility`。
+2. 将 `toolGroupId` 替换为 `viewportId`。
+3. 使用包含 `segmentationId` 和 `type` 的 `specifier` 对象替代 `segmentationRepresentationUID`。
 
-#### Segment-Level Visibility Control
+#### 段级可见性控制
 
-The API for controlling individual segment visibility has been updated to align with the new viewport-centric approach.
+控制单个段可见性的 API 已更新，以符合新的视口中心方法。
 
 <Tabs>
   <TabItem value="Before" label="Before 📦 " default>
@@ -1361,15 +3830,15 @@ function setSegmentIndexVisibility(
   </TabItem>
 </Tabs>
 
-**Migration Steps:**
+**迁移步骤:**
 
-1. Update function names from `setSegmentVisibility` to `setSegmentIndexVisibility`.
-2. Replace `toolGroupId` with `viewportId`.
-3. Use a `specifier` object with `segmentationId` and optional `type` instead of `segmentationRepresentationUID`.
+1. 将函数名称从 `setSegmentVisibility` 更新为 `setSegmentIndexVisibility`。
+2. 将 `toolGroupId` 替换为 `viewportId`。
+3. 使用包含 `segmentationId` 和可选 `type` 的 `specifier` 对象替代 `segmentationRepresentationUID`。
 
-#### New Utility Functions
+#### 新的实用函数
 
-Version 2 introduces new utility functions for managing segmentation visibility.
+版本 2 引入了用于管理分割可见性的新的实用函数。
 
 ```typescript
 function getHiddenSegmentIndices(
@@ -1383,30 +3852,29 @@ function getHiddenSegmentIndices(
 }
 ```
 
-This new function allows you to retrieve a set of hidden segment indices for a specific segmentation representation.
+这个新函数允许您检索特定分割表示的隐藏段索引集合。
 
-#### Removed Functions
+#### 移除的函数
 
-The following functions have been removed in version 2:
+以下函数在版本 2 中已被移除：
 
 - `setSegmentsVisibility`
 - `getSegmentVisibility`
 
-Replace usage of these functions with the new API methods described above.
+使用上述新 API 方法替换这些函数的使用。
 
 <details>
-<summary>Why?</summary>
+<summary>为什么？</summary>
 
-Since the visibility should be set on the representation, and segmentation is not the owner of the visibility, a segmentation can have
-two representations with different visibility on each viewport
+由于可见性应该在表示上设置，并且分割不是可见性的拥有者，一个分割可以在每个视口上有两个具有不同可见性的表示
 
 </details>
 
-### Locking
+### 锁定
 
-#### Retrieving Locked Segments
+#### 检索已锁定的段
 
-The function to retrieve locked segments has been renamed and its implementation changed:
+检索已锁定段的函数已被重命名并更改了其实现：
 
 <Tabs>
   <TabItem value="Before" label="Before 📦 " default>
@@ -1425,19 +3893,19 @@ function getLockedSegmentIndices(segmentationId: string): number[] | [];
   </TabItem>
 </Tabs>
 
-**Migration Steps:**
+**迁移步骤:**
 
-1. Update all calls from `getLockedSegments` to `getLockedSegmentIndices`.
-2. Be aware that the implementation now uses `Object.keys` and `filter` instead of converting a Set to an array.
+1. 将所有 `getLockedSegments` 的调用更新为 `getLockedSegmentIndices`。
+2. 注意实现现在使用 `Object.keys` 和 `filter`，而不是将 Set 转换为数组。
 
-### Color
+### 颜色
 
-#### Viewport-Centric Approach
+#### 以视口为中心的方法
 
-The API has shifted from a tool group-based approach to a viewport-centric one. This change affects several function signatures and how segmentations are referenced.
+API 已从基于工具组的方法转变为以视口为中心的方法。此更改影响了多个函数签名以及如何引用分割。
 
 <Tabs>
-  <TabItem value="Before" label="Before 📦 " default>
+  <TabItem value="Before" label="之前 📦 " default>
 
 ```typescript
 function setColorLUT(
@@ -1450,7 +3918,7 @@ function setColorLUT(
 ```
 
   </TabItem>
-  <TabItem value="After" label="After 🚀🚀">
+  <TabItem value="After" label="之后 🚀🚀">
 
 ```typescript
 function setColorLUT(
@@ -1465,18 +3933,18 @@ function setColorLUT(
   </TabItem>
 </Tabs>
 
-**Migration Steps:**
+**迁移步骤:**
 
-1. Replace `toolGroupId` with `viewportId` in function calls.
-2. Replace `segmentationRepresentationUID` with `segmentationId`.
-3. Update any code that relies on tool group-based segmentation management to use viewport-based management instead.
+1. 在函数调用中将 `toolGroupId` 替换为 `viewportId`。
+2. 将 `segmentationRepresentationUID` 替换为 `segmentationId`。
+3. 更新依赖于基于工具组的分割管理的任何代码，以改用基于视口的管理。
 
-#### Color LUT Management
+#### 颜色 LUT 管理
 
-The `addColorLUT` function now returns the index of the added color LUT and has an optional `colorLUTIndex` parameter.
+`addColorLUT` 函数现在返回添加的颜色 LUT 的索引，并具有一个可选的 `colorLUTIndex` 参数。
 
 <Tabs>
-  <TabItem value="Before" label="Before 📦 " default>
+  <TabItem value="Before" label="之前 📦 " default>
 
 ```typescript
 function addColorLUT(colorLUT: Types.ColorLUT, colorLUTIndex: number): void {
@@ -1485,7 +3953,7 @@ function addColorLUT(colorLUT: Types.ColorLUT, colorLUTIndex: number): void {
 ```
 
   </TabItem>
-  <TabItem value="After" label="After 🚀🚀">
+  <TabItem value="After" label="之后 🚀🚀">
 
 ```typescript
 function addColorLUT(colorLUT: Types.ColorLUT, colorLUTIndex?: number): number {
@@ -1496,17 +3964,17 @@ function addColorLUT(colorLUT: Types.ColorLUT, colorLUTIndex?: number): number {
   </TabItem>
 </Tabs>
 
-**Migration Steps:**
+**迁移步骤:**
 
-1. Update calls to `addColorLUT` to handle the returned index if needed.
-2. Make the `colorLUTIndex` parameter optional in function calls.
+1. 更新对 `addColorLUT` 的调用以在需要时处理返回的索引。
+2. 在函数调用中使 `colorLUTIndex` 参数变为可选。
 
-#### Segment Color Retrieval and Setting
+#### 分割颜色的检索和设置
 
-The functions for getting and setting segment colors have been renamed and their signatures updated to align with the new viewport-centric approach.
+用于获取和设置分割颜色的函数已重新命名，并更新了其签名以与新的以视口为中心的方法保持一致。
 
 <Tabs>
-  <TabItem value="Before" label="Before 📦 " default>
+  <TabItem value="Before" label="之前 📦 " default>
 
 ```typescript
 function getColorForSegmentIndex(
@@ -1528,7 +3996,7 @@ function setColorForSegmentIndex(
 ```
 
   </TabItem>
-  <TabItem value="After" label="After 🚀🚀">
+  <TabItem value="After" label="之后 🚀🚀">
 
 ```typescript
 function getSegmentIndexColor(
@@ -1552,16 +4020,16 @@ function setSegmentIndexColor(
   </TabItem>
 </Tabs>
 
-**Migration Steps:**
+**迁移步骤:**
 
-1. Rename `getColorForSegmentIndex` to `getSegmentIndexColor`.
-2. Rename `setColorForSegmentIndex` to `setSegmentIndexColor`.
-3. Update function calls to use `viewportId` instead of `toolGroupId`.
-4. Replace `segmentationRepresentationUID` with `segmentationId` in function calls.
+1. 将 `getColorForSegmentIndex` 重命名为 `getSegmentIndexColor`。
+2. 将 `setColorForSegmentIndex` 重命名为 `setSegmentIndexColor`。
+3. 更新函数调用以使用 `viewportId` 代替 `toolGroupId`。
+4. 在函数调用中将 `segmentationRepresentationUID` 替换为 `segmentationId`。
 
-### Other Changes
+### 其他更改
 
-#### Renaming
+#### 重命名
 
 ```js
 getSegmentAtWorldPoint-- > getSegmentIndexAtWorldPoint;
@@ -1571,14 +4039,14 @@ getSegmentAtLabelmapBorder-- > getSegmentIndexAtLabelmapBorder;
 #### getToolGroupIdsWithSegmentation
 
 <Tabs>
-  <TabItem value="Before" label="Before 📦 " default>
+  <TabItem value="Before" label="之前 📦 " default>
 
 ```typescript
 function getToolGroupIdsWithSegmentation(segmentationId: string): string[];
 ```
 
   </TabItem>
-  <TabItem value="After" label="After 🚀🚀">
+  <TabItem value="After" label="之后 🚀🚀">
 
 ```typescript
 function getViewportIdsWithSegmentation(segmentationId: string): string[];
@@ -1587,16 +4055,16 @@ function getViewportIdsWithSegmentation(segmentationId: string): string[];
   </TabItem>
 </Tabs>
 
-**Migration Steps:**
+**迁移步骤:**
 
-1. Replace `getToolGroupIdsWithSegmentation` with `getViewportIdsWithSegmentation`.
+1. 将 `getToolGroupIdsWithSegmentation` 替换为 `getViewportIdsWithSegmentation`。
 
-#### Segmentation Representation Management
+#### 分割表示管理
 
-The way segmentation representations are added, retrieved, and removed has changed significantly.
+添加、检索和移除分割表示的方式发生了重大变化。
 
 <Tabs>
-  <TabItem value="Before" label="Before 📦 " default>
+  <TabItem value="Before" label="之前 📦 " default>
 
 ```typescript
 function addSegmentationRepresentation(
@@ -1617,7 +4085,7 @@ function removeSegmentationRepresentation(
 ```
 
   </TabItem>
-  <TabItem value="After" label="After 🚀🚀">
+  <TabItem value="After" label="之后 🚀🚀">
 
 ```typescript
 function addSegmentationRepresentation(
@@ -1647,17 +4115,17 @@ function removeSegmentationRepresentation(
   </TabItem>
 </Tabs>
 
-**Migration Steps:**
+**迁移步骤:**
 
-1. Update all calls to `addSegmentationRepresentation` to use `viewportId` instead of `toolGroupId`.
-2. Replace `getSegmentationRepresentationByUID` with `getSegmentationRepresentation`, using the new specifier object.
-3. Update `removeSegmentationRepresentation` calls to use the new specifier object instead of `segmentationRepresentationUID`.
+1. 将所有 `addSegmentationRepresentation` 的调用更新为使用 `viewportId` 代替 `toolGroupId`。
+2. 使用新的指定对象，将 `getSegmentationRepresentationByUID` 替换为 `getSegmentationRepresentation`。
+3. 更新 `removeSegmentationRepresentation` 的调用，使用新的指定对象代替 `segmentationRepresentationUID`。
 
 ### PolySEG
 
-#### Import
+#### 导入
 
-The PolySEG has been unbundled and placed in a separate external package. To use it, add the `peerImport` function to your `init` function for Cornerstone Core.
+PolySEG 已被拆分并放置在一个单独的外部包中。要使用它，请将 `peerImport` 函数添加到 Cornerstone Core 的 `init` 函数中。
 
 ```js
 async function peerImport(moduleId) {
@@ -1671,12 +4139,12 @@ import { init } from '@cornerstonejs/core';
 await init({ peerImport });
 ```
 
-#### Options
+#### 选项
 
-You don't need to provide polyseg options for the segmentation representation. It will automatically use PolySeg if the specified representation is unavailable.
+您无需为分割表示提供 polyseg 选项。如果指定的表示不可用，它将自动使用 PolySeg。
 
 <Tabs>
-  <TabItem value="Before" label="Before 📦 " default>
+  <TabItem value="Before" label="之前 📦 " default>
 
 ```js
 await segmentation.addSegmentationRepresentations(toolGroupId2, [
@@ -1693,7 +4161,7 @@ await segmentation.addSegmentationRepresentations(toolGroupId2, [
 ```
 
   </TabItem>
-  <TabItem value="After" label="After 🚀🚀">
+  <TabItem value="After" label="之后 🚀🚀">
 
 ```js
 await segmentation.addSegmentationRepresentations(viewportId2, [
@@ -1707,11 +4175,12 @@ await segmentation.addSegmentationRepresentations(viewportId2, [
   </TabItem>
 </Tabs>
 
-#### Actor UID for labelmaps
+#### 标签图的 Actor UID
 
-The way the actorUID is generated has changed to use a combination of segmentationId and SegmentationRepresentations.Labelmap.
+生成 `actorUID` 的方式已更改，现使用 `segmentationId` 和 `SegmentationRepresentations.Labelmap` 的组合。
+
 <Tabs>
-<TabItem value="Before" label="Before 📦 " default>
+<TabItem value="Before" label="之前 📦 " default>
 
 ```js
 const volumeInputs: Types.IVolumeInput[] = [
@@ -1725,7 +4194,7 @@ const volumeInputs: Types.IVolumeInput[] = [
 ```
 
 </TabItem>
-<TabItem value="After" label="After 🚀">
+<TabItem value="After" label="之后 🚀">
 
 ```js
 const volumeInputs: Types.IVolumeInput[] = [
@@ -1741,9 +4210,9 @@ const volumeInputs: Types.IVolumeInput[] = [
 </TabItem>
 </Tabs>
 
-We've updated the `actorUID` to `${segmentationId}-${SegmentationRepresentations.Labelmap}`. This change allows us to uniquely identify representations without relying on the `segmentationRepresentationUID`.
+我们已将 `actorUID` 更新为 `${segmentationId}-${SegmentationRepresentations.Labelmap}`。此更改使我们能够在不依赖 `segmentationRepresentationUID` 的情况下唯一标识表示。
 
-For this mean, `getSegmentationActor` is added for you to get the actor for a given labelmap
+因此，添加了 `getSegmentationActor` 供您获取给定标签图的 actor。
 
 ```ts
 export function getSegmentationActor(
@@ -1755,10 +4224,9 @@ export function getSegmentationActor(
 ): Types.VolumeActor | Types.ImageActor | undefined;
 ```
 
-### New Utilities
+### 新的实用工具
 
-`clearSegmentValue` is added to clear a specific segment value in a segmentation,
-it will make the segment value to 0
+添加了 `clearSegmentValue` 来清除分割中的特定段值，它将使段值为 0。
 
 ```js
  function clearSegmentValue(
@@ -1767,27 +4235,26 @@ it will make the segment value to 0
 )
 ```
 
-## Renaming and Nomenclature
+## 重命名和命名法
 
-### Types
+### 类型
 
-PointsManager is now IPointsManager
+PointsManager 现为 IPointsManager
 
-migration
+迁移
 
 ```js
 import { IPointsManager } from '@cornerstonejs/tools/types';
 ```
 
-### Units
+### 单位
 
-#### getCalibratedLengthUnitsAndScale Signature
+#### getCalibratedLengthUnitsAndScale 签名
 
-It is highly unlikely that you were using this function directly, but if you were, here's the migration
-The return type of the function has changed slightly, with `units` and `areaUnits` renamed to `unit` and `areaUnit` respectively.
+您直接使用此函数的可能性极小，但如果使用了，以下是迁移步骤。函数的返回类型略有更改，`units` 和 `areaUnits` 分别重命名为 `unit` 和 `areaUnit`。
 
 <Tabs>
-<TabItem value="Before" label="Before 📦 " default>
+<TabItem value="Before" label="之前 📦 " default>
 
 ```typescript
 const getCalibratedLengthUnitsAndScale = (image, handles) => {
@@ -1797,7 +4264,7 @@ const getCalibratedLengthUnitsAndScale = (image, handles) => {
 ```
 
 </TabItem>
-<TabItem value="After" label="After 🚀">
+<TabItem value="After" label="之后 🚀">
 
 ```typescript
 const getCalibratedLengthUnitsAndScale = (image, handles) => {
@@ -1811,19 +4278,18 @@ const getCalibratedLengthUnitsAndScale = (image, handles) => {
 
 #### getModalityUnit -> getPixelValueUnits
 
-To make more sense
+为了更合理
 
 <details>
-<summary>Why?</summary>
-There was too much inconsistency in the units used throughout the library. We had `unit`, `areaUnits`, `modalityUnit`, and various others. Now, we have consolidated these units. You need to update your codebase to reflect the new unit system if you are hydrating annotations for Cornerstone3D.
+<summary>为什么？</summary>
+库中使用的单位过于不一致。我们有 `unit`、`areaUnits`、`modalityUnit` 以及其他各种单位。现在，我们已经整合了这些单位。如果您正在为 Cornerstone3D 注释提供数据，则需要更新您的代码库以反映新的单位系统。
 
-In addition modalityUnit is now pixelValueUnits to reflect the correct term, since for a single modality there can be multiple pixel values (e.g, PT SUV, PT RAW, PT PROC)
-
+此外，`modalityUnit` 现为 `pixelValueUnits` 以反映正确的术语，因为对于单一模态，可以有多个像素值（例如，PT SUV、PT RAW、PT PROC）。
 </details>
 
 ### BasicStatsCalculator
 
-the option `noPointsCollection` has been renamed to `storePointData`
+选项 `noPointsCollection` 已重命名为 `storePointData`
 
 ### getSegmentAtWorldPoint -> getSegmentIndexAtWorldPoint
 
@@ -1831,12 +4297,13 @@ the option `noPointsCollection` has been renamed to `storePointData`
 
 ---
 
-## Others
+## 其他
 
 ### roundNumber
 
-The utility has been relocated from `@cornerstonejs/tools` utilities to `@cornerstonejs/core/utilities`.
-migration
+该实用工具已从 `@cornerstonejs/tools` 实用工具迁移到 `@cornerstonejs/core/utilities`。
+
+迁移
 
 ```js
 import { roundNumber } from '@cornerstonejs/core/utilities';
@@ -1844,8 +4311,9 @@ import { roundNumber } from '@cornerstonejs/core/utilities';
 
 ### jumpToSlice
 
-The utility has been relocated from `@cornerstonejs/tools` utilities to `@cornerstonejs/core/utilities`.
-migration
+该实用工具已从 `@cornerstonejs/tools` 实用工具迁移到 `@cornerstonejs/core/utilities`。
+
+迁移
 
 ```js
 import { jumpToSlice } from '@cornerstonejs/core/utilities';
@@ -1853,45 +4321,45 @@ import { jumpToSlice } from '@cornerstonejs/core/utilities';
 
 ### pointInShapeCallback
 
-### 1. New Import Path
+### 1. 新的导入路径
 
-The `pointInShapeCallback` function has been moved. Update your imports as follows:
+`pointInShapeCallback` 函数已被移动。请按以下方式更新您的导入：
 
 ```js
 import { pointInShapeCallback } from '@cornerstonejs/core/utilities';
 ```
 
-### 2. Updated Usage
+### 2. 更新后的使用方法
 
-The function signature has changed to use an options object for improved clarity and flexibility. Below is a guide to how the usage has changed.
+函数签名已更改，使用选项对象以提高清晰度和灵活性。以下是使用方法变化的指南。
 
-**Old Usage:**
+**旧的使用方法：**
 
 ```js
 const pointsInShape = pointInShapeCallback(
   imageData,
   shapeFnCriteria,
   (point) => {
-    // callback logic for each point
+    // 每个点的回调逻辑
   },
   boundsIJK
 );
 ```
 
-**New Usage:**
+**新的使用方法：**
 
 ```js
 const pointsInShape = pointInShapeCallback(imageData, {
   pointInShapeFn: shapeFnCriteria,
   callback: (point) => {
-    // callback logic for each point
+    // 每个点的回调逻辑
   },
   boundsIJK: boundsIJK,
-  returnPoints: true, // Optionally, to return the points inside the shape
+  returnPoints: true, // 可选，返回形状内的点
 });
 ```
 
-### Key Changes:
+### 关键变化：
 
-- **Options Object**: Configuration parameters such as `pointInShapeFn`, `callback`, `boundsIJK`, and `returnPoints` are now passed through an options object.
-- **Return Points**: Use the `returnPoints` option to specify if you want to return the points within the shape, previously it was always returning the points. If you relied on returning points directly, make sure to include `storePointData: true` in the tool options when you active it
+- **选项对象**：配置参数如 `pointInShapeFn`、`callback`、`boundsIJK` 和 `returnPoints` 现在通过选项对象传递。
+- **返回点**：使用 `returnPoints` 选项来指定是否返回形状内的点，之前它总是返回点。如果您依赖于直接返回点，请确保在激活工具时在工具选项中包含 `storePointData: true`
