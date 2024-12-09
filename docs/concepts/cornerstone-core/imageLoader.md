@@ -44,4 +44,4 @@ init({
 
 ### CornerstoneWebImageLoader  
 
-您可以查看我们为 `CornerstoneWebImageLoader` 提供的示例代码 [这里](https://github.com/cornerstonejs/cornerstone3D/tree/main/packages/core/examples/webLoader)。  
+您可以在 [这里](https://github.com/cornerstonejs/cornerstone3D/tree/main/packages/core/examples/webLoader) 查看我们为 `CornerstoneWebImageLoader` 提供的示例代码 。  
